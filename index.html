@@ -111,7 +111,7 @@
   /* wealth_vs_woe.jpg — ghosted hero background */
   .hero-logo-bg {
     position: absolute;
-    right: -40px; top: 50%;
+    right: 120px; top: 50%;
     transform: translateY(-50%);
     width: 580px; height: auto;
     opacity: 0.13;
@@ -188,7 +188,7 @@
     border-top: 1px solid var(--border);
     animation: fadeUp 0.6s ease 0.4s both; position: relative; z-index: 1;
   }
-  .hero-stat-num { font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 700; }
+  .hero-stat-num { font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 700; font-variant-numeric: slashed-zero; }
   .hero-stat-label { font-size: 13px; color: var(--ink-muted); margin-top: 2px; }
 
   /* ════════════════════════════
@@ -408,9 +408,10 @@
   }
   .footer-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
   .footer-logo-img {
-    height: 36px; width: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.6; transition: opacity 0.2s;
+    height: 40px; width: auto;
+    mix-blend-mode: screen;
+    opacity: 0.75;
+    transition: opacity 0.2s;
   }
   .footer-brand:hover .footer-logo-img { opacity: 1; }
   .footer-wordmark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white); }
@@ -472,7 +473,7 @@
 
   <img src="wealth_vs_woe.jpg" alt="" class="hero-logo-bg" aria-hidden="true">
 
-  <div class="hero-tag">To-Your-Door Service Available</div>
+  <div class="hero-tag">Nationwide On-Site &amp; Remote Services</div>
   <h1>Systems that work.<br><em>Revenue</em> that follows.</h1>
   <p class="hero-sub">We build automated systems that generate leads, close deals, and scale your business — without adding headcount.</p>
 
@@ -497,7 +498,7 @@
       <div class="hero-stat-label">Startup to enterprise</div>
     </div>
     <div>
-      <div class="hero-stat-num">0 Runaround</div>
+      <div class="hero-stat-num"><span style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:34px;font-variant-numeric:slashed-zero tabular-nums">0</span> Runaround</div>
       <div class="hero-stat-label">Josh picks up the phone</div>
     </div>
   </div>
@@ -815,7 +816,7 @@
   <h2>Need a system built or improved?</h2>
   <p>Tell us what you're trying to solve — we'll design the right solution. Josh responds within one business day.</p>
   <div class="cta-buttons">
-    <a href="mailto:favorableoddsllc@gmail.com" class="btn-light">Tell Us About Your Pain Point(s)</a>
+    <a href="/cdn-cgi/l/email-protection#513730273e2330333d343e3535223d3d3211363c30383d7f323e3c" class="btn-light">Tell Us About Your Pain Point(s)</a>
     <a href="tel:+16892439704" class="btn-call-light">
       <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.72A16 16 0 0 0 12 13l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 14.36Z"/></svg>
       Call 689-243-9704
@@ -841,8 +842,4 @@
     <li><a href="#contact">Get Started</a></li>
   </ul>
 
-  <div class="footer-copy">© 2025 Favorable Odds LLC &nbsp;·&nbsp; favorableoddsllc@gmail.com &nbsp;·&nbsp; 689-243-9704</div>
-</footer>
-
-</body>
-</html>
+  <div class="footer-copy">© 2025 Favorable Odds LLC &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" c
