@@ -65,20 +65,19 @@
     display: flex; align-items: center; gap: 10px;
   }
 
-  /* ① NAV LOGO — business_logo.jpg
-     mix-blend-mode:multiply removes the white JPG background
-     on the light frosted nav without needing a PNG cutout      */
   .nav-logo-img {
-    height: 48px;
-    width: auto;
-    display: block;
+    height: 48px; width: auto; display: block;
     mix-blend-mode: multiply;
     transition: opacity 0.2s;
   }
   .nav-logo:hover .nav-logo-img { opacity: 0.7; }
 
   .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
-  .nav-links a { font-size: 14px; font-weight: 500; color: var(--ink-soft); text-decoration: none; transition: color 0.2s; }
+  .nav-links a {
+    font-size: 14px; font-weight: 500;
+    color: var(--ink-soft); text-decoration: none;
+    transition: color 0.2s;
+  }
   .nav-links a:hover { color: var(--ink); }
 
   .nav-cta {
@@ -109,9 +108,7 @@
     pointer-events: none;
   }
 
-  /* ② HERO BACKGROUND — wealth_vs_woe.png
-     Large illustrated pair, ghosted on the right side.
-     mix-blend-mode:multiply removes white surround on the light surface. */
+  /* wealth_vs_woe.jpg — ghosted hero background */
   .hero-logo-bg {
     position: absolute;
     right: -40px; top: 50%;
@@ -156,7 +153,6 @@
     display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px;
     animation: fadeUp 0.6s ease 0.25s both; position: relative; z-index: 1;
   }
-
   .outcome-pill {
     display: flex; align-items: center; gap: 7px;
     background: var(--white); border: 1px solid var(--border);
@@ -209,23 +205,72 @@
   .section-sub { font-size: 17px; color: var(--ink-soft); max-width: 580px; font-weight: 300; line-height: 1.7; }
 
   /* ════════════════════════════
-     SERVICES
+     ABOUT  (section 1)
   ════════════════════════════ */
-  .services { background: var(--white); }
+  .about { background: var(--white); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+  .about-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+  .about-card-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
+  .about-card-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .about-card-sub { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+
+  .value-list { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 12px; }
+  .value-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--ink-soft); }
+  .value-list li::before {
+    content:'✓'; width:22px; height:22px; border-radius:50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ════════════════════════════
+     WHAT WE ACTUALLY BUILD  (section 2, dark)
+  ════════════════════════════ */
+  .what-we-build { background: var(--ink); color: var(--white); position: relative; overflow: hidden; }
+  .what-we-build .section-tag { color: rgba(255,255,255,0.4); }
+  .what-we-build .section-title { color: var(--white); }
+
+  /* sunnyrich_vs_cloudypoor_logo.jpg — white ghost bottom-right */
+  .build-section-logo {
+    position: absolute;
+    right: -30px; bottom: -20px;
+    width: 380px; height: auto;
+    opacity: 0.07;
+    filter: grayscale(1) invert(1) brightness(2);
+    pointer-events: none;
+  }
+
+  .build-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px; margin-top: 48px; position: relative; z-index: 1;
+  }
+  .build-item {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius); padding: 24px 28px;
+    display: flex; align-items: flex-start; gap: 16px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .build-item:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.16); }
+  .build-num { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); flex-shrink: 0; padding-top: 3px; }
+  .build-item h4 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .build-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* ════════════════════════════
+     SERVICES  (section 3)
+  ════════════════════════════ */
+  .services { background: var(--surface); }
 
   .services-header {
     display: flex; justify-content: space-between; align-items: flex-end;
     margin-bottom: 56px; gap: 32px;
   }
-
   .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
   }
-
   .service-card {
-    background: var(--surface); border: 1px solid var(--border);
+    background: var(--white); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 32px;
     position: relative; overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
@@ -248,7 +293,6 @@
     border-radius: var(--radius-pill); padding: 3px 10px;
     display: inline-block; margin-bottom: 12px;
   }
-
   .service-icon {
     width: 48px; height: 48px; border-radius: 12px;
     background: var(--ink);
@@ -260,48 +304,10 @@
   .service-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
 
   /* ════════════════════════════
-     WHAT WE ACTUALLY BUILD (dark)
-  ════════════════════════════ */
-  .what-we-build { background: var(--ink); color: var(--white); position: relative; overflow: hidden; }
-  .what-we-build .section-tag { color: rgba(255,255,255,0.4); }
-  .what-we-build .section-title { color: var(--white); }
-
-  /* ③ WHAT WE BUILD BG — sunnyrich_vs_cloudypoor_logo.PNG
-     Positioned far right, filtered to appear as a subtle white ghost  */
-  .build-section-logo {
-    position: absolute;
-    right: -30px; bottom: -20px;
-    width: 380px; height: auto;
-    opacity: 0.07;
-    filter: grayscale(1) invert(1) brightness(2);
-    pointer-events: none;
-  }
-
-  .build-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px; margin-top: 48px; position: relative; z-index: 1;
-  }
-
-  .build-item {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--radius); padding: 24px 28px;
-    display: flex; align-items: flex-start; gap: 16px;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .build-item:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.16); }
-
-  .build-num {
-    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
-    color: var(--accent); flex-shrink: 0; padding-top: 3px;
-  }
-  .build-item h4 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
-  .build-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
-
-  /* ════════════════════════════
-     ADVANCED SYSTEMS (lead gen)
+     ADVANCED SYSTEMS — lead gen (lives inside Services flow)
   ════════════════════════════ */
   .advanced {
-    background: var(--surface);
+    background: var(--white);
     display: grid; grid-template-columns: 1fr 1fr;
     gap: 80px; align-items: center;
   }
@@ -324,7 +330,7 @@
   .btn-call svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   .featured-visual {
-    background: var(--white); border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 32px;
   }
   .pipeline-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 24px; }
@@ -337,61 +343,44 @@
   .pipeline-step-badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent); flex-shrink: 0; }
 
   /* ════════════════════════════
-     PROCESS
+     PROCESS  (section 4)
   ════════════════════════════ */
-  .how-it-works { background: var(--white); }
+  .how-it-works { background: var(--surface); }
+
   .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 64px; }
   .step-num { font-family: 'Syne', sans-serif; font-size: 72px; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 8px; letter-spacing: -0.04em; }
   .step h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
   .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
 
   /* ════════════════════════════
-     TECH STACK
+     TECH STACK (between Process and CTA)
   ════════════════════════════ */
-  .tech-stack { background: var(--surface); }
+  .tech-stack { background: var(--white); }
   .stack-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 48px; }
   .stack-cat h4 { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
   .stack-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .stack-tag { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--ink-soft); transition: border-color 0.2s, color 0.2s; }
+  .stack-tag { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--ink-soft); transition: border-color 0.2s, color 0.2s; }
   .stack-tag:hover { border-color: var(--accent); color: var(--accent); }
 
   /* ════════════════════════════
-     ABOUT
-  ════════════════════════════ */
-  .about { background: var(--white); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-  .about-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
-  .about-card-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
-  .about-card-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-  .about-card-sub { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
-
-  .value-list { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 12px; }
-  .value-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--ink-soft); }
-  .value-list li::before { content:'✓'; width:22px; height:22px; border-radius:50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-
-  /* ════════════════════════════
-     CTA (dark)
+     CTA  (section 5 / bottom)
   ════════════════════════════ */
   .cta-section {
     background: var(--ink); text-align: center;
     padding: 120px 48px; position: relative; overflow: hidden;
   }
 
-  /* ④ CTA CENTERPIECE — slime_smile_logo.png
-     Single bold coin, centered above heading, bounces on hover  */
+  /* slime_smile_$_logo.jpg — bold single coin centerpiece */
   .cta-logo-wrap {
     display: flex; justify-content: center;
     margin-bottom: 36px;
   }
-
   .cta-slime-logo {
     width: 140px; height: 140px;
     object-fit: contain;
-    /* White background has transparent surround already, but
-       drop-shadow makes it pop on the dark background         */
     filter: drop-shadow(0 0 32px rgba(180,255,80,0.25));
     transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), filter 0.3s;
   }
-
   .cta-logo-wrap:hover .cta-slime-logo {
     transform: scale(1.1) rotate(-6deg);
     filter: drop-shadow(0 0 48px rgba(180,255,80,0.45));
@@ -417,20 +406,15 @@
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 24px;
   }
-
   .footer-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-
-  /* ⑤ FOOTER LOGO — business_logo.jpg
-     brightness(0) invert(1) turns the black line art white on the dark footer */
   .footer-logo-img {
     height: 36px; width: auto;
     filter: brightness(0) invert(1);
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    opacity: 0.6; transition: opacity 0.2s;
   }
   .footer-brand:hover .footer-logo-img { opacity: 1; }
-
   .footer-wordmark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white); }
+
   .footer-links { display: flex; gap: 32px; list-style: none; }
   .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: rgba(255,255,255,0.8); }
@@ -461,37 +445,32 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════
-     NAV — logo ①: business_logo.jpg
-     mix-blend-mode removes white bg
-══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     NAV — order: About | What We Build | Services | Process | Get Started
+     Logo: business_logo.jpg (mix-blend-mode removes white bg)
+══════════════════════════════════════════ -->
 <nav>
   <a href="#" class="nav-logo">
     <img src="business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img">
     Favorable Odds Tech Solutions
   </a>
   <ul class="nav-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#what-we-build">What We Build</a></li>
-    <li><a href="#process">Process</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#what-we-build">What We Build</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
     <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
 </nav>
 
-<!-- ══════════════════════════════════
-     HERO — logo ②: wealth_vs_woe.png
-     Ghosted right-side background art
-══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     HERO
+     Background: wealth_vs_woe.jpg (ghosted watermark)
+══════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-grid-bg"></div>
 
-  <img
-    src="wealth_vs_woe.png"
-    alt=""
-    class="hero-logo-bg"
-    aria-hidden="true"
-  >
+  <img src="wealth_vs_woe.jpg" alt="" class="hero-logo-bg" aria-hidden="true">
 
   <div class="hero-tag">To-Your-Door Service Available</div>
   <h1>Systems that work.<br><em>Revenue</em> that follows.</h1>
@@ -505,7 +484,7 @@
 
   <div class="hero-actions">
     <a href="#contact" class="btn-primary">Start a Project</a>
-    <a href="#what-we-build" class="btn-secondary">See What We Build</a>
+    <a href="#about" class="btn-secondary">Learn About Us</a>
   </div>
 
   <div class="hero-stats">
@@ -524,9 +503,103 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     SERVICES
-══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     SECTION 1 — ABOUT
+══════════════════════════════════════════ -->
+<section class="about" id="about">
+  <div>
+    <div class="section-tag">About Us</div>
+    <h2 class="section-title">Built from execution — not theory.</h2>
+    <p class="section-sub">Favorable Odds Tech Solutions was built from hands-on experience implementing real systems across operations, infrastructure, and automation. We focus on execution — not decks and recommendations that never get shipped.</p>
+    <p class="section-sub" style="margin-top:16px">Our experience includes building high-performing acquisition systems where needed — but that's a capability, not our identity.</p>
+    <ul class="value-list">
+      <li>Transparent pricing — no surprise invoices</li>
+      <li>We use the same tools we build for you</li>
+      <li>Proven across insurance, service, and operations businesses</li>
+      <li>To-your-door, on-site service available nationwide</li>
+      <li>Plain language — zero jargon, zero runaround</li>
+    </ul>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <div class="about-card">
+      <div class="about-card-label">Owner / Operator</div>
+      <div class="about-card-title">Josh Ramos</div>
+      <div class="about-card-sub">Hands-on technologist and founder. Josh is personally involved in every engagement — from the initial assessment to final deployment. He picks up the phone.</div>
+    </div>
+    <div class="about-card">
+      <div class="about-card-label">Current Partners</div>
+      <div class="about-card-title">Northern Legacy Insurance Agency</div>
+      <div class="about-card-sub">Powering operations automation, lead generation infrastructure, and system integrations for a growing insurance operation.</div>
+    </div>
+    <div class="about-card">
+      <div class="about-card-label">Service Area</div>
+      <div class="about-card-title">Nationwide — on-site or remote</div>
+      <div class="about-card-sub">Remote-first with full on-site capability for hardware installations and hands-on deployments anywhere in the country.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — WHAT WE ACTUALLY BUILD (dark)
+     Background: sunnyrich_vs_cloudypoor_logo.jpg (white ghost, bottom-right)
+══════════════════════════════════════════ -->
+<section class="what-we-build" id="what-we-build">
+
+  <img src="sunnyrich_vs_cloudypoor_logo.jpg" alt="" class="build-section-logo" aria-hidden="true">
+
+  <div class="section-tag">What We Actually Build</div>
+  <h2 class="section-title" style="color:white">No confusion about what we do.</h2>
+  <p class="section-sub" style="color:rgba(255,255,255,0.55)">Here are real examples of systems we design, build, and deploy for clients. If you need it built, we've probably built something like it.</p>
+
+  <div class="build-grid">
+    <div class="build-item">
+      <div class="build-num">01</div>
+      <div>
+        <h4>Internal Workflow Automation</h4>
+        <p>Eliminate repetitive tasks across departments — approvals, alerts, data routing, and reporting on autopilot.</p>
+      </div>
+    </div>
+    <div class="build-item">
+      <div class="build-num">02</div>
+      <div>
+        <h4>CRM & Pipeline Systems</h4>
+        <p>Full CRM configuration, custom pipeline stages, automation rules, and integrations with your communication stack.</p>
+      </div>
+    </div>
+    <div class="build-item">
+      <div class="build-num">03</div>
+      <div>
+        <h4>Call Routing & Communication Infrastructure</h4>
+        <p>VoIP setup, call routing logic, voicemail-to-email, SMS automation, and unified communication dashboards.</p>
+      </div>
+    </div>
+    <div class="build-item">
+      <div class="build-num">04</div>
+      <div>
+        <h4>Data Tracking & Reporting Dashboards</h4>
+        <p>Custom dashboards that pull from multiple sources and surface the KPIs that actually matter to your operation.</p>
+      </div>
+    </div>
+    <div class="build-item">
+      <div class="build-num">05</div>
+      <div>
+        <h4>Full Tech Stack Setups</h4>
+        <p>Hardware + software deployed together — workstations, networks, software licensing, and ongoing support bundled.</p>
+      </div>
+    </div>
+    <div class="build-item">
+      <div class="build-num">06</div>
+      <div>
+        <h4>API Integrations Across Platforms</h4>
+        <p>Connect your tools so data flows without copy-paste. Zapier, Make, custom webhooks, or direct API work — whatever fits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — SERVICES
+══════════════════════════════════════════ -->
 <section class="services" id="services">
   <div class="services-header">
     <div>
@@ -590,78 +663,12 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     WHAT WE BUILD (dark)
-     logo ③: sunnyrich_vs_cloudypoor ghosted bottom-right
-══════════════════════════════════ -->
-<section class="what-we-build" id="what-we-build">
-
-  <img
-    src="sunnyrich_vs_cloudypoor_logo.png"
-    alt=""
-    class="build-section-logo"
-    aria-hidden="true"
-  >
-
-  <div class="section-tag">What We Actually Build</div>
-  <h2 class="section-title" style="color:white">No confusion about what we do.</h2>
-  <p class="section-sub" style="color:rgba(255,255,255,0.55)">Here are real examples of systems we design, build, and deploy for clients. If you need it built, we've probably built something like it.</p>
-
-  <div class="build-grid">
-    <div class="build-item">
-      <div class="build-num">01</div>
-      <div>
-        <h4>Internal Workflow Automation</h4>
-        <p>Eliminate repetitive tasks across departments — approvals, alerts, data routing, and reporting on autopilot.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">02</div>
-      <div>
-        <h4>CRM & Pipeline Systems</h4>
-        <p>Full CRM configuration, custom pipeline stages, automation rules, and integrations with your communication stack.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">03</div>
-      <div>
-        <h4>Call Routing & Communication Infrastructure</h4>
-        <p>VoIP setup, call routing logic, voicemail-to-email, SMS automation, and unified communication dashboards.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">04</div>
-      <div>
-        <h4>Data Tracking & Reporting Dashboards</h4>
-        <p>Custom dashboards that pull from multiple sources and surface the KPIs that actually matter to your operation.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">05</div>
-      <div>
-        <h4>Full Tech Stack Setups</h4>
-        <p>Hardware + software deployed together — workstations, networks, software licensing, and ongoing support bundled.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">06</div>
-      <div>
-        <h4>API Integrations Across Platforms</h4>
-        <p>Connect your tools so data flows without copy-paste. Zapier, Make, custom webhooks, or direct API work — whatever fits.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════
-     ADVANCED SYSTEMS (Lead Gen)
-══════════════════════════════════ -->
+<!-- Advanced Systems — stays within the Services flow -->
 <section class="advanced" id="lead-gen">
   <div>
     <div class="section-tag">Advanced Systems — Optional Layer</div>
     <h2 class="section-title">Built systems that don't stop at operations.</h2>
     <p class="section-sub">Once your infrastructure is solid, we can layer in automated acquisition systems — turning your existing stack into a lead engine that runs around the clock.</p>
-
     <div class="adv-metrics">
       <div class="adv-metric">
         <span class="adv-metric-num">+30–70%</span>
@@ -676,7 +683,6 @@
         <span>leads — every submission is captured and routed</span>
       </div>
     </div>
-
     <div class="adv-cta">
       <a href="tel:+16892439704" class="btn-call">
         <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.72A16 16 0 0 0 12 13l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 14.36Z"/></svg>
@@ -685,7 +691,6 @@
       <a href="#contact" class="btn-secondary">Learn More</a>
     </div>
   </div>
-
   <div class="featured-visual">
     <div class="pipeline-label">Acquisition Layer — On Top of Your Stack</div>
     <div class="pipeline-step">
@@ -716,9 +721,9 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     PROCESS
-══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     SECTION 4 — PROCESS
+══════════════════════════════════════════ -->
 <section class="how-it-works" id="process">
   <div class="section-tag">How We Work</div>
   <h2 class="section-title">Engineered from the first conversation.</h2>
@@ -746,14 +751,11 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     TECH STACK
-══════════════════════════════════ -->
+<!-- Tech Stack — lives between Process and CTA -->
 <section class="tech-stack" id="stack">
   <div class="section-tag">Our Stack</div>
   <h2 class="section-title">We integrate with your existing stack — or replace it entirely.</h2>
   <p class="section-sub" style="margin-top:16px">We're tool-agnostic and platform-fluent. If you're already using something, we'll work with it. If you need a fresh start, we'll architect the right fit.</p>
-
   <div class="stack-categories">
     <div class="stack-cat">
       <h4>Infrastructure</h4>
@@ -799,50 +801,14 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     ABOUT
-══════════════════════════════════ -->
-<section class="about" id="about">
-  <div>
-    <div class="section-tag">About Us</div>
-    <h2 class="section-title">Built from execution — not theory.</h2>
-    <p class="section-sub">Favorable Odds Tech Solutions was built from hands-on experience implementing real systems across operations, infrastructure, and automation. We focus on execution — not decks and recommendations that never get shipped.</p>
-    <p class="section-sub" style="margin-top:16px">Our experience includes building high-performing acquisition systems where needed — but that's a capability, not our identity.</p>
-    <ul class="value-list">
-      <li>Transparent pricing — no surprise invoices</li>
-      <li>We use the same tools we build for you</li>
-      <li>Proven across insurance, service, and operations businesses</li>
-      <li>To-your-door, on-site service available nationwide</li>
-      <li>Plain language — zero jargon, zero runaround</li>
-    </ul>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:20px">
-    <div class="about-card">
-      <div class="about-card-label">Owner / Operator</div>
-      <div class="about-card-title">Josh Ramos</div>
-      <div class="about-card-sub">Hands-on technologist and founder. Josh is personally involved in every engagement — from the initial assessment to final deployment. He picks up the phone.</div>
-    </div>
-    <div class="about-card">
-      <div class="about-card-label">Current Partners</div>
-      <div class="about-card-title">Northern Legacy Insurance Agency</div>
-      <div class="about-card-sub">Powering operations automation, lead generation infrastructure, and system integrations for a growing insurance operation.</div>
-    </div>
-    <div class="about-card">
-      <div class="about-card-label">Service Area</div>
-      <div class="about-card-title">Nationwide — on-site or remote</div>
-      <div class="about-card-sub">Remote-first with full on-site capability for hardware installations and hands-on deployments anywhere in the country.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════
-     CTA (dark)
-     logo ④: slime_smile_logo.png — bold single coin centerpiece
-══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     SECTION 5 — GET STARTED (CTA)
+     Logo: slime_smile_$_logo.jpg — green glow, bounces on hover
+══════════════════════════════════════════ -->
 <section class="cta-section" id="contact">
 
   <div class="cta-logo-wrap">
-    <img src="slime_smile_logo.png" alt="Favorable Odds" class="cta-slime-logo">
+    <img src="slime_smile_$_logo.jpg" alt="Favorable Odds" class="cta-slime-logo">
   </div>
 
   <div class="section-tag">Get Started</div>
@@ -857,10 +823,10 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     FOOTER — logo ⑤: business_logo.jpg
-     brightness(0) invert(1) = white line art on dark bg
-══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     FOOTER
+     Logo: business_logo.jpg (inverted white for dark bg)
+══════════════════════════════════════════ -->
 <footer>
   <a href="#" class="footer-brand">
     <img src="business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img">
@@ -868,11 +834,11 @@
   </a>
 
   <ul class="footer-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#what-we-build">What We Build</a></li>
-    <li><a href="#process">Process</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#what-we-build">What We Build</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Get Started</a></li>
   </ul>
 
   <div class="footer-copy">© 2025 Favorable Odds LLC &nbsp;·&nbsp; favorableoddsllc@gmail.com &nbsp;·&nbsp; 689-243-9704</div>
