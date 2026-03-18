@@ -207,7 +207,12 @@
   /* ════════════════════════════
      ABOUT  (section 1)
   ════════════════════════════ */
-  .about { background: var(--white); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .about {
+    background:
+      linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)),
+      url('wealth_vs_woe_tech_background.jpg') center center / cover no-repeat;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+  }
 
   .about-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
   .about-card-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
