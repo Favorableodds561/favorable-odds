@@ -8,51 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 
-<!-- ═══════════════════════════════════════════════════════
-     REUSABLE LOGO SYMBOLS — referenced anywhere via <use>
-     ═══════════════════════════════════════════════════════ -->
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Happy coin (dollar-sign eyes, wide grin) -->
-    <symbol id="coin-happy" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="4.5"/>
-      <circle cx="50" cy="50" r="37" fill="none" stroke="currentColor" stroke-width="3"/>
-      <text x="32" y="43" font-size="15" font-family="Georgia,serif" font-weight="700"
-            fill="currentColor" text-anchor="middle">$</text>
-      <text x="58" y="43" font-size="15" font-family="Georgia,serif" font-weight="700"
-            fill="currentColor" text-anchor="middle">$</text>
-      <!-- grin arc -->
-      <path d="M23 58 Q50 84 77 58" fill="currentColor"/>
-      <path d="M23 58 Q50 76 77 58" fill="white"/>
-      <!-- teeth -->
-      <line x1="33" y1="58" x2="32" y2="73" stroke="white" stroke-width="2.8"/>
-      <line x1="42" y1="61" x2="41" y2="76" stroke="white" stroke-width="2.8"/>
-      <line x1="51" y1="62" x2="51" y2="78" stroke="white" stroke-width="2.8"/>
-      <line x1="60" y1="61" x2="60" y2="76" stroke="white" stroke-width="2.8"/>
-      <line x1="69" y1="58" x2="69" y2="73" stroke="white" stroke-width="2.8"/>
-    </symbol>
-
-    <!-- Sad coin (cent eyes, frown) -->
-    <symbol id="coin-sad" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="4.5"/>
-      <circle cx="50" cy="50" r="37" fill="none" stroke="currentColor" stroke-width="3"/>
-      <text x="32" y="43" font-size="14" font-family="Georgia,serif" font-weight="700"
-            fill="currentColor" text-anchor="middle">¢</text>
-      <text x="58" y="43" font-size="12" font-family="Georgia,serif" font-weight="700"
-            fill="currentColor" text-anchor="middle">Ð</text>
-      <!-- frown arc -->
-      <path d="M23 72 Q50 48 77 72" fill="currentColor"/>
-      <path d="M23 72 Q50 58 77 72" fill="white"/>
-      <!-- teeth -->
-      <line x1="33" y1="65" x2="32" y2="72" stroke="white" stroke-width="2.8"/>
-      <line x1="42" y1="62" x2="41" y2="70" stroke="white" stroke-width="2.8"/>
-      <line x1="51" y1="61" x2="51" y2="69" stroke="white" stroke-width="2.8"/>
-      <line x1="60" y1="62" x2="60" y2="70" stroke="white" stroke-width="2.8"/>
-      <line x1="69" y1="65" x2="69" y2="72" stroke="white" stroke-width="2.8"/>
-    </symbol>
-  </defs>
-</svg>
-
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -93,7 +48,7 @@
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 48px;
+    padding: 10px 48px;
     background: rgba(245,244,240,0.90);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
@@ -105,22 +60,21 @@
     font-size: 17px;
     color: var(--ink);
     text-decoration: none;
-    display: flex; align-items: center; gap: 9px;
+    display: flex; align-items: center; gap: 10px;
   }
 
-  /* ①  NAV: coin pair as the logo mark */
-  .nav-coins {
-    display: flex; align-items: center; gap: 1px;
-    flex-shrink: 0;
+  /* ① NAV logo — actual image, small */
+  .nav-logo-img {
+    height: 44px;
+    width: auto;
+    display: block;
+    /* The JPG has a white background — mix-blend-mode makes it
+       transparent on the light nav without needing a PNG */
+    mix-blend-mode: multiply;
+    transition: opacity 0.2s;
   }
 
-  .nav-coins svg {
-    width: 28px; height: 28px;
-    color: var(--ink);
-    transition: color 0.25s;
-  }
-
-  .nav-logo:hover .nav-coins svg { color: var(--accent); }
+  .nav-logo:hover .nav-logo-img { opacity: 0.75; }
 
   .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
 
@@ -162,32 +116,24 @@
     pointer-events: none;
   }
 
-  /* ②  HERO: giant ghost coins drifting in the background */
-  .hero-coin-bg {
+  /* ② HERO background logo — large, ghosted */
+  .hero-logo-bg {
     position: absolute;
-    right: -60px; top: 50%;
-    transform: translateY(-54%);
-    display: flex; align-items: center;
-    gap: -40px;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-52%);
+    width: 520px;
+    height: auto;
+    opacity: 0.07;
     pointer-events: none;
-    opacity: 0.055;
+    /* multiply removes the white JPG background on light surface */
+    mix-blend-mode: multiply;
+    animation: floatDrift 9s ease-in-out infinite;
   }
 
-  .hero-coin-bg svg {
-    width: 400px; height: 400px;
-    color: var(--ink);
-  }
-
-  .hero-coin-bg svg:first-child { animation: floatA 9s ease-in-out infinite; }
-  .hero-coin-bg svg:last-child  { margin-left: -70px; animation: floatB 9s ease-in-out 1s infinite; }
-
-  @keyframes floatA {
-    0%,100% { transform: translateY(0)   rotate(-5deg); }
-    50%      { transform: translateY(-20px) rotate(-2deg); }
-  }
-  @keyframes floatB {
-    0%,100% { transform: translateY(0)   rotate(4deg); }
-    50%      { transform: translateY(-12px) rotate(6deg); }
+  @keyframes floatDrift {
+    0%, 100% { transform: translateY(-52%) rotate(-3deg); }
+    50%       { transform: translateY(-56%) rotate(-1deg); }
   }
 
   .hero-tag {
@@ -437,21 +383,25 @@
     padding: 120px 48px; position: relative; overflow: hidden;
   }
 
-  /* ③  CTA: coins as the featured centerpiece above the heading */
-  .cta-logo-pair {
-    display: flex; justify-content: center; align-items: center;
-    gap: 14px; margin-bottom: 40px;
+  /* ③ CTA logo — white tinted, centered above heading */
+  .cta-logo-wrap {
+    display: flex; justify-content: center;
+    margin-bottom: 40px;
   }
 
-  .cta-logo-pair svg {
-    width: 84px; height: 84px;
-    color: var(--white);
-    opacity: 0.92;
+  .cta-logo-img {
+    width: 160px;
+    height: auto;
+    /* Invert the black logo to white for the dark background */
+    filter: invert(1) brightness(2);
+    opacity: 0.88;
     transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
   }
 
-  .cta-logo-pair:hover svg:first-child { transform: rotate(-12deg) scale(1.08); }
-  .cta-logo-pair:hover svg:last-child  { transform: rotate(12deg) scale(1.08); }
+  .cta-logo-wrap:hover .cta-logo-img {
+    transform: scale(1.06);
+    opacity: 1;
+  }
 
   .cta-section .section-tag { color: var(--gold); }
 
@@ -494,20 +444,21 @@
     flex-wrap: wrap; gap: 24px;
   }
 
-  /* ④  FOOTER: small coin pair beside brand wordmark */
+  /* ④ FOOTER logo — small, white tinted */
   .footer-brand {
-    display: flex; align-items: center; gap: 9px;
+    display: flex; align-items: center; gap: 10px;
     text-decoration: none;
   }
 
-  .footer-coins {
-    display: flex; align-items: center; gap: 1px;
-    opacity: 0.65; transition: opacity 0.2s;
+  .footer-logo-img {
+    height: 36px;
+    width: auto;
+    filter: invert(1) brightness(2);
+    opacity: 0.6;
+    transition: opacity 0.2s;
   }
 
-  .footer-brand:hover .footer-coins { opacity: 1; }
-
-  .footer-coins svg { width: 22px; height: 22px; color: var(--white); }
+  .footer-brand:hover .footer-logo-img { opacity: 1; }
 
   .footer-wordmark {
     font-family: 'Syne', sans-serif; font-weight: 800;
@@ -532,10 +483,10 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    nav { padding: 14px 24px; }
+    nav { padding: 10px 24px; }
     .nav-links { display: none; }
     .hero { padding: 120px 24px 60px; }
-    .hero-coin-bg { display: none; }
+    .hero-logo-bg { display: none; }
     section { padding: 72px 24px; }
     .services-header { flex-direction: column; align-items: flex-start; }
     .featured { grid-template-columns: 1fr; gap: 48px; }
@@ -550,14 +501,11 @@
 
 <!-- ══════════════════
      NAV
-     Logo placement ① — coin pair as the nav mark
+     Logo ① — actual image, small, multiply blend removes white bg
 ══════════════════ -->
 <nav>
   <a href="#" class="nav-logo">
-    <div class="nav-coins">
-      <svg><use href="#coin-happy"/></svg>
-      <svg><use href="#coin-sad"/></svg>
-    </div>
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img">
     Favorable Odds Tech Solutions
   </a>
   <ul class="nav-links">
@@ -570,15 +518,12 @@
 
 <!-- ══════════════════
      HERO
-     Logo placement ② — giant ghost coins as background art
+     Logo ② — large ghost watermark, floats in background right side
 ══════════════════ -->
 <section class="hero">
   <div class="hero-grid-bg"></div>
 
-  <div class="hero-coin-bg" aria-hidden="true">
-    <svg><use href="#coin-happy"/></svg>
-    <svg><use href="#coin-sad"/></svg>
-  </div>
+  <img src="business_logo.jpg" alt="" class="hero-logo-bg" aria-hidden="true">
 
   <div class="hero-tag">To-Your-Door Service Available</div>
   <h1>Stack the odds<br>in your <em>favor.</em></h1>
@@ -802,13 +747,12 @@
 
 <!-- ══════════════════
      CTA
-     Logo placement ③ — coins as the big centerpiece above the heading
+     Logo ③ — white-inverted, centered above heading, scales up on hover
 ══════════════════ -->
 <section class="cta-section" id="contact">
 
-  <div class="cta-logo-pair" aria-hidden="true">
-    <svg><use href="#coin-happy"/></svg>
-    <svg><use href="#coin-sad"/></svg>
+  <div class="cta-logo-wrap">
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="cta-logo-img">
   </div>
 
   <div class="section-tag">Get Started</div>
@@ -822,14 +766,11 @@
 
 <!-- ══════════════════
      FOOTER
-     Logo placement ④ — small coin pair beside the wordmark
+     Logo ④ — small, white-inverted beside wordmark
 ══════════════════ -->
 <footer>
   <a href="#" class="footer-brand">
-    <div class="footer-coins">
-      <svg><use href="#coin-happy"/></svg>
-      <svg><use href="#coin-sad"/></svg>
-    </div>
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img">
     <span class="footer-wordmark">Favorable Odds LLC</span>
   </a>
 
