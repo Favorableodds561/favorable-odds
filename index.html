@@ -96,6 +96,9 @@
     display: flex; flex-direction: column; justify-content: center;
     padding: 140px 48px 80px;
     position: relative; overflow: hidden;
+    background:
+      linear-gradient(rgba(245,244,240,0.88), rgba(245,244,240,0.88)),
+      url('smileyrich_smileywoe_background.jpg') center center / cover no-repeat;
   }
 
   .hero-grid-bg {
@@ -108,22 +111,7 @@
     pointer-events: none;
   }
 
-  /* wealth_vs_woe.jpg — ghosted hero background */
-  .hero-logo-bg {
-    position: absolute;
-    right: 120px; top: 50%;
-    transform: translateY(-50%);
-    width: 580px; height: auto;
-    opacity: 0.13;
-    mix-blend-mode: multiply;
-    pointer-events: none;
-    animation: heroDrift 10s ease-in-out infinite;
-  }
-
-  @keyframes heroDrift {
-    0%,100% { transform: translateY(-50%) rotate(-2deg) scale(1);   }
-    50%      { transform: translateY(-53%) rotate(0deg)  scale(1.02); }
-  }
+  /* hero background handled by section background-image */
 
   .hero-tag {
     display: inline-flex; align-items: center; gap: 8px;
@@ -446,8 +434,7 @@
   @media (max-width: 900px) {
     nav { padding: 10px 24px; }
     .nav-links { display: none; }
-    .hero { padding: 120px 24px 60px; }
-    .hero-logo-bg { display: none; }
+    .hero { padding: 120px 24px 60px; background-size: cover; }
     section { padding: 72px 24px; }
     .services-header { flex-direction: column; align-items: flex-start; }
     .advanced { grid-template-columns: 1fr; gap: 48px; }
@@ -484,8 +471,6 @@
 ══════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-grid-bg"></div>
-
-  <img src="wealth_vs_woe.jpg" alt="" class="hero-logo-bg" aria-hidden="true">
 
   <div class="hero-tag">Nationwide On-Site &amp; Remote Services</div>
   <h1>Systems that work.<br><em>Revenue</em> that follows.</h1>
