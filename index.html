@@ -1138,4 +1138,15 @@ function openMenu() {
 function closeMenu() {
   document.getElementById('navOverlay').classList.remove('open');
   document.getElementById('navHamburger').classList.remove('open');
-  document
+  document.body.style.overflow = '';
+}
+
+document.getElementById('navHamburger').addEventListener('click', openMenu);
+document.getElementById('navOverlayClose').addEventListener('click', closeMenu);
+document.getElementById('navOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeMenu();
+});
+
+</script>
+</body>
+</html>
