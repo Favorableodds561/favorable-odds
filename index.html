@@ -231,7 +231,12 @@
   /* ════════════════════════════
      WHAT WE ACTUALLY BUILD  (section 2, dark)
   ════════════════════════════ */
-  .what-we-build { background: var(--ink); color: var(--white); position: relative; overflow: hidden; }
+  .what-we-build {
+    background:
+      linear-gradient(rgba(13,13,15,0.87), rgba(13,13,15,0.87)),
+      url('buildwealth_demolitionwoe_background.jpg') center center / cover no-repeat;
+    color: var(--white); position: relative; overflow: hidden;
+  }
   .what-we-build .section-tag { color: rgba(255,255,255,0.4); }
   .what-we-build .section-title { color: var(--white); }
 
