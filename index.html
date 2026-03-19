@@ -349,7 +349,11 @@
   /* ════════════════════════════
      PROCESS  (section 4)
   ════════════════════════════ */
-  .how-it-works { background: var(--surface); }
+  .how-it-works {
+    background:
+      linear-gradient(rgba(245,244,240,0.91), rgba(245,244,240,0.91)),
+      url('AAIO_Background_001.jpg') center center / cover no-repeat;
+  }
 
   .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 64px; }
   .step-num { font-family: 'Syne', sans-serif; font-size: 72px; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 8px; letter-spacing: -0.04em; }
