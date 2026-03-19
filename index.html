@@ -384,21 +384,242 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  nav{padding:10px 24px;} .nav-links{display:none;}
-  .hero{padding:120px 24px 60px; background-size:cover;}
-  section{padding:72px 24px;}
-  .services-header{flex-direction:column; align-items:flex-start;}
-  .advanced{grid-template-columns:1fr; gap:48px;}
-  .about{grid-template-columns:1fr; gap:40px;}
-  footer{padding:32px 24px; flex-direction:column; align-items:flex-start;}
-  .hero-stats{flex-wrap:wrap; gap:28px;}
-  .cta-section{padding:80px 24px;}
-  .game-section{padding:72px 24px;}
-  .char-btn{width:160px;}
-  .char-rich,.char-woe{width:160px; height:160px;}
-  .game-vs{padding-bottom:40px;}
+/* ════════════════════════════════════════════════════════
+   MOBILE OVERLAY NAV
+   Desktop never sees any of this — all inside max-width:900px
+════════════════════════════════════════════════════════ */
+
+/* Hamburger button — hidden on desktop */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 201;
+}
+.nav-hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+/* Animate to X when open */
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Full-screen overlay */
+.nav-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--ink);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.nav-overlay.open {
+  display: flex;
+  opacity: 1;
+}
+
+.nav-overlay-logo {
+  position: absolute;
+  top: 20px; left: 24px;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.nav-overlay-logo img {
+  height: 40px; width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+.nav-overlay-logo span {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 15px;
+  color: rgba(255,255,255,0.8);
+}
+
+.nav-overlay-close {
+  position: absolute;
+  top: 20px; right: 24px;
+  background: none; border: none;
+  cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-overlay-close::before,
+.nav-overlay-close::after {
+  content: '';
+  position: absolute;
+  width: 22px; height: 2px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 2px;
+}
+.nav-overlay-close::before { transform: rotate(45deg); }
+.nav-overlay-close::after  { transform: rotate(-45deg); }
+
+.nav-overlay-links {
+  list-style: none;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  width: 100%;
+  padding: 0 32px;
+}
+
+.nav-overlay-links li a {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 8vw, 42px);
+  font-weight: 800;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  text-align: center;
+  padding: 12px 0;
+  letter-spacing: -0.02em;
+  transition: color 0.2s;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  width: 100%;
+}
+.nav-overlay-links li:last-child a { border-bottom: none; }
+.nav-overlay-links li a:hover { color: var(--accent); }
+
+.nav-overlay-links .overlay-cta a {
+  color: var(--gold);
+  font-size: clamp(22px, 6vw, 32px);
+  margin-top: 8px;
+}
+
+.nav-overlay-contact {
+  position: absolute;
+  bottom: 40px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.8;
+}
+
+/* ════════════════════════════════════════════════════════
+   FULL MOBILE LAYOUT  (≤ 900px)
+════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+
+  /* NAV */
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }         /* hide desktop links */
+  .nav-hamburger { display: flex; }     /* show hamburger */
+  .nav-logo { font-size: 13px; gap: 8px; }
+  .nav-logo-img { height: 36px; }
+
+  /* HERO */
+  .hero {
+    padding: 110px 20px 64px;
+    background-size: cover;
+    min-height: auto;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 10vw, 58px);
+    max-width: 100%;
+  }
+  .hero-sub { font-size: 16px; margin-top: 20px; max-width: 100%; }
+  .hero-outcomes { gap: 8px; margin-top: 20px; }
+  .outcome-pill { font-size: 12px; padding: 6px 12px; }
+  .hero-actions { flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 28px; }
+  .btn-primary { width: 100%; text-align: center; padding: 15px 24px; font-size: 15px; }
+  .btn-secondary { font-size: 14px; }
+  .hero-stats { flex-direction: column; gap: 20px; margin-top: 40px; padding-top: 28px; }
+  .hero-stat-num { font-size: 26px; }
+
+  /* SHARED SECTION */
+  section { padding: 64px 20px; }
+  .section-title { font-size: clamp(26px, 7vw, 40px); }
+  .section-sub { font-size: 15px; }
+
+  /* ABOUT */
+  .about { grid-template-columns: 1fr; gap: 32px; }
+  .about-card { padding: 20px; }
+  .about-card-title { font-size: 17px; }
+  .about-card-sub { font-size: 13px; }
+  .value-list li { font-size: 14px; }
+
+  /* WHAT WE BUILD */
+  .build-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 32px; }
+  .build-item { padding: 18px 20px; }
+  .build-item h4 { font-size: 15px; }
+  .build-item p { font-size: 13px; }
+  .build-section-logo { width: 200px; opacity: 0.05; }
+
+  /* SERVICES */
+  .services-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .services-grid { grid-template-columns: 1fr; gap: 16px; }
+  .service-card { padding: 24px; }
+  .service-card h3 { font-size: 17px; }
+  .service-card p { font-size: 13px; }
+  .service-icon { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 14px; }
+
+  /* ADVANCED / LEAD GEN */
+  .advanced { grid-template-columns: 1fr; gap: 36px; }
+  .adv-metric { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .adv-metric-num { font-size: 22px; min-width: unset; }
+  .adv-cta { flex-direction: column; align-items: flex-start; }
+  .btn-call { width: 100%; justify-content: center; padding: 14px 20px; }
+  .featured-visual { padding: 20px; }
+  .pipeline-step-label { font-size: 13px; }
+  .pipeline-step-note { font-size: 11px; }
+
+  /* PROCESS */
+  .steps-grid { grid-template-columns: 1fr; gap: 28px; margin-top: 40px; }
+  .step-num { font-size: 52px; }
+  .step h3 { font-size: 17px; }
+
+  /* TECH STACK */
+  .stack-categories { grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  .stack-tag { font-size: 12px; padding: 6px 12px; }
+
+  /* GAME SECTION */
+  .game-section { padding: 64px 20px; }
+  .game-title { font-size: clamp(26px, 7vw, 38px); }
+  .game-subtitle { font-size: 15px; margin-bottom: 32px; }
+  .game-characters { gap: 16px; flex-wrap: nowrap; }
+  .char-btn { width: 140px; border-radius: 16px; }
+  .char-rich, .char-woe { width: 140px; height: 140px; }
+  .char-name { font-size: 13px; padding: 8px 0 4px; }
+  .char-tagline { font-size: 11px; padding-bottom: 10px; }
+  .game-vs { font-size: 20px; padding-bottom: 30px; }
+  .flip-btn { width: 100%; font-size: 15px; padding: 16px 24px; }
+  .game-score { gap: 20px; padding: 10px 24px; }
+  .score-num { font-size: 18px; }
+  .result-headline { font-size: 22px; }
+  .result-sub { font-size: 14px; }
+  .result-char { width: 140px; height: 140px; }
+  .result-char img { width: 140px; height: 140px; }
+  .btn-game-cta { font-size: 14px; padding: 14px 24px; }
+
+  /* CTA */
+  .cta-section { padding: 72px 20px; }
+  .cta-slime-logo { width: 100px; height: 100px; }
+  .cta-section h2 { font-size: clamp(28px, 8vw, 44px); }
+  .cta-section > p { font-size: 15px; margin-bottom: 32px; }
+  .cta-buttons { flex-direction: column; align-items: center; }
+  .btn-light { width: 100%; max-width: 360px; text-align: center; font-size: 15px; padding: 16px 24px; }
+  .btn-call-light { width: 100%; max-width: 360px; justify-content: center; font-size: 15px; padding: 16px 24px; }
+
+  /* FOOTER */
+  footer { padding: 40px 20px; flex-direction: column; align-items: flex-start; gap: 24px; }
+  .footer-brand { gap: 8px; }
+  .footer-logo-img { height: 28px; }
+  .footer-wordmark { font-size: 14px; }
+  .footer-links { flex-wrap: wrap; gap: 16px; }
+  .footer-links a { font-size: 13px; }
+  .footer-copy { font-size: 11px; line-height: 1.7; }
 }
 </style>
 </head>
@@ -417,7 +638,31 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li><a href="#process">Process</a></li>
     <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
+  <!-- Hamburger — mobile only -->
+  <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- FULL-SCREEN OVERLAY NAV — mobile only -->
+<div class="nav-overlay" id="navOverlay">
+  <a href="#" class="nav-overlay-logo" onclick="closeMenu()">
+    <img src="business_logo.jpg" alt="Favorable Odds">
+    <span>Favorable Odds</span>
+  </a>
+  <button class="nav-overlay-close" id="navOverlayClose" aria-label="Close menu"></button>
+  <ul class="nav-overlay-links">
+    <li><a href="#about"        onclick="closeMenu()">About</a></li>
+    <li><a href="#what-we-build" onclick="closeMenu()">What We Build</a></li>
+    <li><a href="#services"     onclick="closeMenu()">Services</a></li>
+    <li><a href="#process"      onclick="closeMenu()">Process</a></li>
+    <li><a href="#game"         onclick="closeMenu()">Flip the Odds</a></li>
+    <li class="overlay-cta"><a href="#contact" onclick="closeMenu()">Get Started →</a></li>
+  </ul>
+  <div class="nav-overlay-contact">
+    favorableoddsllc@gmail.com<br>689-243-9704
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -853,7 +1098,25 @@ function resetGame() {
   document.getElementById('pickRich').classList.remove('selected');
   document.getElementById('pickWoe').classList.remove('selected');
   document.getElementById('flipBtn').disabled = true;
+// ══════════════════════════════
+// MOBILE OVERLAY NAV
+// ══════════════════════════════
+function openMenu() {
+  document.getElementById('navOverlay').classList.add('open');
+  document.getElementById('navHamburger').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
+function closeMenu() {
+  document.getElementById('navOverlay').classList.remove('open');
+  document.getElementById('navHamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('navHamburger').addEventListener('click', openMenu);
+document.getElementById('navOverlayClose').addEventListener('click', closeMenu);
+// Close on overlay background tap
+document.getElementById('navOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeMenu();
+});
 </script>
 </body>
 </html>
