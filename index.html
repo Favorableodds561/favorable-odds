@@ -847,4 +847,13 @@ function resetGame() {
   updateStreak();
 
   document.getElementById('gamePickPhase').style.display = 'block';
-  document.getElementById('gameResult').classList.remove('visible
+  document.getElementById('gameResult').classList.remove('visible');
+  document.getElementById('coinFlipStage').classList.remove('active');
+  document.getElementById('coinFlip').classList.remove('flipping');
+  document.getElementById('pickRich').classList.remove('selected');
+  document.getElementById('pickWoe').classList.remove('selected');
+  document.getElementById('flipBtn').disabled = true;
+}
+</script>
+</body>
+</html>
