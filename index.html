@@ -7,464 +7,409 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #0d0d0f; --ink-soft: #3a3a40; --ink-muted: #7a7a84;
+  --surface: #f5f4f0; --white: #ffffff;
+  --accent: #1a6bff; --accent-soft: #e8f0ff;
+  --gold: #c8963c; --gold-soft: #fdf4e7;
+  --green: #16a34a; --green-soft: #dcfce7;
+  --border: rgba(13,13,15,0.10); --border-strong: rgba(13,13,15,0.20);
+  --radius: 16px; --radius-pill: 100px;
+}
+html { scroll-behavior: smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--ink); font-size:16px; line-height:1.6; overflow-x:hidden; }
+h1,h2,h3,h4 { font-family:'Syne',sans-serif; line-height:1.1; letter-spacing:-0.02em; }
 
-  :root {
-    --ink: #0d0d0f;
-    --ink-soft: #3a3a40;
-    --ink-muted: #7a7a84;
-    --surface: #f5f4f0;
-    --white: #ffffff;
-    --accent: #1a6bff;
-    --accent-soft: #e8f0ff;
-    --gold: #c8963c;
-    --gold-soft: #fdf4e7;
-    --green: #16a34a;
-    --green-soft: #dcfce7;
-    --border: rgba(13,13,15,0.10);
-    --border-strong: rgba(13,13,15,0.20);
-    --radius: 16px;
-    --radius-pill: 100px;
-  }
+/* ── NAV ── */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:10px 48px; background:rgba(245,244,240,0.93); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.nav-logo-img { height:48px; width:auto; display:block; mix-blend-mode:multiply; transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; }
+.nav-logo-img.spin { animation: logoSpin 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes logoSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(200deg) scale(1.15)} 100%{transform:rotate(360deg) scale(1)} }
+.nav-logo:hover .nav-logo-img { opacity:0.8; }
+.nav-links { display:flex; gap:28px; list-style:none; align-items:center; }
+.nav-links a { font-size:14px; font-weight:500; color:var(--ink-soft); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover { color:var(--ink); }
+.nav-cta { background:var(--ink) !important; color:var(--white) !important; padding:10px 20px; border-radius:var(--radius-pill); font-size:14px; font-weight:500; text-decoration:none; transition:background 0.2s,transform 0.15s; }
+.nav-cta:hover { background:var(--accent) !important; transform:translateY(-1px); }
 
-  html { scroll-behavior: smooth; }
+/* ── HERO ── */
+.hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:140px 48px 80px; position:relative; overflow:hidden;
+  background: linear-gradient(rgba(245,244,240,0.88),rgba(245,244,240,0.88)), url('smileyrich_smileywoe_background.jpg') center center/cover no-repeat; }
+.hero-grid-bg { position:absolute; inset:0; background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px); background-size:60px 60px; mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%); pointer-events:none; }
+.hero-tag { display:inline-flex; align-items:center; gap:8px; background:var(--ink); border:1px solid rgba(13,13,15,0.15); border-radius:var(--radius-pill); padding:6px 16px; font-size:13px; font-weight:600; color:var(--white); width:fit-content; margin-bottom:28px; animation:fadeUp 0.6s ease both; position:relative; z-index:1; letter-spacing:0.02em; }
+.hero-tag::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--accent); }
+.hero h1 { font-size:clamp(50px,7.5vw,100px); font-weight:800; max-width:860px; animation:fadeUp 0.6s ease 0.1s both; position:relative; z-index:1; }
+.hero h1 em { font-style:normal; color:var(--accent); }
+.hero-sub { font-size:19px; color:var(--ink-soft); max-width:580px; margin-top:28px; font-weight:300; line-height:1.65; animation:fadeUp 0.6s ease 0.2s both; position:relative; z-index:1; }
+.hero-outcomes { display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; animation:fadeUp 0.6s ease 0.25s both; position:relative; z-index:1; }
+.outcome-pill { display:flex; align-items:center; gap:7px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius-pill); padding:7px 14px; font-size:13px; font-weight:500; color:var(--ink-soft); }
+.outcome-pill::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.hero-actions { display:flex; gap:16px; align-items:center; margin-top:36px; animation:fadeUp 0.6s ease 0.3s both; position:relative; z-index:1; }
+.btn-primary { background:var(--ink); color:var(--white); padding:16px 32px; border-radius:var(--radius-pill); font-size:15px; font-weight:500; text-decoration:none; transition:background 0.2s,transform 0.15s; }
+.btn-primary:hover { background:var(--accent); transform:translateY(-2px); }
+.btn-secondary { color:var(--ink-soft); font-size:15px; font-weight:500; text-decoration:none; display:flex; align-items:center; gap:6px; transition:color 0.2s; }
+.btn-secondary:hover { color:var(--ink); }
+.btn-secondary::after { content:'→'; transition:transform 0.2s; }
+.btn-secondary:hover::after { transform:translateX(4px); }
+.hero-stats { display:flex; gap:48px; margin-top:64px; padding-top:40px; border-top:1px solid var(--border); animation:fadeUp 0.6s ease 0.4s both; position:relative; z-index:1; }
+.hero-stat-num { font-family:'Syne',sans-serif; font-size:34px; font-weight:700; font-variant-numeric:slashed-zero; }
+.hero-stat-label { font-size:13px; color:var(--ink-muted); margin-top:2px; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--surface);
-    color: var(--ink);
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+/* ── SHARED ── */
+section { padding:96px 48px; }
+.section-tag { font-size:12px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:16px; }
+.section-title { font-size:clamp(32px,4.5vw,52px); font-weight:800; max-width:700px; margin-bottom:20px; }
+.section-sub { font-size:17px; color:var(--ink-soft); max-width:580px; font-weight:300; line-height:1.7; }
 
-  h1, h2, h3, h4 {
-    font-family: 'Syne', sans-serif;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
+/* ── ABOUT ── */
+.about { background:linear-gradient(rgba(255,255,255,0.88),rgba(255,255,255,0.88)),url('wealth_vs_woe_tech_background.jpg') center center/cover no-repeat; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.about-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:28px; }
+.about-card-label { font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:10px; }
+.about-card-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:8px; }
+.about-card-sub { font-size:14px; color:var(--ink-soft); line-height:1.7; }
+.value-list { list-style:none; margin-top:28px; display:flex; flex-direction:column; gap:12px; }
+.value-list li { display:flex; align-items:flex-start; gap:12px; font-size:15px; color:var(--ink-soft); }
+.value-list li::before { content:'✓'; width:22px; height:22px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; margin-top:2px; }
 
-  /* ════════════════════════════
-     NAV
-  ════════════════════════════ */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 48px;
-    background: rgba(245,244,240,0.93);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
+/* ── WHAT WE BUILD ── */
+.what-we-build { background:linear-gradient(rgba(13,13,15,0.87),rgba(13,13,15,0.87)),url('buildwealth_demolitionwoe_background.jpg') center center/cover no-repeat; color:var(--white); position:relative; overflow:hidden; }
+.what-we-build .section-tag { color:rgba(255,255,255,0.4); }
+.what-we-build .section-title { color:var(--white); }
+.build-section-logo { position:absolute; right:-30px; bottom:-20px; width:380px; height:auto; opacity:0.07; filter:grayscale(1) invert(1) brightness(2); pointer-events:none; }
+.build-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:48px; position:relative; z-index:1; }
+.build-item { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:24px 28px; display:flex; align-items:flex-start; gap:16px; transition:background 0.2s,border-color 0.2s; }
+.build-item:hover { background:rgba(255,255,255,0.09); border-color:rgba(255,255,255,0.16); }
+.build-num { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--accent); flex-shrink:0; padding-top:3px; }
+.build-item h4 { font-size:16px; font-weight:700; color:var(--white); margin-bottom:6px; }
+.build-item p { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.6; }
 
-  .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800; font-size: 16px;
-    color: var(--ink); text-decoration: none;
-    display: flex; align-items: center; gap: 10px;
-  }
+/* ── SERVICES ── */
+.services { background:linear-gradient(rgba(245,244,240,0.91),rgba(245,244,240,0.91)),url('smileyworksmart_woeworkhard_background.jpg') center center/cover no-repeat; }
+.services-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:56px; gap:32px; }
+.services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
+.service-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:32px; position:relative; overflow:hidden; transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s; }
+.service-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.3s ease; }
+.service-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.08); border-color:var(--border-strong); }
+.service-card:hover::before { transform:scaleX(1); }
+.service-card.optional { border-style:dashed; }
+.service-card.optional::before { background:var(--gold); }
+.service-card-tag { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); background:var(--gold-soft); border:1px solid rgba(200,150,60,0.25); border-radius:var(--radius-pill); padding:3px 10px; display:inline-block; margin-bottom:12px; }
+.service-icon { width:48px; height:48px; border-radius:12px; background:var(--ink); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+.service-icon svg { width:22px; height:22px; stroke:white; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.service-card h3 { font-size:19px; font-weight:700; margin-bottom:10px; }
+.service-card p { font-size:14px; color:var(--ink-soft); line-height:1.7; }
 
-  .nav-logo-img {
-    height: 48px; width: auto; display: block;
-    mix-blend-mode: multiply;
-    transition: opacity 0.2s;
-  }
-  .nav-logo:hover .nav-logo-img { opacity: 0.7; }
+/* ── ADVANCED ── */
+.advanced { background:linear-gradient(rgba(245,244,240,0.92),rgba(245,244,240,0.92)),url('smileytech_woeassistant_background.png') center center/cover no-repeat; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.advanced .section-tag { color:var(--gold); }
+.adv-metrics { display:flex; flex-direction:column; gap:12px; margin-top:28px; }
+.adv-metric { display:flex; align-items:center; gap:12px; font-size:15px; color:var(--ink-soft); }
+.adv-metric-num { font-family:'Syne',sans-serif; font-weight:700; font-size:18px; color:var(--green); min-width:90px; }
+.adv-cta { margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+.btn-call { display:inline-flex; align-items:center; gap:8px; background:var(--green); color:var(--white); padding:14px 24px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; text-decoration:none; transition:background 0.2s,transform 0.15s; }
+.btn-call:hover { background:#15803d; transform:translateY(-2px); }
+.btn-call svg { width:16px; height:16px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.featured-visual { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px; }
+.pipeline-label { font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:24px; }
+.pipeline-step { display:flex; align-items:center; gap:16px; padding:14px 0; border-bottom:1px solid var(--border); }
+.pipeline-step:last-child { border-bottom:none; }
+.pipeline-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); flex-shrink:0; position:relative; }
+.pipeline-dot::after { content:''; position:absolute; inset:-4px; border-radius:50%; background:rgba(26,107,255,0.15); }
+.pipeline-step-label { font-size:14px; font-weight:500; color:var(--ink); }
+.pipeline-step-note { font-size:12px; color:var(--ink-muted); margin-top:2px; }
+.pipeline-step-badge { margin-left:auto; font-size:11px; font-weight:600; padding:4px 10px; border-radius:var(--radius-pill); background:var(--accent-soft); color:var(--accent); flex-shrink:0; }
 
-  .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
-  .nav-links a {
-    font-size: 14px; font-weight: 500;
-    color: var(--ink-soft); text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--ink); }
+/* ── PROCESS ── */
+.how-it-works { background:linear-gradient(rgba(245,244,240,0.91),rgba(245,244,240,0.91)),url('AAIO_Background_001.jpg') center center/cover no-repeat; }
+.steps-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:32px; margin-top:64px; }
+.step-num { font-family:'Syne',sans-serif; font-size:72px; font-weight:800; color:var(--border); line-height:1; margin-bottom:8px; letter-spacing:-0.04em; }
+.step h3 { font-size:19px; font-weight:700; margin-bottom:10px; }
+.step p { font-size:14px; color:var(--ink-soft); line-height:1.7; }
 
-  .nav-cta {
-    background: var(--ink) !important; color: var(--white) !important;
-    padding: 10px 20px; border-radius: var(--radius-pill);
-    font-size: 14px; font-weight: 500; text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .nav-cta:hover { background: var(--accent) !important; transform: translateY(-1px); }
+/* ── TECH STACK ── */
+.tech-stack { background:linear-gradient(rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url('smiley_sad_coding_background.jpg') center center/cover no-repeat; }
+.stack-categories { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:32px; margin-top:48px; }
+.stack-cat h4 { font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.stack-tags { display:flex; flex-wrap:wrap; gap:8px; }
+.stack-tag { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-pill); padding:7px 14px; font-size:13px; font-weight:500; color:var(--ink-soft); transition:border-color 0.2s,color 0.2s; }
+.stack-tag:hover { border-color:var(--accent); color:var(--accent); }
 
-  /* ════════════════════════════
-     HERO
-  ════════════════════════════ */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 140px 48px 80px;
-    position: relative; overflow: hidden;
-    background:
-      linear-gradient(rgba(245,244,240,0.88), rgba(245,244,240,0.88)),
-      url('smileyrich_smileywoe_background.jpg') center center / cover no-repeat;
-  }
+/* ════════════════════════════════════════
+   FLIP THE ODDS — GAME SECTION
+════════════════════════════════════════ */
+.game-section {
+  background: var(--ink);
+  padding: 96px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
 
-  .hero-grid-bg {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
-    pointer-events: none;
-  }
+.game-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200,150,60,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-  /* hero background handled by section background-image */
+.game-section .section-tag { color: var(--gold); }
+.game-title { font-size: clamp(32px,5vw,56px); font-weight:800; color:var(--white); margin-bottom:12px; }
+.game-subtitle { font-size:17px; color:rgba(255,255,255,0.5); font-weight:300; margin-bottom:48px; }
 
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--ink); border: 1px solid rgba(13,13,15,0.15);
-    border-radius: var(--radius-pill); padding: 6px 16px;
-    font-size: 13px; font-weight: 600; color: var(--white);
-    width: fit-content; margin-bottom: 28px;
-    animation: fadeUp 0.6s ease both; position: relative; z-index: 1;
-    letter-spacing: 0.02em;
-  }
-  .hero-tag::before { content:''; width:7px; height:7px; border-radius:50%; background: var(--accent); }
+/* Score strip */
+.game-score {
+  display: inline-flex; gap:32px; align-items:center;
+  background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-pill); padding:10px 32px;
+  margin-bottom: 48px;
+}
+.score-item { font-size:13px; color:rgba(255,255,255,0.5); }
+.score-num { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; display:block; }
+.score-wins .score-num { color: #fbbf24; }
+.score-losses .score-num { color: #64748b; }
+.score-divider { width:1px; height:32px; background:rgba(255,255,255,0.1); }
 
-  .hero h1 {
-    font-size: clamp(50px, 7.5vw, 100px);
-    font-weight: 800; max-width: 860px;
-    animation: fadeUp 0.6s ease 0.1s both;
-    position: relative; z-index: 1;
-  }
-  .hero h1 em { font-style: normal; color: var(--accent); }
+/* Character pick */
+.game-pick-label {
+  font-size:13px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+  color:rgba(255,255,255,0.4); margin-bottom:24px;
+}
 
-  .hero-sub {
-    font-size: 19px; color: var(--ink-soft);
-    max-width: 580px; margin-top: 28px; font-weight: 300; line-height: 1.65;
-    animation: fadeUp 0.6s ease 0.2s both; position: relative; z-index: 1;
-  }
+.game-characters {
+  display: flex; justify-content:center; align-items:flex-end;
+  gap: 40px; margin-bottom:40px; flex-wrap:wrap;
+}
 
-  .hero-outcomes {
-    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px;
-    animation: fadeUp 0.6s ease 0.25s both; position: relative; z-index: 1;
-  }
-  .outcome-pill {
-    display: flex; align-items: center; gap: 7px;
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: var(--radius-pill); padding: 7px 14px;
-    font-size: 13px; font-weight: 500; color: var(--ink-soft);
-  }
-  .outcome-pill::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.char-btn {
+  background: none; border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 24px; padding: 0; cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative; overflow: hidden;
+  width: 220px;
+}
 
-  .hero-actions {
-    display: flex; gap: 16px; align-items: center; margin-top: 36px;
-    animation: fadeUp 0.6s ease 0.3s both; position: relative; z-index: 1;
-  }
+.char-btn:hover { border-color: rgba(255,255,255,0.35); transform:translateY(-6px); box-shadow:0 24px 48px rgba(0,0,0,0.4); }
+.char-btn.selected { border-color: var(--gold); box-shadow:0 0 0 3px rgba(200,150,60,0.25); transform:translateY(-8px); }
+.char-btn.selected .char-selected-ring { opacity:1; }
+.char-btn:disabled { pointer-events:none; }
 
-  .btn-primary {
-    background: var(--ink); color: var(--white);
-    padding: 16px 32px; border-radius: var(--radius-pill);
-    font-size: 15px; font-weight: 500; text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+/* Crop Rich Smiley from left half of wealth_vs_woe_tech_background.jpg */
+.char-rich {
+  width: 220px; height: 220px;
+  object-fit: cover;
+  object-position: 20% center;
+  display: block;
+  border-radius: 20px;
+}
 
-  .btn-secondary {
-    color: var(--ink-soft); font-size: 15px; font-weight: 500;
-    text-decoration: none; display: flex; align-items: center; gap: 6px;
-    transition: color 0.2s;
-  }
-  .btn-secondary:hover { color: var(--ink); }
-  .btn-secondary::after { content:'→'; transition: transform 0.2s; }
-  .btn-secondary:hover::after { transform: translateX(4px); }
+/* Crop Poor Sad Woe from right half */
+.char-woe {
+  width: 220px; height: 220px;
+  object-fit: cover;
+  object-position: 80% center;
+  display: block;
+  border-radius: 20px;
+}
 
-  .hero-stats {
-    display: flex; gap: 48px; margin-top: 64px; padding-top: 40px;
-    border-top: 1px solid var(--border);
-    animation: fadeUp 0.6s ease 0.4s both; position: relative; z-index: 1;
-  }
-  .hero-stat-num { font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 700; font-variant-numeric: slashed-zero; }
-  .hero-stat-label { font-size: 13px; color: var(--ink-muted); margin-top: 2px; }
+.char-name {
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:700;
+  color:var(--white); padding:12px 0 14px;
+  display:block;
+}
 
-  /* ════════════════════════════
-     SHARED SECTION STYLES
-  ════════════════════════════ */
-  section { padding: 96px 48px; }
+.char-tagline { font-size:12px; color:rgba(255,255,255,0.4); padding-bottom:14px; display:block; }
 
-  .section-tag {
-    font-size: 12px; font-weight: 600;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-muted); margin-bottom: 16px;
-  }
-  .section-title { font-size: clamp(32px, 4.5vw, 52px); font-weight: 800; max-width: 700px; margin-bottom: 20px; }
-  .section-sub { font-size: 17px; color: var(--ink-soft); max-width: 580px; font-weight: 300; line-height: 1.7; }
+.char-selected-ring {
+  position:absolute; inset:-2px; border-radius:24px;
+  border:2px solid var(--gold); opacity:0;
+  transition:opacity 0.2s;
+  pointer-events:none;
+}
 
-  /* ════════════════════════════
-     ABOUT  (section 1)
-  ════════════════════════════ */
-  .about {
-    background:
-      linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)),
-      url('wealth_vs_woe_tech_background.jpg') center center / cover no-repeat;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
-  }
+/* VS divider */
+.game-vs {
+  font-family:'Syne',sans-serif; font-size:28px; font-weight:800;
+  color:rgba(255,255,255,0.2); align-self:center; padding-bottom:60px;
+}
 
-  .about-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
-  .about-card-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
-  .about-card-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-  .about-card-sub { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+/* Flip button */
+.flip-btn {
+  background: var(--gold); color: var(--ink);
+  border: none; border-radius: var(--radius-pill);
+  padding: 18px 48px; font-family:'Syne',sans-serif;
+  font-size:17px; font-weight:800; cursor:pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.02em;
+  margin-bottom: 40px;
+}
+.flip-btn:hover { background:#e6a832; transform:translateY(-2px); box-shadow:0 12px 32px rgba(200,150,60,0.35); }
+.flip-btn:disabled { opacity:0.4; pointer-events:none; }
 
-  .value-list { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 12px; }
-  .value-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--ink-soft); }
-  .value-list li::before {
-    content:'✓'; width:22px; height:22px; border-radius:50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
-  }
+/* Coin flip animation */
+.coin-flip-stage {
+  display: none;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+.coin-flip-stage.active { display:flex; }
 
-  /* ════════════════════════════
-     WHAT WE ACTUALLY BUILD  (section 2, dark)
-  ════════════════════════════ */
-  .what-we-build {
-    background:
-      linear-gradient(rgba(13,13,15,0.87), rgba(13,13,15,0.87)),
-      url('buildwealth_demolitionwoe_background.jpg') center center / cover no-repeat;
-    color: var(--white); position: relative; overflow: hidden;
-  }
-  .what-we-build .section-tag { color: rgba(255,255,255,0.4); }
-  .what-we-build .section-title { color: var(--white); }
+.coin-flip {
+  width: 120px; height: 120px;
+  position: relative;
+}
 
-  /* sunnyrich_vs_cloudypoor_logo.jpg — white ghost bottom-right */
-  .build-section-logo {
-    position: absolute;
-    right: -30px; bottom: -20px;
-    width: 380px; height: auto;
-    opacity: 0.07;
-    filter: grayscale(1) invert(1) brightness(2);
-    pointer-events: none;
-  }
+.coin-face {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.2);
+}
 
-  .build-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px; margin-top: 48px; position: relative; z-index: 1;
-  }
-  .build-item {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--radius); padding: 24px 28px;
-    display: flex; align-items: flex-start; gap: 16px;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .build-item:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.16); }
-  .build-num { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); flex-shrink: 0; padding-top: 3px; }
-  .build-item h4 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
-  .build-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+.coin-face img {
+  width: 240px; height: 120px;
+  object-fit: cover;
+  display: block;
+}
+.coin-face.rich img { object-position: 0 0; }
+.coin-face.woe  img { object-position: -120px 0; }
 
-  /* ════════════════════════════
-     SERVICES  (section 3)
-  ════════════════════════════ */
-  .services {
-    background:
-      linear-gradient(rgba(245,244,240,0.91), rgba(245,244,240,0.91)),
-      url('smileyworksmart_woeworkhard_background.jpg') center center / cover no-repeat;
-  }
+@keyframes coinFlipAnim {
+  0%   { transform: perspective(400px) rotateY(0deg) scale(1); }
+  15%  { transform: perspective(400px) rotateY(90deg) scale(1.1); }
+  30%  { transform: perspective(400px) rotateY(180deg) scale(1); }
+  45%  { transform: perspective(400px) rotateY(270deg) scale(1.1); }
+  60%  { transform: perspective(400px) rotateY(360deg) scale(1); }
+  75%  { transform: perspective(400px) rotateY(450deg) scale(1.1); }
+  90%  { transform: perspective(400px) rotateY(540deg) scale(1); }
+  100% { transform: perspective(400px) rotateY(540deg) scale(1); }
+}
+.coin-flip.flipping .coin-face {
+  animation: coinFlipAnim 1.4s cubic-bezier(0.4,0,0.2,1) forwards;
+}
 
-  .services-header {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    margin-bottom: 56px; gap: 32px;
-  }
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-  }
-  .service-card {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px;
-    position: relative; overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  }
-  .service-card::before {
-    content:''; position: absolute; top:0; left:0; right:0; height:3px;
-    background: var(--accent); transform: scaleX(0); transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-  .service-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); border-color: var(--border-strong); }
-  .service-card:hover::before { transform: scaleX(1); }
+/* Result */
+.game-result {
+  display: none;
+  flex-direction: column; align-items:center;
+  gap: 16px;
+}
+.game-result.visible { display:flex; }
 
-  .service-card.optional { border-style: dashed; }
-  .service-card.optional::before { background: var(--gold); }
+.result-char {
+  width: 180px; height: 180px;
+  border-radius: 50%; overflow:hidden;
+  border: 4px solid var(--gold);
+  animation: resultPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
 
-  .service-card-tag {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--gold); background: var(--gold-soft);
-    border: 1px solid rgba(200,150,60,0.25);
-    border-radius: var(--radius-pill); padding: 3px 10px;
-    display: inline-block; margin-bottom: 12px;
-  }
-  .service-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 20px;
-  }
-  .service-icon svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .service-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
-  .service-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+@keyframes resultPop { from{transform:scale(0) rotate(-20deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
 
-  /* ════════════════════════════
-     ADVANCED SYSTEMS — lead gen (lives inside Services flow)
-  ════════════════════════════ */
-  .advanced {
-    background:
-      linear-gradient(rgba(245,244,240,0.92), rgba(245,244,240,0.92)),
-      url('smileytech_woeassistant_background.png') center center / cover no-repeat;
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 80px; align-items: center;
-  }
-  .advanced .section-tag { color: var(--gold); }
+.result-char img { width:360px; height:180px; object-fit:cover; display:block; }
+.result-char.win  img { object-position:0 0; }
+.result-char.lose img { object-position:-180px 0; }
 
-  .adv-metrics { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
-  .adv-metric { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--ink-soft); }
-  .adv-metric-num { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: var(--green); min-width: 90px; }
+.result-headline {
+  font-family:'Syne',sans-serif; font-size:28px; font-weight:800;
+  color:var(--white); text-align:center;
+}
+.result-sub {
+  font-size:15px; color:rgba(255,255,255,0.55);
+  max-width:400px; text-align:center; line-height:1.6;
+}
 
-  .adv-cta { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.result-cta {
+  display: none;
+  gap: 12px; flex-wrap:wrap; justify-content:center;
+  margin-top: 8px;
+}
+.result-cta.show { display:flex; }
 
-  .btn-call {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--green); color: var(--white);
-    padding: 14px 24px; border-radius: var(--radius-pill);
-    font-size: 14px; font-weight: 600; text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .btn-call:hover { background: #15803d; transform: translateY(-2px); }
-  .btn-call svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.btn-game-cta {
+  background:var(--white); color:var(--ink);
+  padding:14px 28px; border-radius:var(--radius-pill);
+  font-size:15px; font-weight:700; text-decoration:none;
+  transition:transform 0.15s, box-shadow 0.2s;
+  border:none; cursor:pointer; font-family:'DM Sans',sans-serif;
+}
+.btn-game-cta:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.3); }
 
-  .featured-visual {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px;
-  }
-  .pipeline-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 24px; }
-  .pipeline-step { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-  .pipeline-step:last-child { border-bottom: none; }
-  .pipeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; position: relative; }
-  .pipeline-dot::after { content:''; position:absolute; inset:-4px; border-radius:50%; background: rgba(26,107,255,0.15); }
-  .pipeline-step-label { font-size: 14px; font-weight: 500; color: var(--ink); }
-  .pipeline-step-note { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
-  .pipeline-step-badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent); flex-shrink: 0; }
+.btn-game-retry {
+  background:transparent; color:rgba(255,255,255,0.6);
+  padding:14px 24px; border-radius:var(--radius-pill);
+  font-size:14px; font-weight:500; border:1px solid rgba(255,255,255,0.2);
+  cursor:pointer; transition:border-color 0.2s, color 0.2s;
+  font-family:'DM Sans',sans-serif;
+}
+.btn-game-retry:hover { border-color:rgba(255,255,255,0.4); color:var(--white); }
 
-  /* ════════════════════════════
-     PROCESS  (section 4)
-  ════════════════════════════ */
-  .how-it-works {
-    background:
-      linear-gradient(rgba(245,244,240,0.91), rgba(245,244,240,0.91)),
-      url('AAIO_Background_001.jpg') center center / cover no-repeat;
-  }
+/* streak stars */
+.game-streak {
+  display:flex; gap:6px; justify-content:center;
+  margin-bottom:8px;
+}
+.streak-star {
+  width:20px; height:20px; border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  transition:background 0.3s, transform 0.3s;
+}
+.streak-star.lit { background:var(--gold); transform:scale(1.2); }
 
-  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 64px; }
-  .step-num { font-family: 'Syne', sans-serif; font-size: 72px; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 8px; letter-spacing: -0.04em; }
-  .step h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
-  .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+/* ── CTA ── */
+.cta-section { background:var(--ink); text-align:center; padding:120px 48px; position:relative; overflow:hidden; }
+.cta-logo-wrap { display:flex; justify-content:center; margin-bottom:36px; }
+.cta-slime-logo { width:140px; height:140px; object-fit:contain; filter:drop-shadow(0 0 32px rgba(180,255,80,0.25)); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),filter 0.3s; }
+.cta-logo-wrap:hover .cta-slime-logo { transform:scale(1.1) rotate(-6deg); filter:drop-shadow(0 0 48px rgba(180,255,80,0.45)); }
+.cta-section .section-tag { color:var(--gold); }
+.cta-section h2 { font-size:clamp(36px,6vw,68px); font-weight:800; color:var(--white); max-width:700px; margin:0 auto 20px; }
+.cta-section > p { font-size:18px; color:rgba(255,255,255,0.5); max-width:500px; margin:0 auto 48px; font-weight:300; }
+.cta-buttons { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.btn-light { background:var(--white); color:var(--ink); padding:18px 36px; border-radius:var(--radius-pill); font-size:16px; font-weight:600; text-decoration:none; transition:transform 0.15s,box-shadow 0.2s; }
+.btn-light:hover { transform:translateY(-2px); box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+.btn-call-light { display:inline-flex; align-items:center; gap:9px; background:transparent; color:rgba(255,255,255,0.75); padding:18px 32px; border-radius:var(--radius-pill); font-size:16px; font-weight:500; text-decoration:none; border:1px solid rgba(255,255,255,0.2); transition:border-color 0.2s,color 0.2s,background 0.2s; }
+.btn-call-light:hover { border-color:rgba(255,255,255,0.5); color:var(--white); background:rgba(255,255,255,0.05); }
+.btn-call-light svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
-  /* ════════════════════════════
-     TECH STACK (between Process and CTA)
-  ════════════════════════════ */
-  .tech-stack {
-    background:
-      linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)),
-      url('smiley_sad_coding_background.jpg') center center / cover no-repeat;
-  }
-  .stack-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 48px; }
-  .stack-cat h4 { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-  .stack-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .stack-tag { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--ink-soft); transition: border-color 0.2s, color 0.2s; }
-  .stack-tag:hover { border-color: var(--accent); color: var(--accent); }
+/* ── FOOTER ── */
+footer { background:#080809; padding:44px 48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+.footer-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.footer-logo-img { height:40px; width:auto; mix-blend-mode:screen; opacity:0.75; transition:opacity 0.2s; }
+.footer-brand:hover .footer-logo-img { opacity:1; }
+.footer-wordmark { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--white); }
+.footer-links { display:flex; gap:32px; list-style:none; }
+.footer-links a { font-size:13px; color:rgba(255,255,255,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:rgba(255,255,255,0.8); }
+.footer-copy { font-size:12px; color:rgba(255,255,255,0.25); }
 
-  /* ════════════════════════════
-     CTA  (section 5 / bottom)
-  ════════════════════════════ */
-  .cta-section {
-    background: var(--ink); text-align: center;
-    padding: 120px 48px; position: relative; overflow: hidden;
-  }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-  /* slime_smile_$_logo.jpg — bold single coin centerpiece */
-  .cta-logo-wrap {
-    display: flex; justify-content: center;
-    margin-bottom: 36px;
-  }
-  .cta-slime-logo {
-    width: 140px; height: 140px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 32px rgba(180,255,80,0.25));
-    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), filter 0.3s;
-  }
-  .cta-logo-wrap:hover .cta-slime-logo {
-    transform: scale(1.1) rotate(-6deg);
-    filter: drop-shadow(0 0 48px rgba(180,255,80,0.45));
-  }
-
-  .cta-section .section-tag { color: var(--gold); }
-  .cta-section h2 { font-size: clamp(36px, 6vw, 68px); font-weight: 800; color: var(--white); max-width: 700px; margin: 0 auto 20px; }
-  .cta-section > p { font-size: 18px; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto 48px; font-weight: 300; }
-  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-  .btn-light { background: var(--white); color: var(--ink); padding: 18px 36px; border-radius: var(--radius-pill); font-size: 16px; font-weight: 600; text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; }
-  .btn-light:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-
-  .btn-call-light { display: inline-flex; align-items: center; gap: 9px; background: transparent; color: rgba(255,255,255,0.75); padding: 18px 32px; border-radius: var(--radius-pill); font-size: 16px; font-weight: 500; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); transition: border-color 0.2s, color 0.2s, background 0.2s; }
-  .btn-call-light:hover { border-color: rgba(255,255,255,0.5); color: var(--white); background: rgba(255,255,255,0.05); }
-  .btn-call-light svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-  /* ════════════════════════════
-     FOOTER
-  ════════════════════════════ */
-  footer {
-    background: #080809; padding: 44px 48px;
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 24px;
-  }
-  .footer-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .footer-logo-img {
-    height: 40px; width: auto;
-    mix-blend-mode: screen;
-    opacity: 0.75;
-    transition: opacity 0.2s;
-  }
-  .footer-brand:hover .footer-logo-img { opacity: 1; }
-  .footer-wordmark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white); }
-
-  .footer-links { display: flex; gap: 32px; list-style: none; }
-  .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: rgba(255,255,255,0.8); }
-  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
-
-  /* ════════════════════════════
-     ANIMATIONS
-  ════════════════════════════ */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-
-  /* ════════════════════════════
-     RESPONSIVE
-  ════════════════════════════ */
-  @media (max-width: 900px) {
-    nav { padding: 10px 24px; }
-    .nav-links { display: none; }
-    .hero { padding: 120px 24px 60px; background-size: cover; }
-    section { padding: 72px 24px; }
-    .services-header { flex-direction: column; align-items: flex-start; }
-    .advanced { grid-template-columns: 1fr; gap: 48px; }
-    .about { grid-template-columns: 1fr; gap: 40px; }
-    footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
-    .hero-stats { flex-wrap: wrap; gap: 28px; }
-    .cta-section { padding: 80px 24px; }
-  }
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:10px 24px;} .nav-links{display:none;}
+  .hero{padding:120px 24px 60px; background-size:cover;}
+  section{padding:72px 24px;}
+  .services-header{flex-direction:column; align-items:flex-start;}
+  .advanced{grid-template-columns:1fr; gap:48px;}
+  .about{grid-template-columns:1fr; gap:40px;}
+  footer{padding:32px 24px; flex-direction:column; align-items:flex-start;}
+  .hero-stats{flex-wrap:wrap; gap:28px;}
+  .cta-section{padding:80px 24px;}
+  .game-section{padding:72px 24px;}
+  .char-btn{width:160px;}
+  .char-rich,.char-woe{width:160px; height:160px;}
+  .game-vs{padding-bottom:40px;}
+}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     NAV — order: About | What We Build | Services | Process | Get Started
-     Logo: business_logo.jpg (mix-blend-mode removes white bg)
-══════════════════════════════════════════ -->
+<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
-    <img src="business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img">
+  <a href="#" class="nav-logo" id="navLogo">
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img" id="navLogoImg">
     Favorable Odds Tech Solutions
   </a>
   <ul class="nav-links">
@@ -476,47 +421,40 @@
   </ul>
 </nav>
 
-<!-- ══════════════════════════════════════════
-     HERO
-     Background: wealth_vs_woe.jpg (ghosted watermark)
-══════════════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-grid-bg"></div>
-
   <div class="hero-tag">Nationwide On-Site &amp; Remote Services</div>
   <h1>Systems that work.<br><em>Revenue</em> that follows.</h1>
   <p class="hero-sub">We build automated systems that generate leads, close deals, and scale your business — without adding headcount.</p>
-
   <div class="hero-outcomes">
     <span class="outcome-pill">Infrastructure built right the first time</span>
     <span class="outcome-pill">Automation running 24/7</span>
     <span class="outcome-pill">Real support — zero runaround</span>
   </div>
-
   <div class="hero-actions">
     <a href="#contact" class="btn-primary">Start a Project</a>
     <a href="#about" class="btn-secondary">Learn About Us</a>
   </div>
-
   <div class="hero-stats">
     <div>
-      <div class="hero-stat-num">End-to-End</div>
+      <div class="hero-stat-num" data-count-text="End-to-End">End-to-End</div>
       <div class="hero-stat-label">From hardware to software</div>
     </div>
     <div>
-      <div class="hero-stat-num">Any Size</div>
+      <div class="hero-stat-num" data-count-text="Any Size">Any Size</div>
       <div class="hero-stat-label">Startup to enterprise</div>
     </div>
     <div>
-      <div class="hero-stat-num"><span style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:34px;font-variant-numeric:slashed-zero tabular-nums">0</span> Runaround</div>
+      <div class="hero-stat-num">
+        <span style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:34px;font-variant-numeric:slashed-zero tabular-nums" data-count="0" data-target="0">0</span> Runaround
+      </div>
       <div class="hero-stat-label">Josh picks up the phone</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 1 — ABOUT
-══════════════════════════════════════════ -->
+<!-- ABOUT -->
 <section class="about" id="about">
   <div>
     <div class="section-tag">About Us</div>
@@ -538,7 +476,7 @@
       <div class="about-card-sub">Hands-on technologist and founder. Josh is personally involved in every engagement — from the initial assessment to final deployment. He picks up the phone.</div>
     </div>
     <div class="about-card">
-      <div class="about-card-label">Experience & Clients</div>
+      <div class="about-card-label">Experience &amp; Clients</div>
       <div class="about-card-title">Hands-on across real industries</div>
       <div class="about-card-sub">Josh has independently implemented, supported, and automated tech systems at Serta Simmons Bedding, Tecomet Medical Manufacturing, and Elite Agency — and currently serves as CTO at Northern Legacy Insurance Agency.</div>
     </div>
@@ -550,67 +488,23 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 2 — WHAT WE ACTUALLY BUILD (dark)
-     Background: sunnyrich_vs_cloudypoor_logo.jpg (white ghost, bottom-right)
-══════════════════════════════════════════ -->
+<!-- WHAT WE BUILD -->
 <section class="what-we-build" id="what-we-build">
-
   <img src="sunnyrich_vs_cloudypoor_logo.jpg" alt="" class="build-section-logo" aria-hidden="true">
-
   <div class="section-tag">What We Actually Build</div>
   <h2 class="section-title" style="color:white">No confusion about what we do.</h2>
   <p class="section-sub" style="color:rgba(255,255,255,0.55)">Here are real examples of systems we design, build, and deploy for clients. If you need it built, we've probably built something like it.</p>
-
   <div class="build-grid">
-    <div class="build-item">
-      <div class="build-num">01</div>
-      <div>
-        <h4>Internal Workflow Automation</h4>
-        <p>Eliminate repetitive tasks across departments — approvals, alerts, data routing, and reporting on autopilot.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">02</div>
-      <div>
-        <h4>CRM & Pipeline Systems</h4>
-        <p>Full CRM configuration, custom pipeline stages, automation rules, and integrations with your communication stack.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">03</div>
-      <div>
-        <h4>Call Routing & Communication Infrastructure</h4>
-        <p>VoIP setup, call routing logic, voicemail-to-email, SMS automation, and unified communication dashboards.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">04</div>
-      <div>
-        <h4>Data Tracking & Reporting Dashboards</h4>
-        <p>Custom dashboards that pull from multiple sources and surface the KPIs that actually matter to your operation.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">05</div>
-      <div>
-        <h4>Full Tech Stack Setups</h4>
-        <p>Hardware + software deployed together — workstations, networks, software licensing, and ongoing support bundled.</p>
-      </div>
-    </div>
-    <div class="build-item">
-      <div class="build-num">06</div>
-      <div>
-        <h4>API Integrations Across Platforms</h4>
-        <p>Connect your tools so data flows without copy-paste. Zapier, Make, custom webhooks, or direct API work — whatever fits.</p>
-      </div>
-    </div>
+    <div class="build-item"><div class="build-num">01</div><div><h4>Internal Workflow Automation</h4><p>Eliminate repetitive tasks across departments — approvals, alerts, data routing, and reporting on autopilot.</p></div></div>
+    <div class="build-item"><div class="build-num">02</div><div><h4>CRM &amp; Pipeline Systems</h4><p>Full CRM configuration, custom pipeline stages, automation rules, and integrations with your communication stack.</p></div></div>
+    <div class="build-item"><div class="build-num">03</div><div><h4>Call Routing &amp; Communication Infrastructure</h4><p>VoIP setup, call routing logic, voicemail-to-email, SMS automation, and unified communication dashboards.</p></div></div>
+    <div class="build-item"><div class="build-num">04</div><div><h4>Data Tracking &amp; Reporting Dashboards</h4><p>Custom dashboards that pull from multiple sources and surface the KPIs that actually matter to your operation.</p></div></div>
+    <div class="build-item"><div class="build-num">05</div><div><h4>Full Tech Stack Setups</h4><p>Hardware + software deployed together — workstations, networks, software licensing, and ongoing support bundled.</p></div></div>
+    <div class="build-item"><div class="build-num">06</div><div><h4>API Integrations Across Platforms</h4><p>Connect your tools so data flows without copy-paste. Zapier, Make, custom webhooks, or direct API work — whatever fits.</p></div></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 3 — SERVICES
-══════════════════════════════════════════ -->
+<!-- SERVICES -->
 <section class="services" id="services">
   <div class="services-header">
     <div>
@@ -620,213 +514,156 @@
     <p class="section-sub">Every service is designed around one question: how does this make or save your business money?</p>
   </div>
   <div class="services-grid">
-
-    <div class="service-card">
-      <div class="service-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-      <h3>Software Services & Implementation</h3>
-      <p>End-to-end software delivery — selecting the right platforms, full implementation, team training, and ongoing support. Your stack works the way it's supposed to.</p>
-    </div>
-
-    <div class="service-card">
-      <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-      <h3>Automated Tech Solutions</h3>
-      <p>Eliminate manual work and reduce labor costs with automation that runs 24/7. From workflow automation to AI-assisted processes — built to scale without adding headcount.</p>
-    </div>
-
-    <div class="service-card">
-      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
-      <h3>Tech Consulting</h3>
-      <p>Strategic guidance from someone who's actually built these systems. We assess your stack, identify gaps, and architect a roadmap that fits your operations — not a generic template.</p>
-    </div>
-
-    <div class="service-card">
-      <div class="service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M8.46 8.46a5 5 0 0 0 0 7.07"/></svg></div>
-      <h3>Managed IT & Support</h3>
-      <p>Zero downtime, faster systems, and real support when you need it. Proactive monitoring, rapid response, and a direct line to someone who knows your setup inside out.</p>
-    </div>
-
-    <div class="service-card">
-      <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div>
-      <h3>Hardware Installation</h3>
-      <p>Physical infrastructure built to last. Network setup, workstation deployment, POS systems, security cameras, and full office tech buildouts — to your door, done right.</p>
-    </div>
-
-    <div class="service-card">
-      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <h3>Computer Cleanup & Maintenance</h3>
-      <p>Slow machines are expensive machines. We remove malware, optimize performance, update critical software, and keep your hardware running at full capacity.</p>
-    </div>
-
-    <div class="service-card optional">
-      <span class="service-card-tag">Optional Add-On</span>
-      <div class="service-icon" style="background:var(--gold)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <h3>Lead Generation Systems</h3>
-      <p>Optional revenue systems built on top of your core infrastructure — for businesses that want integrated, automated acquisition layered into what we've already built together.</p>
-    </div>
-
-    <div class="service-card optional">
-      <span class="service-card-tag">Optional Add-On</span>
-      <div class="service-icon" style="background:var(--gold)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-      <h3>Lead Gen Consulting</h3>
-      <p>Once your infrastructure is solid, we can layer in acquisition strategy — auditing your current funnel, tightening conversion rates, and building automated follow-up that works while you sleep.</p>
-    </div>
-
+    <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><h3>Software Services &amp; Implementation</h3><p>End-to-end software delivery — selecting the right platforms, full implementation, team training, and ongoing support. Your stack works the way it's supposed to.</p></div>
+    <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><h3>Automated Tech Solutions</h3><p>Eliminate manual work and reduce labor costs with automation that runs 24/7. From workflow automation to AI-assisted processes — built to scale without adding headcount.</p></div>
+    <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><h3>Tech Consulting</h3><p>Strategic guidance from someone who's actually built these systems. We assess your stack, identify gaps, and architect a roadmap that fits your operations — not a generic template.</p></div>
+    <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M8.46 8.46a5 5 0 0 0 0 7.07"/></svg></div><h3>Managed IT &amp; Support</h3><p>Zero downtime, faster systems, and real support when you need it. Proactive monitoring, rapid response, and a direct line to someone who knows your setup inside out.</p></div>
+    <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div><h3>Hardware Installation</h3><p>Physical infrastructure built to last. Network setup, workstation deployment, POS systems, security cameras, and full office tech buildouts — to your door, done right.</p></div>
+    <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Computer Cleanup &amp; Maintenance</h3><p>Slow machines are expensive machines. We remove malware, optimize performance, update critical software, and keep your hardware running at full capacity.</p></div>
+    <div class="service-card optional"><span class="service-card-tag">Optional Add-On</span><div class="service-icon" style="background:var(--gold)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Lead Generation Systems</h3><p>Optional revenue systems built on top of your core infrastructure — for businesses that want integrated, automated acquisition layered into what we've already built together.</p></div>
+    <div class="service-card optional"><span class="service-card-tag">Optional Add-On</span><div class="service-icon" style="background:var(--gold)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><h3>Lead Gen Consulting</h3><p>Once your infrastructure is solid, we can layer in acquisition strategy — auditing your current funnel, tightening conversion rates, and building automated follow-up that works while you sleep.</p></div>
   </div>
 </section>
 
-<!-- Advanced Systems — stays within the Services flow -->
+<!-- ADVANCED SYSTEMS -->
 <section class="advanced" id="lead-gen">
   <div>
     <div class="section-tag">Advanced Systems — Optional Layer</div>
     <h2 class="section-title">Built systems that don't stop at operations.</h2>
     <p class="section-sub">Once your infrastructure is solid, we can layer in automated acquisition systems — turning your existing stack into a lead engine that runs around the clock.</p>
     <div class="adv-metrics">
-      <div class="adv-metric">
-        <span class="adv-metric-num">+30–70%</span>
-        <span>increase in conversion rates with automated follow-up</span>
-      </div>
-      <div class="adv-metric">
-        <span class="adv-metric-num">&lt; 60 sec</span>
-        <span>automated response time after a lead submits</span>
-      </div>
-      <div class="adv-metric">
-        <span class="adv-metric-num">0 missed</span>
-        <span>leads — every submission is captured and routed</span>
-      </div>
+      <div class="adv-metric"><span class="adv-metric-num">+30–70%</span><span>increase in conversion rates with automated follow-up</span></div>
+      <div class="adv-metric"><span class="adv-metric-num">&lt; 60 sec</span><span>automated response time after a lead submits</span></div>
+      <div class="adv-metric"><span class="adv-metric-num">0 missed</span><span>leads — every submission is captured and routed</span></div>
     </div>
     <div class="adv-cta">
-      <a href="tel:+16892439704" class="btn-call">
-        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.72A16 16 0 0 0 12 13l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 14.36Z"/></svg>
-        See How It Works
-      </a>
+      <a href="tel:+16892439704" class="btn-call"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.72A16 16 0 0 0 12 13l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 14.36Z"/></svg>See How It Works</a>
       <a href="#contact" class="btn-secondary">Learn More</a>
     </div>
   </div>
   <div class="featured-visual">
     <div class="pipeline-label">Acquisition Layer — On Top of Your Stack</div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot"></div>
-      <div><div class="pipeline-step-label">Landing Page Traffic</div><div class="pipeline-step-note">Unbounce / custom pages</div></div>
-      <div class="pipeline-step-badge">Awareness</div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot"></div>
-      <div><div class="pipeline-step-label">Form Submission & Capture</div><div class="pipeline-step-note">Smart forms, instant routing</div></div>
-      <div class="pipeline-step-badge">Capture</div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot"></div>
-      <div><div class="pipeline-step-label">Automated Qualification</div><div class="pipeline-step-note">Scoring + segmentation logic</div></div>
-      <div class="pipeline-step-badge">Qualify</div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot"></div>
-      <div><div class="pipeline-step-label">Email & SMS Nurture</div><div class="pipeline-step-note">Brevo / multi-channel sequences</div></div>
-      <div class="pipeline-step-badge">Nurture</div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot" style="background:#16a34a"></div>
-      <div><div class="pipeline-step-label">Conversion & Handoff</div><div class="pipeline-step-note">Routes directly into your CRM</div></div>
-      <div class="pipeline-step-badge" style="background:var(--green-soft);color:var(--green)">Convert</div>
-    </div>
+    <div class="pipeline-step"><div class="pipeline-dot"></div><div><div class="pipeline-step-label">Landing Page Traffic</div><div class="pipeline-step-note">Unbounce / custom pages</div></div><div class="pipeline-step-badge">Awareness</div></div>
+    <div class="pipeline-step"><div class="pipeline-dot"></div><div><div class="pipeline-step-label">Form Submission &amp; Capture</div><div class="pipeline-step-note">Smart forms, instant routing</div></div><div class="pipeline-step-badge">Capture</div></div>
+    <div class="pipeline-step"><div class="pipeline-dot"></div><div><div class="pipeline-step-label">Automated Qualification</div><div class="pipeline-step-note">Scoring + segmentation logic</div></div><div class="pipeline-step-badge">Qualify</div></div>
+    <div class="pipeline-step"><div class="pipeline-dot"></div><div><div class="pipeline-step-label">Email &amp; SMS Nurture</div><div class="pipeline-step-note">Brevo / multi-channel sequences</div></div><div class="pipeline-step-badge">Nurture</div></div>
+    <div class="pipeline-step"><div class="pipeline-dot" style="background:#16a34a"></div><div><div class="pipeline-step-label">Conversion &amp; Handoff</div><div class="pipeline-step-note">Routes directly into your CRM</div></div><div class="pipeline-step-badge" style="background:var(--green-soft);color:var(--green)">Convert</div></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 4 — PROCESS
-══════════════════════════════════════════ -->
+<!-- PROCESS -->
 <section class="how-it-works" id="process">
   <div class="section-tag">How We Work</div>
   <h2 class="section-title">Engineered from the first conversation.</h2>
   <div class="steps-grid">
-    <div class="step">
-      <div class="step-num">01</div>
-      <h3>Assess</h3>
-      <p>Assess infrastructure, workflows, and system gaps. We identify exactly where friction is costing you time and money before recommending anything.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <h3>Architect</h3>
-      <p>Architect scalable solutions aligned to your operations — not off-the-shelf recommendations. You see the full plan, with costs, before we begin.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <h3>Implement</h3>
-      <p>Implement, integrate, and deploy systems end-to-end. Hardware, software, or both — we handle the full rollout and don't hand you a manual and walk away.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">04</div>
-      <h3>Optimize</h3>
-      <p>Monitor performance, automate improvements, and scale. We stay engaged after launch — because a system that isn't improving is falling behind.</p>
-    </div>
+    <div class="step"><div class="step-num">01</div><h3>Assess</h3><p>Assess infrastructure, workflows, and system gaps. We identify exactly where friction is costing you time and money before recommending anything.</p></div>
+    <div class="step"><div class="step-num">02</div><h3>Architect</h3><p>Architect scalable solutions aligned to your operations — not off-the-shelf recommendations. You see the full plan, with costs, before we begin.</p></div>
+    <div class="step"><div class="step-num">03</div><h3>Implement</h3><p>Implement, integrate, and deploy systems end-to-end. Hardware, software, or both — we handle the full rollout and don't hand you a manual and walk away.</p></div>
+    <div class="step"><div class="step-num">04</div><h3>Optimize</h3><p>Monitor performance, automate improvements, and scale. We stay engaged after launch — because a system that isn't improving is falling behind.</p></div>
   </div>
 </section>
 
-<!-- Tech Stack — lives between Process and CTA -->
+<!-- TECH STACK -->
 <section class="tech-stack" id="stack">
   <div class="section-tag">Our Stack</div>
   <h2 class="section-title">We integrate with your existing stack — or replace it entirely.</h2>
   <p class="section-sub" style="margin-top:16px">We're tool-agnostic and platform-fluent. If you're already using something, we'll work with it. If you need a fresh start, we'll architect the right fit.</p>
   <div class="stack-categories">
-    <div class="stack-cat">
-      <h4>Infrastructure</h4>
-      <div class="stack-tags">
-        <span class="stack-tag">AWS / GCP</span>
-        <span class="stack-tag">Vercel</span>
-        <span class="stack-tag">Cisco</span>
-        <span class="stack-tag">Ubiquiti</span>
-        <span class="stack-tag">Microsoft 365</span>
-        <span class="stack-tag">Google Workspace</span>
-      </div>
-    </div>
-    <div class="stack-cat">
-      <h4>Automation</h4>
-      <div class="stack-tags">
-        <span class="stack-tag">Zapier</span>
-        <span class="stack-tag">Make</span>
-        <span class="stack-tag">Brevo</span>
-        <span class="stack-tag">Unbounce</span>
-        <span class="stack-tag">Webhooks / API</span>
-      </div>
-    </div>
-    <div class="stack-cat">
-      <h4>CRM & Ops</h4>
-      <div class="stack-tags">
-        <span class="stack-tag">HubSpot</span>
-        <span class="stack-tag">Salesforce</span>
-        <span class="stack-tag">QuickBooks</span>
-        <span class="stack-tag">Shopify</span>
-        <span class="stack-tag">WordPress</span>
-      </div>
-    </div>
-    <div class="stack-cat">
-      <h4>Development</h4>
-      <div class="stack-tags">
-        <span class="stack-tag">React / Next.js</span>
-        <span class="stack-tag">SQL / NoSQL</span>
-        <span class="stack-tag">REST APIs</span>
-        <span class="stack-tag">Node.js</span>
-        <span class="stack-tag">Python</span>
-      </div>
-    </div>
+    <div class="stack-cat"><h4>Infrastructure</h4><div class="stack-tags"><span class="stack-tag">AWS / GCP</span><span class="stack-tag">Vercel</span><span class="stack-tag">Cisco</span><span class="stack-tag">Ubiquiti</span><span class="stack-tag">Microsoft 365</span><span class="stack-tag">Google Workspace</span></div></div>
+    <div class="stack-cat"><h4>Automation</h4><div class="stack-tags"><span class="stack-tag">Zapier</span><span class="stack-tag">Make</span><span class="stack-tag">Brevo</span><span class="stack-tag">Unbounce</span><span class="stack-tag">Webhooks / API</span></div></div>
+    <div class="stack-cat"><h4>CRM &amp; Ops</h4><div class="stack-tags"><span class="stack-tag">HubSpot</span><span class="stack-tag">Salesforce</span><span class="stack-tag">QuickBooks</span><span class="stack-tag">Shopify</span><span class="stack-tag">WordPress</span></div></div>
+    <div class="stack-cat"><h4>Development</h4><div class="stack-tags"><span class="stack-tag">React / Next.js</span><span class="stack-tag">SQL / NoSQL</span><span class="stack-tag">REST APIs</span><span class="stack-tag">Node.js</span><span class="stack-tag">Python</span></div></div>
   </div>
 </section>
 
 <!-- ══════════════════════════════════════════
-     SECTION 5 — GET STARTED (CTA)
-     Logo: slime_smile_$_logo.jpg — green glow, bounces on hover
+     FLIP THE ODDS — INTERACTIVE GAME
 ══════════════════════════════════════════ -->
-<section class="cta-section" id="contact">
+<section class="game-section" id="game">
+  <div class="section-tag">Flip the Odds</div>
+  <h2 class="game-title">Pick your side. Take your shot.</h2>
+  <p class="game-subtitle">Rich Smiley or Poor Sad Woe — choose wisely. The odds are always in play.</p>
 
+  <!-- Score strip -->
+  <div class="game-score">
+    <div class="score-item score-wins">
+      <span class="score-num" id="scoreWins">0</span>
+      Wins
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item score-losses">
+      <span class="score-num" id="scoreLosses">0</span>
+      Losses
+    </div>
+  </div>
+
+  <!-- Streak stars (3 to trigger CTA) -->
+  <div class="game-streak" id="gameStreak">
+    <div class="streak-star" id="star1"></div>
+    <div class="streak-star" id="star2"></div>
+    <div class="streak-star" id="star3"></div>
+  </div>
+
+  <!-- Pick phase -->
+  <div id="gamePickPhase">
+    <p class="game-pick-label">Who are you betting on?</p>
+    <div class="game-characters">
+      <button class="char-btn" id="pickRich" onclick="selectChar('rich')">
+        <img src="wealth_vs_woe_tech_background.jpg" alt="Rich Smiley" class="char-rich">
+        <span class="char-name">Rich Smiley</span>
+        <span class="char-tagline">Dollar eyes. Stacked coins. Winner energy.</span>
+        <div class="char-selected-ring"></div>
+      </button>
+
+      <div class="game-vs">VS</div>
+
+      <button class="char-btn" id="pickWoe" onclick="selectChar('woe')">
+        <img src="wealth_vs_woe_tech_background.jpg" alt="Poor Sad Woe" class="char-woe">
+        <span class="char-name">Poor Sad Woe</span>
+        <span class="char-tagline">Cent eyes. Rain cloud. Long shot.</span>
+        <div class="char-selected-ring"></div>
+      </button>
+    </div>
+
+    <button class="flip-btn" id="flipBtn" disabled onclick="flipCoin()">
+      🪙 Flip the Coin
+    </button>
+  </div>
+
+  <!-- Flip animation -->
+  <div class="coin-flip-stage" id="coinFlipStage">
+    <div class="coin-flip" id="coinFlip">
+      <div class="coin-face rich" id="coinFace">
+        <img src="wealth_vs_woe_tech_background.jpg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="game-result" id="gameResult">
+    <div class="result-char" id="resultChar">
+      <img src="wealth_vs_woe_tech_background.jpg" alt="" id="resultImg">
+    </div>
+    <div class="result-headline" id="resultHeadline"></div>
+    <div class="result-sub" id="resultSub"></div>
+    <div class="result-cta" id="resultCta">
+      <a href="#contact" class="btn-game-cta">Let's Build Something →</a>
+      <button class="btn-game-retry" onclick="resetGame()">Flip Again</button>
+    </div>
+    <button class="btn-game-retry" id="flipAgainSmall" onclick="resetGame()" style="margin-top:4px">Try again</button>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
   <div class="cta-logo-wrap">
     <img src="slime_smile_$_logo.jpg" alt="Favorable Odds" class="cta-slime-logo">
   </div>
-
   <div class="section-tag">Get Started</div>
   <h2>Need a system built or improved?</h2>
   <p>Tell us what you're trying to solve — we'll design the right solution. Josh responds within one business day.</p>
   <div class="cta-buttons">
-    <a href="/cdn-cgi/l/email-protection#513730273e2330333d343e3535223d3d3211363c30383d7f323e3c" class="btn-light">Tell Us About Your Pain Point(s)</a>
+    <a href="mailto:favorableoddsllc@gmail.com" class="btn-light">Tell Us About Your Pain Point(s)</a>
     <a href="tel:+16892439704" class="btn-call-light">
       <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.72A16 16 0 0 0 12 13l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 14.36Z"/></svg>
       Call 689-243-9704
@@ -834,22 +671,188 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     FOOTER
-     Logo: business_logo.jpg (inverted white for dark bg)
-══════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer>
   <a href="#" class="footer-brand">
     <img src="business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img">
     <span class="footer-wordmark">Favorable Odds LLC</span>
   </a>
-
   <ul class="footer-links">
     <li><a href="#about">About</a></li>
     <li><a href="#what-we-build">What We Build</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#process">Process</a></li>
+    <li><a href="#game">Flip the Odds</a></li>
     <li><a href="#contact">Get Started</a></li>
   </ul>
+  <div class="footer-copy">© 2025 Favorable Odds LLC &nbsp;·&nbsp; favorableoddsllc@gmail.com &nbsp;·&nbsp; 689-243-9704</div>
+</footer>
 
-  <div class="footer-copy">© 2025 Favorable Odds LLC &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" c
+<script>
+// ══════════════════════════════
+// NAV LOGO SPIN ON CLICK
+// ══════════════════════════════
+document.getElementById('navLogo').addEventListener('click', function(e) {
+  if (e.target.tagName === 'A' || e.target.closest('a')) return;
+  const img = document.getElementById('navLogoImg');
+  img.classList.remove('spin');
+  void img.offsetWidth; // reflow
+  img.classList.add('spin');
+  img.addEventListener('animationend', () => img.classList.remove('spin'), { once: true });
+});
+
+// ══════════════════════════════
+// SCROLL-TRIGGERED STAT COUNTERS
+// ══════════════════════════════
+function animateCounter(el, target, duration) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { el.textContent = target; clearInterval(timer); return; }
+    el.textContent = Math.floor(start);
+  }, 16);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseInt(el.dataset.target);
+    if (!isNaN(target)) animateCounter(el, target, 1200);
+    statsObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(el => statsObserver.observe(el));
+
+// ══════════════════════════════
+// PARALLAX ON SECTION BACKGROUNDS
+// ══════════════════════════════
+const parallaxSections = document.querySelectorAll('.about, .services, .how-it-works, .tech-stack, .advanced');
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  parallaxSections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * 0.08;
+    section.style.backgroundPosition = `center calc(50% + ${offset}px)`;
+  });
+}, { passive: true });
+
+// ══════════════════════════════
+// FLIP THE ODDS GAME
+// ══════════════════════════════
+let selectedChar = null;
+let wins = 0;
+let losses = 0;
+let currentStreak = 0;
+
+const winMessages = [
+  { h: "Rich Smiley delivers! 🏆", s: "The odds were in your favor. Just like they can be for your business." },
+  { h: "Stack. On. Stack. 🤑", s: "You called it. That's the kind of instinct we build systems around." },
+  { h: "Favorable Odds. Obviously. 💰", s: "Three in a row? You're playing like someone with the right infrastructure." },
+];
+const loseMessages = [
+  { h: "Woe shows up. 😬", s: "The odds weren't with you this time. That's exactly why businesses need better systems." },
+  { h: "Rain clouds roll in. ☁️", s: "Tough break. But with the right tech stack, you control more variables than luck." },
+  { h: "The cent wins again. 😤", s: "Sometimes the odds aren't favorable — until someone builds them that way." },
+];
+
+function selectChar(char) {
+  selectedChar = char;
+  document.getElementById('pickRich').classList.toggle('selected', char === 'rich');
+  document.getElementById('pickWoe').classList.toggle('selected', char === 'woe');
+  document.getElementById('flipBtn').disabled = false;
+}
+
+function flipCoin() {
+  if (!selectedChar) return;
+
+  // Hide pick UI, show flip stage
+  document.getElementById('gamePickPhase').style.display = 'none';
+  document.getElementById('gameResult').classList.remove('visible');
+  const stage = document.getElementById('coinFlipStage');
+  stage.classList.add('active');
+
+  // Random outcome
+  const outcome = Math.random() < 0.5 ? 'rich' : 'woe';
+  const won = outcome === selectedChar;
+
+  // Show flipping coin (show selected character face during spin)
+  const coinFace = document.getElementById('coinFace');
+  coinFace.className = 'coin-face ' + selectedChar;
+  const coinEl = document.getElementById('coinFlip');
+  coinEl.classList.add('flipping');
+
+  setTimeout(() => {
+    // Update score
+    if (won) {
+      wins++;
+      currentStreak = Math.min(currentStreak + 1, 3);
+    } else {
+      losses++;
+      currentStreak = 0;
+    }
+    document.getElementById('scoreWins').textContent = wins;
+    document.getElementById('scoreLosses').textContent = losses;
+    updateStreak();
+
+    // Hide flip stage, show result
+    stage.classList.remove('active');
+    coinEl.classList.remove('flipping');
+    showResult(won, outcome);
+  }, 1800);
+}
+
+function showResult(won, outcome) {
+  const result = document.getElementById('gameResult');
+  const char = document.getElementById('resultChar');
+  const img = document.getElementById('resultImg');
+  const headline = document.getElementById('resultHeadline');
+  const sub = document.getElementById('resultSub');
+  const cta = document.getElementById('resultCta');
+  const retrySmall = document.getElementById('flipAgainSmall');
+
+  const msgPool = won ? winMessages : loseMessages;
+  const msg = msgPool[Math.floor(Math.random() * msgPool.length)];
+
+  char.className = 'result-char ' + (won ? 'win' : 'lose');
+  img.style.objectPosition = outcome === 'rich' ? '0 0' : '-180px 0';
+  char.style.borderColor = won ? '#fbbf24' : '#64748b';
+
+  headline.textContent = msg.h;
+  sub.textContent = msg.s;
+
+  // Show main CTA after 3 wins OR 3 total losses
+  if (currentStreak >= 3 || losses >= 3) {
+    cta.classList.add('show');
+    retrySmall.style.display = 'none';
+  } else {
+    cta.classList.remove('show');
+    retrySmall.style.display = 'inline-block';
+  }
+
+  result.classList.add('visible');
+}
+
+function updateStreak() {
+  ['star1','star2','star3'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('lit', i < currentStreak);
+  });
+}
+
+function resetGame() {
+  selectedChar = null;
+  currentStreak = 0;
+  updateStreak();
+
+  document.getElementById('gamePickPhase').style.display = 'block';
+  document.getElementById('gameResult').classList.remove('visible');
+  document.getElementById('resultCta').classList.remove('show');
+  document.getElementById('pickRich').classList.remove('selected');
+  document.getElementById('pickWoe').classList.remove('selected');
+  document.getElementById('flipBtn').disabled = true;
+}
+</script>
+</body>
+</html>
