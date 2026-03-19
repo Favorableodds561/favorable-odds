@@ -363,7 +363,11 @@
   /* ════════════════════════════
      TECH STACK (between Process and CTA)
   ════════════════════════════ */
-  .tech-stack { background: var(--white); }
+  .tech-stack {
+    background:
+      linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)),
+      url('smiley_sad_coding_background.jpg') center center / cover no-repeat;
+  }
   .stack-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 48px; }
   .stack-cat h4 { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
   .stack-tags { display: flex; flex-wrap: wrap; gap: 8px; }
