@@ -660,7 +660,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li class="overlay-cta"><a href="#contact" onclick="closeMenu()">Get Started →</a></li>
   </ul>
   <div class="nav-overlay-contact">
-    favorableoddsllc@gmail.com<br>689-243-9704
+    <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1a7a0b7aeb3a0a3ada4aea5a5b2adada281a6aca0a8adefa2aeac">[email&#160;protected]</a><br>689-243-9704
   </div>
 </div>
 
@@ -931,74 +931,74 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
   <div class="footer-copy">© 2025 Favorable Odds LLC &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="224443544d5043404e474d4646514e4e4162454f434b4e0c414d4f">[email&#160;protected]</a> &nbsp;·&nbsp; 689-243-9704</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
 // ══════════════════════════════
 // NAV LOGO SPIN ON CLICK
 // ══════════════════════════════
 document.getElementById('navLogo').addEventListener('click', function(e) {
   if (e.target.tagName === 'A' || e.target.closest('a')) return;
-  const img = document.getElementById('navLogoImg');
+  var img = document.getElementById('navLogoImg');
   img.classList.remove('spin');
-  void img.offsetWidth; // reflow
+  void img.offsetWidth;
   img.classList.add('spin');
-  img.addEventListener('animationend', () => img.classList.remove('spin'), { once: true });
+  img.addEventListener('animationend', function() { img.classList.remove('spin'); }, { once: true });
 });
 
 // ══════════════════════════════
 // SCROLL-TRIGGERED STAT COUNTERS
 // ══════════════════════════════
 function animateCounter(el, target, duration) {
-  let start = 0;
-  const step = target / (duration / 16);
-  const timer = setInterval(() => {
+  var start = 0;
+  var step = target / (duration / 16);
+  var timer = setInterval(function() {
     start += step;
     if (start >= target) { el.textContent = target; clearInterval(timer); return; }
     el.textContent = Math.floor(start);
   }, 16);
 }
 
-const statsObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+var statsObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
     if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const target = parseInt(el.dataset.target);
+    var el = entry.target;
+    var target = parseInt(el.dataset.target);
     if (!isNaN(target)) animateCounter(el, target, 1200);
     statsObserver.unobserve(el);
   });
 }, { threshold: 0.5 });
 
-document.querySelectorAll('[data-target]').forEach(el => statsObserver.observe(el));
+document.querySelectorAll('[data-target]').forEach(function(el) { statsObserver.observe(el); });
 
 // ══════════════════════════════
 // PARALLAX ON SECTION BACKGROUNDS
 // ══════════════════════════════
-const parallaxSections = document.querySelectorAll('.about, .services, .how-it-works, .tech-stack, .advanced');
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  parallaxSections.forEach(section => {
-    const rect = section.getBoundingClientRect();
-    const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * 0.08;
-    section.style.backgroundPosition = `center calc(50% + ${offset}px)`;
+var parallaxSections = document.querySelectorAll('.about, .services, .how-it-works, .tech-stack, .advanced');
+window.addEventListener('scroll', function() {
+  parallaxSections.forEach(function(section) {
+    var rect = section.getBoundingClientRect();
+    var offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * 0.08;
+    section.style.backgroundPosition = 'center calc(50% + ' + offset + 'px)';
   });
 }, { passive: true });
 
 // ══════════════════════════════
 // FLIP THE ODDS GAME
 // ══════════════════════════════
-let selectedChar = null;
-let wins = 0;
-let losses = 0;
-let currentStreak = 0;
+var selectedChar = null;
+var wins = 0;
+var losses = 0;
+var currentStreak = 0;
 
-const winMessages = [
+var winMessages = [
   { h: "Rich Smiley delivers! 🏆", s: "The odds were in your favor. Just like they can be for your business." },
   { h: "Stack. On. Stack. 🤑", s: "You called it. That's the kind of instinct we build systems around." },
-  { h: "Favorable Odds. Obviously. 💰", s: "Three in a row? You're playing like someone with the right infrastructure." },
+  { h: "Favorable Odds. Obviously. 💰", s: "Three in a row? You're playing like someone with the right infrastructure." }
 ];
-const loseMessages = [
+var loseMessages = [
   { h: "Woe shows up. 😬", s: "The odds weren't with you this time. That's exactly why businesses need better systems." },
   { h: "Rain clouds roll in. ☁️", s: "Tough break. But with the right tech stack, you control more variables than luck." },
-  { h: "The cent wins again. 😤", s: "Sometimes the odds aren't favorable — until someone builds them that way." },
+  { h: "The cent wins again. 😤", s: "Sometimes the odds aren't favorable — until someone builds them that way." }
 ];
 
 function selectChar(char) {
@@ -1010,27 +1010,22 @@ function selectChar(char) {
 
 function flipCoin() {
   if (!selectedChar) return;
-
-  // Hide pick UI, show flip stage
   document.getElementById('gamePickPhase').style.display = 'none';
   document.getElementById('gameResult').classList.remove('visible');
-  const stage = document.getElementById('coinFlipStage');
+  var stage = document.getElementById('coinFlipStage');
   stage.classList.add('active');
 
-  // Random outcome
-  const outcome = Math.random() < 0.5 ? 'rich' : 'woe';
-  const won = outcome === selectedChar;
+  var outcome = Math.random() < 0.5 ? 'rich' : 'woe';
+  var won = outcome === selectedChar;
 
-  // Show flipping coin (show selected character face during spin)
-  const coinFaceImg = document.getElementById('coinFaceImg');
-  const coinFace = document.getElementById('coinFace');
+  var coinFaceImg = document.getElementById('coinFaceImg');
+  var coinFace = document.getElementById('coinFace');
   coinFaceImg.src = selectedChar === 'rich' ? 'wealth_smiley_coin.jpg' : 'poor_woe_coin.jpg';
   coinFace.className = 'coin-face ' + selectedChar;
-  const coinEl = document.getElementById('coinFlip');
+  var coinEl = document.getElementById('coinFlip');
   coinEl.classList.add('flipping');
 
-  setTimeout(() => {
-    // Update score
+  setTimeout(function() {
     if (won) {
       wins++;
       currentStreak = Math.min(currentStreak + 1, 3);
@@ -1041,8 +1036,6 @@ function flipCoin() {
     document.getElementById('scoreWins').textContent = wins;
     document.getElementById('scoreLosses').textContent = losses;
     updateStreak();
-
-    // Hide flip stage, show result
     stage.classList.remove('active');
     coinEl.classList.remove('flipping');
     showResult(won, outcome);
@@ -1050,25 +1043,23 @@ function flipCoin() {
 }
 
 function showResult(won, outcome) {
-  const result = document.getElementById('gameResult');
-  const char = document.getElementById('resultChar');
-  const img = document.getElementById('resultImg');
-  const headline = document.getElementById('resultHeadline');
-  const sub = document.getElementById('resultSub');
-  const cta = document.getElementById('resultCta');
-  const retrySmall = document.getElementById('flipAgainSmall');
+  var result = document.getElementById('gameResult');
+  var char = document.getElementById('resultChar');
+  var img = document.getElementById('resultImg');
+  var headline = document.getElementById('resultHeadline');
+  var sub = document.getElementById('resultSub');
+  var cta = document.getElementById('resultCta');
+  var retrySmall = document.getElementById('flipAgainSmall');
 
-  const msgPool = won ? winMessages : loseMessages;
-  const msg = msgPool[Math.floor(Math.random() * msgPool.length)];
+  var msgPool = won ? winMessages : loseMessages;
+  var msg = msgPool[Math.floor(Math.random() * msgPool.length)];
 
   char.className = 'result-char ' + (won ? 'win' : 'lose');
   img.src = outcome === 'rich' ? 'wealth_smiley_coin.jpg' : 'poor_woe_coin.jpg';
   char.style.borderColor = won ? '#fbbf24' : '#64748b';
-
   headline.textContent = msg.h;
   sub.textContent = msg.s;
 
-  // Show main CTA after 3 wins OR 3 total losses
   if (currentStreak >= 3 || losses >= 3) {
     cta.classList.add('show');
     retrySmall.style.display = 'none';
@@ -1076,12 +1067,11 @@ function showResult(won, outcome) {
     cta.classList.remove('show');
     retrySmall.style.display = 'inline-block';
   }
-
   result.classList.add('visible');
 }
 
 function updateStreak() {
-  ['star1','star2','star3'].forEach((id, i) => {
+  ['star1','star2','star3'].forEach(function(id, i) {
     document.getElementById(id).classList.toggle('lit', i < currentStreak);
   });
 }
@@ -1090,7 +1080,6 @@ function resetGame() {
   selectedChar = null;
   currentStreak = 0;
   updateStreak();
-
   document.getElementById('gamePickPhase').style.display = 'block';
   document.getElementById('gameResult').classList.remove('visible');
   document.getElementById('coinFlipStage').classList.remove('active');
@@ -1098,6 +1087,8 @@ function resetGame() {
   document.getElementById('pickRich').classList.remove('selected');
   document.getElementById('pickWoe').classList.remove('selected');
   document.getElementById('flipBtn').disabled = true;
+}
+
 // ══════════════════════════════
 // MOBILE OVERLAY NAV
 // ══════════════════════════════
@@ -1106,17 +1097,19 @@ function openMenu() {
   document.getElementById('navHamburger').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeMenu() {
   document.getElementById('navOverlay').classList.remove('open');
   document.getElementById('navHamburger').classList.remove('open');
   document.body.style.overflow = '';
 }
+
 document.getElementById('navHamburger').addEventListener('click', openMenu);
 document.getElementById('navOverlayClose').addEventListener('click', closeMenu);
-// Close on overlay background tap
 document.getElementById('navOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeMenu();
 });
+
 </script>
 </body>
 </html>
