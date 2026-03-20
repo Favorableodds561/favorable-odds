@@ -342,9 +342,17 @@ h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.1; letter-spacing:
   font-family: var(--mono);
   font-size: 13px;
   line-height: 1.8;
-  min-height: 380px;
+  height: 420px;
+  max-height: 420px;
+  overflow-y: auto;
   position: relative;
+  scroll-behavior: smooth;
 }
+
+/* Hide scrollbar visually but keep scroll functionality */
+.terminal-body::-webkit-scrollbar { width: 4px; }
+.terminal-body::-webkit-scrollbar-track { background: transparent; }
+.terminal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
 .terminal-line { display: block; }
 .terminal-prompt { color: var(--accent); }
@@ -817,8 +825,8 @@ input[type="range"]::-moz-range-thumb {
 ══════════════════════════════════ -->
 <section class="work-section roi-section" id="roi">
   <div class="work-section-tag">The Real Cost of Doing Nothing</div>
-  <h2 class="work-section-title">What is manual work actually costing you?</h2>
-  <p class="work-section-sub">Most businesses don't realize how much they're spending on tasks that should be automated. Adjust the sliders to see your number.</p>
+  <h2 class="work-section-title">How much is inefficiency costing your business?</h2>
+  <p class="work-section-sub">Most businesses bleed money through manual processes, bloated headcount, and systems that don't talk to each other. Adjust the sliders to see your real number.</p>
 
   <div class="roi-wrap">
     <!-- Inputs -->
@@ -826,57 +834,57 @@ input[type="range"]::-moz-range-thumb {
 
       <div class="roi-input-group">
         <label>
-          Hours/week on manual tasks
+          Hours/week spent on manual tasks
           <span id="hoursVal">15</span>
         </label>
-        <input type="range" min="1" max="60" value="15" id="hoursSlider" oninput="updateROI()">
-        <div class="roi-sublabel">Data entry, follow-ups, reporting, scheduling, admin</div>
+        <input type="range" min="1" max="80" value="15" id="hoursSlider" oninput="updateROI()">
+        <div class="roi-sublabel">Data entry, copy-paste, manual reporting, scheduling — tasks automation handles in seconds</div>
       </div>
 
       <div class="roi-input-group">
         <label>
-          Number of employees doing it
+          Employees doing automatable work
           <span id="empVal">3</span>
         </label>
         <input type="range" min="1" max="50" value="3" id="empSlider" oninput="updateROI()">
-        <div class="roi-sublabel">People spending time on automatable tasks</div>
+        <div class="roi-sublabel">People whose time is consumed by tasks that should be handled by systems</div>
       </div>
 
       <div class="roi-input-group">
         <label>
-          Average hourly rate
+          Average fully loaded hourly cost
           <span id="rateVal">$25</span>
         </label>
         <input type="range" min="12" max="150" value="25" id="rateSlider" oninput="updateROI()">
-        <div class="roi-sublabel">Fully loaded cost per employee per hour</div>
+        <div class="roi-sublabel">Salary + benefits + overhead per employee per hour</div>
       </div>
 
       <div class="roi-input-group">
         <label>
-          Leads missed per week
-          <span id="leadsVal">5</span>
+          Extra hires made to handle admin
+          <span id="hiresVal">1</span>
         </label>
-        <input type="range" min="0" max="50" value="5" id="leadsSlider" oninput="updateROI()">
-        <div class="roi-sublabel">Inquiries that went unanswered or followed up too late</div>
+        <input type="range" min="0" max="20" value="1" id="hiresSlider" oninput="updateROI()">
+        <div class="roi-sublabel">People you hired to do work that optimized systems would eliminate</div>
       </div>
 
       <div class="roi-input-group">
         <label>
-          Average deal value
-          <span id="dealVal">$500</span>
+          Avg. annual salary of those hires
+          <span id="salaryVal">$40,000</span>
         </label>
-        <input type="range" min="50" max="10000" step="50" value="500" id="dealSlider" oninput="updateROI()">
-        <div class="roi-sublabel">What a typical closed lead is worth to your business</div>
+        <input type="range" min="25000" max="120000" step="1000" value="40000" id="salarySlider" oninput="updateROI()">
+        <div class="roi-sublabel">What you're paying per year for roles that automation could replace or reduce</div>
       </div>
 
     </div>
 
     <!-- Result -->
     <div class="roi-result">
-      <div class="roi-result-label">Your Annual Cost of Inaction</div>
-      <div class="roi-result-headline">Between lost labor and missed revenue, here's what it's costing you every year to keep doing things manually:</div>
+      <div class="roi-result-label">Your Annual Cost of Inefficiency</div>
+      <div class="roi-result-headline">Here's what staying manual is actually costing your business every year — in wasted labor, unnecessary payroll, and hours your team can't get back:</div>
       <div class="roi-big-num" id="roiTotal">$0</div>
-      <div class="roi-big-label">per year in wasted spend + missed revenue</div>
+      <div class="roi-big-label">per year in operational waste</div>
 
       <div class="roi-breakdown">
         <div class="roi-breakdown-row">
@@ -884,21 +892,21 @@ input[type="range"]::-moz-range-thumb {
           <span id="roiLabor">$0</span>
         </div>
         <div class="roi-breakdown-row">
-          <span>Missed revenue / year</span>
-          <span id="roiRevenue">$0</span>
+          <span>Unnecessary payroll / year</span>
+          <span id="roiPayroll">$0</span>
         </div>
         <div class="roi-breakdown-row">
-          <span>Hours lost / year</span>
+          <span>Hours lost to manual work / year</span>
           <span id="roiHours">0 hrs</span>
         </div>
         <div class="roi-breakdown-row">
-          <span>Leads lost / year</span>
-          <span id="roiLeads">0</span>
+          <span>Weeks of productivity wasted</span>
+          <span id="roiWeeks">0 weeks</span>
         </div>
       </div>
 
       <a href="#" onclick="window.location.href='mai'+'lto:hello@favorableodds.io';return false;" class="roi-cta-btn">
-        Fix This — Talk to Josh →
+        Let's Fix This — Talk to Josh →
       </a>
     </div>
   </div>
@@ -980,28 +988,27 @@ function updateROI() {
   var hours   = parseInt(document.getElementById('hoursSlider').value);
   var emps    = parseInt(document.getElementById('empSlider').value);
   var rate    = parseInt(document.getElementById('rateSlider').value);
-  var leads   = parseInt(document.getElementById('leadsSlider').value);
-  var deal    = parseInt(document.getElementById('dealSlider').value);
+  var hires   = parseInt(document.getElementById('hiresSlider').value);
+  var salary  = parseInt(document.getElementById('salarySlider').value);
 
-  document.getElementById('hoursVal').textContent = hours;
-  document.getElementById('empVal').textContent   = emps;
-  document.getElementById('rateVal').textContent  = '$' + rate;
-  document.getElementById('leadsVal').textContent = leads;
-  document.getElementById('dealVal').textContent  = '$' + deal.toLocaleString();
+  document.getElementById('hoursVal').textContent  = hours;
+  document.getElementById('empVal').textContent    = emps;
+  document.getElementById('rateVal').textContent   = '$' + rate;
+  document.getElementById('hiresVal').textContent  = hires;
+  document.getElementById('salaryVal').textContent = '$' + salary.toLocaleString();
 
   var laborPerYear   = hours * emps * rate * 52;
-  var revenuePerYear = leads * deal * 52;
+  var payrollPerYear = hires * salary;
   var hoursPerYear   = hours * emps * 52;
-  var leadsPerYear   = leads * 52;
-  var total          = laborPerYear + revenuePerYear;
+  var weeksWasted    = Math.round(hoursPerYear / 40);
+  var total          = laborPerYear + payrollPerYear;
 
   document.getElementById('roiTotal').textContent   = fmt(total);
   document.getElementById('roiLabor').textContent   = fmt(laborPerYear);
-  document.getElementById('roiRevenue').textContent = fmt(revenuePerYear);
+  document.getElementById('roiPayroll').textContent = fmt(payrollPerYear);
   document.getElementById('roiHours').textContent   = Math.round(hoursPerYear).toLocaleString() + ' hrs';
-  document.getElementById('roiLeads').textContent   = Math.round(leadsPerYear).toLocaleString();
+  document.getElementById('roiWeeks').textContent   = weeksWasted + ' weeks';
 
-  // Color shift based on severity
   var el = document.getElementById('roiTotal');
   if (total > 500000)      el.style.color = '#f87171';
   else if (total > 100000) el.style.color = '#fbbf24';
