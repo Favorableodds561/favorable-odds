@@ -683,12 +683,50 @@ input[type="range"]::-moz-range-thumb {
   .work-nav-logo span { display: none; }
   .work-hero { padding: 120px 20px 64px; }
   .work-section { padding: 64px 20px; }
+
+  /* Story */
   .story-panels { grid-template-columns: 1fr; }
   .story-vs { display: none; }
   .story-woe { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+  .story-coin { width: 110px; height: 110px; }
+  .story-name { font-size: 18px; }
+  .story-item { font-size: 13px; }
+
+  /* ROI */
   .roi-wrap { grid-template-columns: 1fr; }
   .roi-result { position: static; }
+  .roi-big-num { font-size: 44px; }
+
+  /* Footer */
   .work-footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+
+  /* ── MOBILE BACKGROUND SCALING for /work ── */
+  .coin-story {
+    background-size: 280% auto;
+    background-position: center 40%;
+  }
+  .terminal-section {
+    background-size: 250% auto;
+    background-position: center 35%;
+  }
+  .roi-section {
+    background-size: 260% auto;
+    background-position: center 40%;
+  }
+  .stack-builder-section {
+    background-size: 240% auto;
+    background-position: center center;
+  }
+
+  /* Stack builder chips wrap nicely */
+  .builder-chips { gap: 8px; }
+  .builder-chip { font-size: 13px; padding: 8px 14px; }
+  .stack-result { padding: 24px 20px; }
+  .stack-result-grid { grid-template-columns: 1fr; }
+
+  /* Terminal */
+  .terminal-body { font-size: 11px; padding: 20px; height: 340px; }
+  .terminal-wrap { margin: 0; }
 }
 </style>
 </head>
