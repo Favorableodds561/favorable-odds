@@ -413,6 +413,112 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
 .footer-links a:hover { color:rgba(255,255,255,0.8); }
 .footer-copy { font-size:12px; color:rgba(255,255,255,0.25); }
 
+/* ── FREE AUDIT ── */
+.free-audit {
+  background: linear-gradient(rgba(13,13,15,0.92), rgba(13,13,15,0.92)),
+    url('smileytech_woeassistant_background.png') center center / cover no-repeat;
+  padding: 96px 48px;
+}
+
+.audit-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.audit-tag { font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.audit-title { font-size:clamp(32px,4.5vw,52px); font-weight:800; color:var(--white); margin-bottom:20px; }
+.audit-sub { font-size:16px; color:rgba(255,255,255,0.55); font-weight:300; line-height:1.7; margin-bottom:28px; }
+
+.audit-perks { list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:0; }
+.audit-perks li { display:flex; align-items:flex-start; gap:12px; font-size:15px; color:rgba(255,255,255,0.7); }
+.audit-perks li::before {
+  content:'✓'; width:22px; height:22px; border-radius:50%;
+  background:rgba(22,163,74,0.2); color:#4ade80;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; flex-shrink:0; margin-top:2px;
+}
+
+/* Form card */
+.audit-form-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 40px;
+}
+
+.audit-form-card h3 {
+  font-family:'Syne',sans-serif; font-size:20px; font-weight:800;
+  color:var(--white); margin-bottom:6px;
+}
+
+.audit-form-card p {
+  font-size:13px; color:rgba(255,255,255,0.4);
+  margin-bottom:28px; line-height:1.6;
+}
+
+.audit-field { display:flex; flex-direction:column; gap:7px; margin-bottom:20px; }
+
+.audit-field label {
+  font-size:12px; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase;
+  color:rgba(255,255,255,0.45);
+}
+
+.audit-field input,
+.audit-field select,
+.audit-field textarea {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px; color:var(--white);
+  outline:none;
+  transition: border-color 0.2s, background 0.2s;
+  width:100%;
+}
+
+.audit-field input::placeholder,
+.audit-field textarea::placeholder { color:rgba(255,255,255,0.25); }
+
+.audit-field input:focus,
+.audit-field select:focus,
+.audit-field textarea:focus {
+  border-color: rgba(200,150,60,0.5);
+  background: rgba(255,255,255,0.08);
+}
+
+.audit-field select option { background:#1a1a1e; color:var(--white); }
+
+.audit-field textarea { resize:vertical; min-height:90px; }
+
+.audit-submit {
+  width:100%; padding:16px 24px;
+  background:var(--gold); color:var(--ink);
+  border:none; border-radius:var(--radius-pill);
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:800;
+  cursor:pointer; letter-spacing:0.01em;
+  transition:background 0.2s, transform 0.15s;
+  margin-top:4px;
+}
+.audit-submit:hover { background:#e6a832; transform:translateY(-2px); }
+
+.audit-success {
+  display:none;
+  text-align:center; padding:32px 20px;
+}
+.audit-success-icon { font-size:48px; margin-bottom:16px; }
+.audit-success h4 { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--white); margin-bottom:8px; }
+.audit-success p { font-size:14px; color:rgba(255,255,255,0.5); line-height:1.6; }
+
+@media(max-width:900px) {
+  .free-audit { padding:64px 20px; }
+  .audit-wrap { grid-template-columns:1fr; gap:40px; }
+  .audit-form-card { padding:28px 20px; }
+}
+
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
@@ -716,6 +822,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li><a href="#what-we-build">What We Build</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#process">Process</a></li>
+    <li><a href="#audit" style="color:var(--green);font-weight:600;">Free Audit ✦</a></li>
     <li><a href="/work" style="color:var(--gold);font-weight:600;">The Work ↗</a></li>
     <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
@@ -737,6 +844,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li><a href="#what-we-build" onclick="closeMenu()">What We Build</a></li>
     <li><a href="#services"      onclick="closeMenu()">Services</a></li>
     <li><a href="#process"       onclick="closeMenu()">Process</a></li>
+    <li><a href="#audit"         onclick="closeMenu()" style="color:#4ade80;">Free Audit ✦</a></li>
     <li><a href="#game"          onclick="closeMenu()">Flip the Odds</a></li>
     <li><a href="/work" style="color:var(--gold);">The Work ↗</a></li>
   </ul>
@@ -888,6 +996,64 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <div class="step"><div class="step-num">02</div><h3>Architect</h3><p>Architect scalable solutions aligned to your operations — not off-the-shelf recommendations. You see the full plan, with costs, before we begin.</p></div>
     <div class="step"><div class="step-num">03</div><h3>Implement</h3><p>Implement, integrate, and deploy systems end-to-end. Hardware, software, or both — we handle the full rollout and don't hand you a manual and walk away.</p></div>
     <div class="step"><div class="step-num">04</div><h3>Optimize</h3><p>Monitor performance, automate improvements, and scale. We stay engaged after launch — because a system that isn't improving is falling behind.</p></div>
+  </div>
+</section>
+
+<!-- FREE AUDIT -->
+<section class="free-audit" id="audit">
+  <div class="audit-wrap">
+
+    <!-- Left: pitch -->
+    <div>
+      <div class="audit-tag">Free 15-Minute Tech Audit</div>
+      <h2 class="audit-title">Tell us what you're running. We'll tell you what's broken.</h2>
+      <p class="audit-sub">Not ready to commit? No problem. Fill out four quick fields and Josh will personally review your current setup — for free. No pitch, no pressure. Just an honest look at where your systems are costing you.</p>
+      <ul class="audit-perks">
+        <li>15 minutes — no sales call, no obligation</li>
+        <li>Identify the #1 thing bleeding your time or money</li>
+        <li>Get a plain-language answer, not a proposal</li>
+        <li>Response within one business day</li>
+      </ul>
+    </div>
+
+    <!-- Right: form -->
+    <div class="audit-form-card">
+      <h3>Request Your Free Audit</h3>
+      <p>Takes 60 seconds to fill out. Josh reviews every submission personally.</p>
+
+      <div id="auditForm">
+        <div class="audit-field">
+          <label>Your Name</label>
+          <input type="text" id="auditName" placeholder="Josh Ramos">
+        </div>
+
+        <div class="audit-field">
+          <label>Business / Industry</label>
+          <input type="text" id="auditBiz" placeholder="e.g. Insurance Agency, Retail, Construction...">
+        </div>
+
+        <div class="audit-field">
+          <label>Tools You're Currently Using</label>
+          <input type="text" id="auditTools" placeholder="e.g. Gmail, spreadsheets, QuickBooks, nothing...">
+        </div>
+
+        <div class="audit-field">
+          <label>Biggest Tech Headache Right Now</label>
+          <textarea id="auditPain" placeholder="e.g. We manually enter data from one system to another every day. It takes 3 hours and someone always makes mistakes..."></textarea>
+        </div>
+
+        <button class="audit-submit" onclick="submitAudit()">
+          Send My Free Audit Request →
+        </button>
+      </div>
+
+      <div class="audit-success" id="auditSuccess">
+        <div class="audit-success-icon">✅</div>
+        <h4>Request sent!</h4>
+        <p>Josh will review your setup and get back to you within one business day. Check your email — he responds personally.</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1192,11 +1358,58 @@ function closeMenu() {
   document.body.style.overflow = '';
 }
 
+// ══════════════════════════════
+// MOBILE OVERLAY NAV
+// ══════════════════════════════
+function openMenu() {
+  document.getElementById('navOverlay').classList.add('open');
+  document.getElementById('navHamburger').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+  document.getElementById('navOverlay').classList.remove('open');
+  document.getElementById('navHamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 document.getElementById('navHamburger').addEventListener('click', openMenu);
 document.getElementById('navOverlayClose').addEventListener('click', closeMenu);
 document.getElementById('navOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeMenu();
 });
+
+// ══════════════════════════════
+// FREE AUDIT FORM
+// ══════════════════════════════
+function submitAudit() {
+  var name   = document.getElementById('auditName').value.trim();
+  var biz    = document.getElementById('auditBiz').value.trim();
+  var tools  = document.getElementById('auditTools').value.trim();
+  var pain   = document.getElementById('auditPain').value.trim();
+
+  if (!name || !biz || !pain) {
+    alert('Please fill in your name, business, and biggest headache — that\'s all we need.');
+    return;
+  }
+
+  var subject = 'Free Tech Audit Request — ' + name + ' (' + biz + ')';
+  var body    = 'NAME: ' + name + '\n\n'
+              + 'BUSINESS / INDUSTRY: ' + biz + '\n\n'
+              + 'CURRENT TOOLS: ' + (tools || 'Not specified') + '\n\n'
+              + 'BIGGEST TECH HEADACHE:\n' + pain + '\n\n'
+              + '---\nSent from favorableodds.io Free Audit Form';
+
+  window.location.href = 'mai' + 'lto:hello@favorableodds.io'
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body='    + encodeURIComponent(body);
+
+  // Show success state after short delay
+  setTimeout(function() {
+    document.getElementById('auditForm').style.display    = 'none';
+    document.getElementById('auditSuccess').style.display = 'block';
+  }, 800);
+}
 
 </script>
 </body>
