@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Work — Favorable Odds Tech Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0d0d0f;
+  --ink-soft: #3a3a40;
+  --ink-muted: #7a7a84;
+  --surface: #f5f4f0;
+  --white: #ffffff;
+  --accent: #1a6bff;
+  --accent-soft: #e8f0ff;
+  --gold: #c8963c;
+  --gold-soft: #fdf4e7;
+  --green: #16a34a;
+  --green-soft: #dcfce7;
+  --red: #dc2626;
+  --border: rgba(13,13,15,0.10);
+  --radius: 16px;
+  --radius-pill: 100px;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.1; letter-spacing: -0.02em; }
+
+/* ── NAV ── */
+.work-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 48px;
+  background: rgba(13,13,15,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.work-nav-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px;
+  color: var(--white); text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.work-nav-logo img {
+  height: 40px; width: auto;
+  filter: brightness(0) invert(1); opacity: 0.85;
+  mix-blend-mode: normal;
+}
+
+.work-nav-links { display: flex; gap: 24px; align-items: center; }
+
+.work-nav-links a {
+  font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.5); text-decoration: none;
+  transition: color 0.2s;
+}
+.work-nav-links a:hover { color: var(--white); }
+
+.work-nav-back {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--white) !important;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 600;
+  transition: background 0.2s !important;
+}
+.work-nav-back:hover { background: rgba(255,255,255,0.15) !important; }
+
+/* ── HERO ── */
+.work-hero {
+  min-height: 60vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  padding: 140px 48px 80px;
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(26,107,255,0.08) 0%, transparent 70%);
+}
+
+.work-hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(200,150,60,0.12);
+  border: 1px solid rgba(200,150,60,0.3);
+  border-radius: var(--radius-pill); padding: 6px 16px;
+  font-size: 13px; font-weight: 600; color: var(--gold);
+  margin-bottom: 28px; letter-spacing: 0.02em;
+  animation: fadeUp 0.6s ease both;
+}
+
+.work-hero h1 {
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 800; color: var(--white);
+  max-width: 800px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+
+.work-hero h1 em { font-style: normal; color: var(--accent); }
+
+.work-hero-sub {
+  font-size: 18px; color: rgba(255,255,255,0.5);
+  max-width: 540px; margin-top: 24px; font-weight: 300;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+
+.section-divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  margin: 0 auto 24px;
+}
+
+/* ── SHARED SECTION ── */
+.work-section {
+  padding: 96px 48px;
+  position: relative;
+}
+
+.work-section-tag {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
+}
+
+.work-section-title {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 800; color: var(--white);
+  margin-bottom: 16px; max-width: 700px;
+}
+
+.work-section-sub {
+  font-size: 16px; color: rgba(255,255,255,0.5);
+  max-width: 560px; font-weight: 300; line-height: 1.7;
+  margin-bottom: 56px;
+}
+
+/* ════════════════════════════════════
+   1. COIN CHARACTER STORY
+════════════════════════════════════ */
+.coin-story { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); }
+
+.story-panels {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: stretch;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Rich side — warm gold */
+.story-rich {
+  background: linear-gradient(135deg, rgba(200,150,60,0.12) 0%, rgba(200,150,60,0.04) 100%);
+  padding: 48px 40px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Woe side — cold blue-gray */
+.story-woe {
+  background: linear-gradient(135deg, rgba(100,116,139,0.12) 0%, rgba(100,116,139,0.04) 100%);
+  padding: 48px 40px;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+
+/* VS divider */
+.story-vs {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 24px;
+  background: rgba(255,255,255,0.02);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.story-vs-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 800;
+  color: rgba(255,255,255,0.15);
+  writing-mode: vertical-rl;
+  letter-spacing: 0.15em;
+}
+
+/* Coin image */
+.story-coin {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 24px;
+  animation: coinBob 3s ease-in-out infinite;
+  border: 3px solid rgba(255,255,255,0.1);
+}
+
+.story-rich .story-coin {
+  border-color: rgba(200,150,60,0.4);
+  box-shadow: 0 0 40px rgba(200,150,60,0.2);
+  animation: coinBobRich 2.8s ease-in-out infinite;
+}
+
+.story-woe .story-coin {
+  border-color: rgba(100,116,139,0.4);
+  box-shadow: 0 0 40px rgba(100,116,139,0.15);
+  animation: coinBobWoe 3.2s ease-in-out 0.4s infinite;
+  filter: saturate(0.7);
+}
+
+@keyframes coinBobRich {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-10px) rotate(2deg); }
+}
+@keyframes coinBobWoe {
+  0%,100% { transform: translateY(0) rotate(2deg); }
+  50%      { transform: translateY(-6px) rotate(-1deg); }
+}
+
+.story-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 800;
+  text-align: center; margin-bottom: 8px;
+}
+
+.story-rich .story-name { color: var(--gold); }
+.story-woe .story-name  { color: #94a3b8; }
+
+.story-tagline {
+  font-size: 13px; text-align: center;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 32px; font-style: italic;
+}
+
+.story-items { display: flex; flex-direction: column; gap: 12px; }
+
+.story-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 14px; color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+
+.story-item-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+.story-rich .story-item-icon {
+  background: rgba(200,150,60,0.2);
+  color: var(--gold);
+}
+
+.story-woe .story-item-icon {
+  background: rgba(100,116,139,0.2);
+  color: #94a3b8;
+}
+
+.story-outcome {
+  margin-top: 32px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px; font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.story-rich .story-outcome {
+  background: rgba(200,150,60,0.12);
+  border: 1px solid rgba(200,150,60,0.25);
+  color: var(--gold);
+}
+
+.story-woe .story-outcome {
+  background: rgba(220,38,38,0.08);
+  border: 1px solid rgba(220,38,38,0.2);
+  color: #f87171;
+}
+
+.story-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+
+/* ════════════════════════════════════
+   2. TERMINAL ANIMATION
+════════════════════════════════════ */
+.terminal-section {
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.terminal-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #0a0a0c;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+}
+
+.terminal-titlebar {
+  background: #1a1a1e;
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.terminal-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.terminal-dot.red    { background: #ff5f57; }
+.terminal-dot.yellow { background: #febc2e; }
+.terminal-dot.green  { background: #28c840; }
+
+.terminal-title {
+  flex: 1; text-align: center;
+  font-family: var(--mono);
+  font-size: 12px; color: rgba(255,255,255,0.3);
+}
+
+.terminal-body {
+  padding: 28px 32px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.8;
+  min-height: 380px;
+  position: relative;
+}
+
+.terminal-line { display: block; }
+.terminal-prompt { color: var(--accent); }
+.terminal-cmd    { color: var(--white); }
+.terminal-output { color: rgba(255,255,255,0.5); }
+.terminal-success { color: #4ade80; }
+.terminal-warning { color: #fbbf24; }
+.terminal-highlight { color: var(--gold); }
+.terminal-dim { color: rgba(255,255,255,0.2); }
+
+.cursor {
+  display: inline-block;
+  width: 8px; height: 14px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ════════════════════════════════════
+   3. ROI CALCULATOR
+════════════════════════════════════ */
+.roi-section {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.roi-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.roi-inputs { display: flex; flex-direction: column; gap: 32px; }
+
+.roi-input-group label {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px; font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 12px;
+}
+
+.roi-input-group label span {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 800;
+  color: var(--gold);
+}
+
+input[type="range"] {
+  width: 100%; height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--ink);
+  box-shadow: 0 0 0 3px rgba(200,150,60,0.25);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(200,150,60,0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--ink);
+  cursor: pointer;
+}
+
+.roi-sublabel {
+  font-size: 12px; color: rgba(255,255,255,0.3);
+  margin-top: 6px;
+}
+
+/* ROI Result card */
+.roi-result {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 40px 36px;
+  position: sticky; top: 100px;
+}
+
+.roi-result-label {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 8px;
+}
+
+.roi-result-headline {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  margin-bottom: 24px; line-height: 1.5;
+}
+
+.roi-big-num {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(42px, 6vw, 64px);
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+  margin-bottom: 4px;
+  transition: color 0.3s;
+}
+
+.roi-big-label {
+  font-size: 13px; color: rgba(255,255,255,0.35);
+  margin-bottom: 32px;
+}
+
+.roi-breakdown {
+  display: flex; flex-direction: column; gap: 14px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.roi-breakdown-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px;
+}
+
+.roi-breakdown-row span:first-child { color: rgba(255,255,255,0.45); }
+.roi-breakdown-row span:last-child  { font-weight: 700; color: rgba(255,255,255,0.85); }
+
+.roi-cta-btn {
+  display: block; width: 100%;
+  margin-top: 28px;
+  background: var(--green);
+  color: var(--white);
+  text-align: center;
+  padding: 16px 24px;
+  border-radius: var(--radius-pill);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.roi-cta-btn:hover { background: #15803d; transform: translateY(-2px); }
+
+/* ════════════════════════════════════
+   4. TECH STACK BUILDER
+════════════════════════════════════ */
+.stack-builder-section {
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.builder-steps {
+  display: flex; flex-direction: column; gap: 48px;
+}
+
+/* Industry picker */
+.builder-step-label {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 16px;
+}
+
+.builder-chips {
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+
+.builder-chip {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.builder-chip:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: var(--white);
+}
+
+.builder-chip.selected {
+  background: rgba(26,107,255,0.15);
+  border-color: var(--accent);
+  color: var(--white);
+}
+
+.builder-chip.pain.selected {
+  background: rgba(200,150,60,0.12);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Stack result */
+.stack-result {
+  display: none;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 40px;
+  animation: fadeUp 0.4s ease both;
+}
+
+.stack-result.visible { display: block; }
+
+.stack-result-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: var(--white); margin-bottom: 8px;
+}
+
+.stack-result-sub {
+  font-size: 14px; color: rgba(255,255,255,0.45);
+  margin-bottom: 32px; line-height: 1.6;
+}
+
+.stack-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stack-tool {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px 20px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.stack-tool:hover {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.07);
+}
+
+.stack-tool-category {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 6px;
+}
+
+.stack-tool-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--white); margin-bottom: 4px;
+}
+
+.stack-tool-desc {
+  font-size: 12px; color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+}
+
+.stack-build-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent);
+  color: var(--white);
+  padding: 16px 32px;
+  border-radius: var(--radius-pill);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.stack-build-btn:hover { background: #0048cc; transform: translateY(-2px); }
+
+/* ── FOOTER ── */
+.work-footer {
+  background: #080809;
+  padding: 40px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 20px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.work-footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+.work-footer-back {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.work-footer-back:hover { color: var(--white); }
+
+/* ── SHARED BUTTON ── */
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 16px 32px;
+  border-radius: var(--radius-pill);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-gold:hover { background: #e6a832; transform: translateY(-2px); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .work-nav { padding: 12px 20px; }
+  .work-nav-logo span { display: none; }
+  .work-hero { padding: 120px 20px 64px; }
+  .work-section { padding: 64px 20px; }
+  .story-panels { grid-template-columns: 1fr; }
+  .story-vs { display: none; }
+  .story-woe { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+  .roi-wrap { grid-template-columns: 1fr; }
+  .roi-result { position: static; }
+  .work-footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="work-nav">
+  <a href="/" class="work-nav-logo">
+    <img src="business_logo.jpg" alt="Favorable Odds">
+    <span>Favorable Odds Tech Solutions</span>
+  </a>
+  <div class="work-nav-links">
+    <a href="#story">The Story</a>
+    <a href="#terminal">Systems</a>
+    <a href="#roi">ROI</a>
+    <a href="#builder">Stack Builder</a>
+    <a href="/" class="work-nav-back">← Back to Site</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="work-hero">
+  <div class="work-hero-tag">The Work</div>
+  <h1>See it. Feel it.<br><em>Understand it.</em></h1>
+  <p class="work-hero-sub">An interactive look at what we build, how it works, and what it's worth to your business.</p>
+</section>
+
+<!-- ══════════════════════════════════
+     1. COIN CHARACTER STORY
+══════════════════════════════════ -->
+<section class="work-section coin-story" id="story">
+  <div class="work-section-tag">The Origin Story</div>
+  <h2 class="work-section-title">Two businesses. Same starting point. Different outcomes.</h2>
+  <p class="work-section-sub">Rich Smiley and Poor Sad Woe both started businesses the same year, same industry, same budget. Here's what happened next.</p>
+
+  <div class="story-panels">
+
+    <!-- RICH SMILEY -->
+    <div class="story-rich">
+      <img src="wealth_smiley_coin.jpg" alt="Rich Smiley" class="story-coin">
+      <div class="story-name">Rich Smiley</div>
+      <div class="story-tagline">"I invested in systems early."</div>
+
+      <div class="story-items">
+        <div class="story-item">
+          <div class="story-item-icon">✓</div>
+          <span>Automated lead capture — every inquiry responded to in under 60 seconds, 24/7</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✓</div>
+          <span>CRM configured from day one — never lost a follow-up, pipeline always visible</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✓</div>
+          <span>Hardware and software deployed together — zero downtime, zero IT emergencies</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✓</div>
+          <span>Reporting dashboard live — knew his numbers every morning before coffee</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✓</div>
+          <span>Scaled from 2 to 18 employees without adding admin overhead</span>
+        </div>
+      </div>
+
+      <div class="story-outcome">
+        📈 Revenue up 340% in 24 months.<br>
+        Team focused on growth, not grunt work.
+      </div>
+    </div>
+
+    <!-- VS -->
+    <div class="story-vs">
+      <div class="story-vs-text">VS</div>
+    </div>
+
+    <!-- POOR SAD WOE -->
+    <div class="story-woe">
+      <img src="poor_woe_coin.jpg" alt="Poor Sad Woe" class="story-coin">
+      <div class="story-name">Poor Sad Woe</div>
+      <div class="story-tagline">"I'll set that up later."</div>
+
+      <div class="story-items">
+        <div class="story-item">
+          <div class="story-item-icon">✗</div>
+          <span>Leads came in by email, tracked in a spreadsheet — half were never followed up</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✗</div>
+          <span>No CRM — relied on memory, sticky notes, and hope. Deals fell through constantly</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✗</div>
+          <span>Computers crashing monthly — lost work, lost clients, lost trust</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✗</div>
+          <span>Couldn't answer "how are we doing" without a 3-hour manual audit</span>
+        </div>
+        <div class="story-item">
+          <div class="story-item-icon">✗</div>
+          <span>Hired 3 extra people just to handle admin — margin disappeared</span>
+        </div>
+      </div>
+
+      <div class="story-outcome">
+        📉 Stalled at year two. Burning out.<br>
+        Still "planning to fix the systems."
+      </div>
+    </div>
+
+  </div>
+
+  <div class="story-cta">
+    <a href="#" onclick="window.location.href='mai'+'lto:hello@favorableodds.io';return false;" class="btn-gold">
+      Don't be Woe — Let's Talk →
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     2. TERMINAL ANIMATION
+══════════════════════════════════ -->
+<section class="work-section terminal-section" id="terminal">
+  <div class="work-section-tag">Under the Hood</div>
+  <h2 class="work-section-title">Watch a system get built in real time.</h2>
+  <p class="work-section-sub">This is what it looks like when Favorable Odds deploys an automated business system from scratch. Every line is real work.</p>
+
+  <div class="terminal-wrap">
+    <div class="terminal-titlebar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <div class="terminal-title">favorable-odds — system-deploy — 80×24</div>
+    </div>
+    <div class="terminal-body" id="terminalBody">
+      <span class="cursor" id="termCursor"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     3. ROI CALCULATOR
+══════════════════════════════════ -->
+<section class="work-section roi-section" id="roi">
+  <div class="work-section-tag">The Real Cost of Doing Nothing</div>
+  <h2 class="work-section-title">What is manual work actually costing you?</h2>
+  <p class="work-section-sub">Most businesses don't realize how much they're spending on tasks that should be automated. Adjust the sliders to see your number.</p>
+
+  <div class="roi-wrap">
+    <!-- Inputs -->
+    <div class="roi-inputs">
+
+      <div class="roi-input-group">
+        <label>
+          Hours/week on manual tasks
+          <span id="hoursVal">15</span>
+        </label>
+        <input type="range" min="1" max="60" value="15" id="hoursSlider" oninput="updateROI()">
+        <div class="roi-sublabel">Data entry, follow-ups, reporting, scheduling, admin</div>
+      </div>
+
+      <div class="roi-input-group">
+        <label>
+          Number of employees doing it
+          <span id="empVal">3</span>
+        </label>
+        <input type="range" min="1" max="50" value="3" id="empSlider" oninput="updateROI()">
+        <div class="roi-sublabel">People spending time on automatable tasks</div>
+      </div>
+
+      <div class="roi-input-group">
+        <label>
+          Average hourly rate
+          <span id="rateVal">$25</span>
+        </label>
+        <input type="range" min="12" max="150" value="25" id="rateSlider" oninput="updateROI()">
+        <div class="roi-sublabel">Fully loaded cost per employee per hour</div>
+      </div>
+
+      <div class="roi-input-group">
+        <label>
+          Leads missed per week
+          <span id="leadsVal">5</span>
+        </label>
+        <input type="range" min="0" max="50" value="5" id="leadsSlider" oninput="updateROI()">
+        <div class="roi-sublabel">Inquiries that went unanswered or followed up too late</div>
+      </div>
+
+      <div class="roi-input-group">
+        <label>
+          Average deal value
+          <span id="dealVal">$500</span>
+        </label>
+        <input type="range" min="50" max="10000" step="50" value="500" id="dealSlider" oninput="updateROI()">
+        <div class="roi-sublabel">What a typical closed lead is worth to your business</div>
+      </div>
+
+    </div>
+
+    <!-- Result -->
+    <div class="roi-result">
+      <div class="roi-result-label">Your Annual Cost of Inaction</div>
+      <div class="roi-result-headline">Between lost labor and missed revenue, here's what it's costing you every year to keep doing things manually:</div>
+      <div class="roi-big-num" id="roiTotal">$0</div>
+      <div class="roi-big-label">per year in wasted spend + missed revenue</div>
+
+      <div class="roi-breakdown">
+        <div class="roi-breakdown-row">
+          <span>Wasted labor cost / year</span>
+          <span id="roiLabor">$0</span>
+        </div>
+        <div class="roi-breakdown-row">
+          <span>Missed revenue / year</span>
+          <span id="roiRevenue">$0</span>
+        </div>
+        <div class="roi-breakdown-row">
+          <span>Hours lost / year</span>
+          <span id="roiHours">0 hrs</span>
+        </div>
+        <div class="roi-breakdown-row">
+          <span>Leads lost / year</span>
+          <span id="roiLeads">0</span>
+        </div>
+      </div>
+
+      <a href="#" onclick="window.location.href='mai'+'lto:hello@favorableodds.io';return false;" class="roi-cta-btn">
+        Fix This — Talk to Josh →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     4. TECH STACK BUILDER
+══════════════════════════════════ -->
+<section class="work-section stack-builder-section" id="builder">
+  <div class="work-section-tag">Tech Stack Builder</div>
+  <h2 class="work-section-title">What should your business actually be running?</h2>
+  <p class="work-section-sub">Pick your industry and your biggest pain points. We'll show you the exact stack we'd recommend — and build it for you.</p>
+
+  <div class="builder-steps">
+
+    <!-- Step 1: Industry -->
+    <div>
+      <div class="builder-step-label">Step 1 — What's your industry?</div>
+      <div class="builder-chips" id="industryChips">
+        <div class="builder-chip" onclick="selectIndustry(this, 'insurance')">🏥 Insurance</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'realestate')">🏠 Real Estate</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'retail')">🛍️ Retail / E-commerce</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'service')">🔧 Home Services</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'medical')">⚕️ Medical / Healthcare</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'legal')">⚖️ Legal / Professional</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'construction')">🏗️ Construction</div>
+        <div class="builder-chip" onclick="selectIndustry(this, 'other')">💼 Other / General</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Pain points -->
+    <div id="painStep" style="display:none">
+      <div class="builder-step-label">Step 2 — What are your biggest pain points? (pick all that apply)</div>
+      <div class="builder-chips" id="painChips">
+        <div class="builder-chip pain" onclick="togglePain(this, 'leads')">📉 Losing leads / slow follow-up</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'crm')">📋 No CRM or messy pipeline</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'manual')">⏱️ Too much manual admin work</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'reporting')">📊 Can't see my numbers clearly</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'hardware')">💻 Slow / unreliable computers</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'comms')">📞 Messy communication / no system</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'integrations')">🔗 Tools don't talk to each other</div>
+        <div class="builder-chip pain" onclick="togglePain(this, 'scaling')">📈 Can't scale without hiring more</div>
+      </div>
+      <div style="margin-top:24px">
+        <button onclick="buildStack()" style="background:var(--accent);color:white;border:none;padding:14px 32px;border-radius:var(--radius-pill);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#0048cc'" onmouseout="this.style.background='var(--accent)'">
+          Build My Stack →
+        </button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="stack-result" id="stackResult">
+      <div class="stack-result-title" id="stackTitle">Your Recommended Stack</div>
+      <div class="stack-result-sub" id="stackSub">Based on your industry and pain points, here's what we'd deploy for you:</div>
+      <div class="stack-result-grid" id="stackGrid"></div>
+      <a href="#" onclick="window.location.href='mai'+'lto:hello@favorableodds.io';return false;" class="stack-build-btn">
+        Build This For Me →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="work-footer">
+  <div class="work-footer-copy">© 2026 Favorable Odds LLC · favorableodds.io · 689-243-9704</div>
+  <a href="/" class="work-footer-back">← Back to Main Site</a>
+</footer>
+
+<script>
+// ══════════════════════════════
+// ROI CALCULATOR
+// ══════════════════════════════
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function updateROI() {
+  var hours   = parseInt(document.getElementById('hoursSlider').value);
+  var emps    = parseInt(document.getElementById('empSlider').value);
+  var rate    = parseInt(document.getElementById('rateSlider').value);
+  var leads   = parseInt(document.getElementById('leadsSlider').value);
+  var deal    = parseInt(document.getElementById('dealSlider').value);
+
+  document.getElementById('hoursVal').textContent = hours;
+  document.getElementById('empVal').textContent   = emps;
+  document.getElementById('rateVal').textContent  = '$' + rate;
+  document.getElementById('leadsVal').textContent = leads;
+  document.getElementById('dealVal').textContent  = '$' + deal.toLocaleString();
+
+  var laborPerYear   = hours * emps * rate * 52;
+  var revenuePerYear = leads * deal * 52;
+  var hoursPerYear   = hours * emps * 52;
+  var leadsPerYear   = leads * 52;
+  var total          = laborPerYear + revenuePerYear;
+
+  document.getElementById('roiTotal').textContent   = fmt(total);
+  document.getElementById('roiLabor').textContent   = fmt(laborPerYear);
+  document.getElementById('roiRevenue').textContent = fmt(revenuePerYear);
+  document.getElementById('roiHours').textContent   = Math.round(hoursPerYear).toLocaleString() + ' hrs';
+  document.getElementById('roiLeads').textContent   = Math.round(leadsPerYear).toLocaleString();
+
+  // Color shift based on severity
+  var el = document.getElementById('roiTotal');
+  if (total > 500000)      el.style.color = '#f87171';
+  else if (total > 100000) el.style.color = '#fbbf24';
+  else                     el.style.color = '#4ade80';
+}
+
+updateROI();
+
+// ══════════════════════════════
+// TECH STACK BUILDER
+// ══════════════════════════════
+var selectedIndustry = null;
+var selectedPains    = [];
+
+function selectIndustry(el, industry) {
+  document.querySelectorAll('#industryChips .builder-chip').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedIndustry = industry;
+  document.getElementById('painStep').style.display = 'block';
+  document.getElementById('stackResult').classList.remove('visible');
+  selectedPains = [];
+  document.querySelectorAll('#painChips .builder-chip').forEach(function(c) { c.classList.remove('selected'); });
+  document.getElementById('painStep').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function togglePain(el, pain) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (selectedPains.indexOf(pain) === -1) selectedPains.push(pain);
+  } else {
+    selectedPains = selectedPains.filter(function(p) { return p !== pain; });
+  }
+}
+
+var stackData = {
+  leads:        [{ cat:'Lead Capture',    name:'Unbounce',     desc:'High-converting landing pages that capture and route leads instantly' },
+                 { cat:'Automation',      name:'Brevo',        desc:'Automated email & SMS follow-up within seconds of a lead submitting' }],
+  crm:          [{ cat:'CRM',             name:'HubSpot',      desc:'Full pipeline visibility, deal tracking, and contact management' },
+                 { cat:'Automation',      name:'Zapier / Make', desc:'Connect your CRM to every other tool in your stack automatically' }],
+  manual:       [{ cat:'Automation',      name:'Make (Integromat)', desc:'Visual workflow automation — eliminate repetitive tasks across departments' },
+                 { cat:'Productivity',    name:'Google Workspace', desc:'Unified docs, sheets, and communication — no more email attachments' }],
+  reporting:    [{ cat:'Analytics',       name:'Custom Dashboard', desc:'Real-time KPI dashboard pulling from all your tools into one view' },
+                 { cat:'Data',            name:'Google Looker Studio', desc:'Free, powerful reporting that turns raw data into clear insights' }],
+  hardware:     [{ cat:'Infrastructure',  name:'Managed Workstations', desc:'Properly spec\'d, configured, and maintained machines — zero surprises' },
+                 { cat:'Network',         name:'Ubiquiti / Cisco',    desc:'Business-grade networking that doesn\'t drop out during a client call' }],
+  comms:        [{ cat:'Communication',   name:'VoIP / RingCentral', desc:'Call routing, voicemail-to-email, SMS, and unified inbox' },
+                 { cat:'Messaging',       name:'Slack',              desc:'Structured internal communication — no more lost texts and DMs' }],
+  integrations: [{ cat:'Integration',     name:'Zapier / Make',      desc:'API connections between all your tools so data flows without copy-paste' },
+                 { cat:'Development',     name:'Custom Webhooks',    desc:'Direct integrations where no off-the-shelf connector exists' }],
+  scaling:      [{ cat:'Automation',      name:'n8n / Make',         desc:'Self-hosted workflow automation that scales with your operation' },
+                 { cat:'Infrastructure',  name:'AWS / GCP',          desc:'Cloud infrastructure that grows with your business — no hardware limits' }]
+};
+
+var industryBase = {
+  insurance:    [{ cat:'Compliance',    name:'Applied Epic / AMS360', desc:'Insurance-specific agency management system — policies, clients, renewals' }],
+  realestate:   [{ cat:'CRM',           name:'Follow Up Boss',        desc:'Real estate-specific CRM built for agents and teams' }],
+  retail:       [{ cat:'E-commerce',    name:'Shopify',               desc:'Unified online + in-person selling with inventory management' }],
+  service:      [{ cat:'Scheduling',    name:'Jobber / ServiceTitan', desc:'Field service management — jobs, invoicing, and dispatch in one place' }],
+  medical:      [{ cat:'Practice Mgmt', name:'DrChrono / Kareo',     desc:'HIPAA-compliant practice management and patient communication' }],
+  legal:        [{ cat:'Practice Mgmt', name:'Clio',                  desc:'Legal practice management — cases, billing, and client portal' }],
+  construction: [{ cat:'Project Mgmt',  name:'Procore / Buildertrend', desc:'Construction project management, scheduling, and subcontractor coordination' }],
+  other:        [{ cat:'Foundation',    name:'Google Workspace',      desc:'The productivity foundation every business needs — email, docs, drive' }]
+};
+
+function buildStack() {
+  if (!selectedIndustry) return;
+  if (selectedPains.length === 0) {
+    alert('Please select at least one pain point.');
+    return;
+  }
+
+  var tools = [];
+  var seen  = {};
+
+  // Add industry base tool
+  var base = industryBase[selectedIndustry] || industryBase.other;
+  base.forEach(function(t) {
+    if (!seen[t.name]) { tools.push(t); seen[t.name] = true; }
+  });
+
+  // Add pain point tools
+  selectedPains.forEach(function(pain) {
+    if (stackData[pain]) {
+      stackData[pain].forEach(function(t) {
+        if (!seen[t.name]) { tools.push(t); seen[t.name] = true; }
+      });
+    }
+  });
+
+  // Build grid HTML
+  var grid = document.getElementById('stackGrid');
+  grid.innerHTML = '';
+  tools.forEach(function(t) {
+    var div = document.createElement('div');
+    div.className = 'stack-tool';
+    div.innerHTML = '<div class="stack-tool-category">' + t.cat + '</div>' +
+                    '<div class="stack-tool-name">' + t.name + '</div>' +
+                    '<div class="stack-tool-desc">' + t.desc + '</div>';
+    grid.appendChild(div);
+  });
+
+  var industryNames = {
+    insurance:'Insurance', realestate:'Real Estate', retail:'Retail',
+    service:'Home Services', medical:'Medical', legal:'Legal',
+    construction:'Construction', other:'General Business'
+  };
+
+  document.getElementById('stackTitle').textContent = 'Your ' + industryNames[selectedIndustry] + ' Tech Stack';
+  document.getElementById('stackSub').textContent = 'Based on your ' + selectedPains.length + ' pain point' + (selectedPains.length > 1 ? 's' : '') + ', here\'s the exact stack we\'d deploy for you:';
+
+  var result = document.getElementById('stackResult');
+  result.classList.add('visible');
+  setTimeout(function() {
+    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+// ══════════════════════════════
+// TERMINAL ANIMATION
+// ══════════════════════════════
+var termLines = [
+  { type:'prompt', text:'favorable-odds deploy --client="Acme Corp" --type=full-stack' },
+  { type:'output', text:'' },
+  { type:'output', text:'  Favorable Odds Tech Solutions — System Deploy v2.4' },
+  { type:'dim',    text:'  ─────────────────────────────────────────────────' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [01/12] Assessing existing infrastructure...' },
+  { type:'success',text:'  ✓ Legacy systems mapped — 4 manual workflows identified' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [02/12] Configuring CRM environment...' },
+  { type:'success',text:'  ✓ HubSpot provisioned — 3 pipelines, 12 custom properties' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [03/12] Building lead capture layer...' },
+  { type:'success',text:'  ✓ Unbounce pages deployed — A/B test active' },
+  { type:'success',text:'  ✓ Form → CRM webhook configured (avg. response: 0.3s)' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [04/12] Automating follow-up sequences...' },
+  { type:'success',text:'  ✓ Brevo sequences live — Email + SMS triggers set' },
+  { type:'success',text:'  ✓ Lead response time: 48hr → 42 seconds' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [05/12] Connecting integrations...' },
+  { type:'success',text:'  ✓ Zapier flows active — CRM ↔ Calendar ↔ Slack ↔ Email' },
+  { type:'success',text:'  ✓ 0 manual copy-paste steps remaining' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [06/12] Deploying reporting dashboard...' },
+  { type:'success',text:'  ✓ Live KPI dashboard — revenue, leads, conversion, uptime' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [07/12] Hardware audit & optimization...' },
+  { type:'success',text:'  ✓ 4 workstations cleaned + optimized — avg. boot: 9s' },
+  { type:'success',text:'  ✓ Network upgraded — Ubiquiti APs deployed, 0 dead zones' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [08/12] Configuring VoIP + call routing...' },
+  { type:'success',text:'  ✓ Call routing live — voicemail-to-email active' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [09/12] Running system tests...' },
+  { type:'success',text:'  ✓ End-to-end lead flow: PASS' },
+  { type:'success',text:'  ✓ Automation triggers: PASS (12/12)' },
+  { type:'success',text:'  ✓ Uptime monitoring: ACTIVE' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [10/12] Documenting everything...' },
+  { type:'success',text:'  ✓ SOPs written — team training scheduled' },
+  { type:'output', text:'' },
+  { type:'warning',text:'  [11/12] Final checks...' },
+  { type:'success',text:'  ✓ Security audit: PASS' },
+  { type:'success',text:'  ✓ Backup systems: ACTIVE' },
+  { type:'output', text:'' },
+  { type:'highlight', text:'  ════════════════════════════════════════' },
+  { type:'highlight', text:'  ✦  DEPLOYMENT COMPLETE  ✦' },
+  { type:'highlight', text:'  ════════════════════════════════════════' },
+  { type:'output', text:'' },
+  { type:'success', text:'  Manual hours eliminated / week:    28 hrs' },
+  { type:'success', text:'  Lead response time improvement:    98.5%' },
+  { type:'success', text:'  Systems integrated:                7' },
+  { type:'success', text:'  Client satisfaction:               ✓ Very Happy' },
+  { type:'output', text:'' },
+  { type:'prompt',  text:'favorable-odds --status' },
+  { type:'success', text:'  All systems operational. Josh is on call.' },
+  { type:'output', text:'' },
+];
+
+var termEl      = document.getElementById('terminalBody');
+var cursorEl    = document.getElementById('termCursor');
+var lineIndex   = 0;
+var charIndex   = 0;
+var currentSpan = null;
+var typingSpeed = 18;
+var lineDelay   = 60;
+var restartDelay = 3000;
+
+function getClass(type) {
+  var map = {
+    prompt: 'terminal-prompt', cmd: 'terminal-cmd',
+    output: 'terminal-output', success: 'terminal-success',
+    warning: 'terminal-warning', highlight: 'terminal-highlight',
+    dim: 'terminal-dim'
+  };
+  return map[type] || 'terminal-output';
+}
+
+function nextLine() {
+  if (lineIndex >= termLines.length) {
+    setTimeout(restartTerminal, restartDelay);
+    return;
+  }
+  var line = termLines[lineIndex];
+  currentSpan = document.createElement('span');
+  currentSpan.className = 'terminal-line ' + getClass(line.type);
+  termEl.insertBefore(currentSpan, cursorEl);
+  charIndex = 0;
+
+  if (line.text === '') {
+    currentSpan.textContent = '\n';
+    lineIndex++;
+    setTimeout(nextLine, lineDelay);
+    return;
+  }
+
+  if (line.type === 'output' || line.type === 'success' || line.type === 'dim' || line.type === 'highlight') {
+    currentSpan.textContent = line.text + '\n';
+    lineIndex++;
+    setTimeout(nextLine, lineDelay);
+  } else {
+    typeChar(line);
+  }
+}
+
+function typeChar(line) {
+  if (charIndex < line.text.length) {
+    currentSpan.textContent = line.text.slice(0, charIndex + 1);
+    charIndex++;
+    setTimeout(function() { typeChar(line); }, typingSpeed);
+  } else {
+    currentSpan.textContent = line.text + '\n';
+    lineIndex++;
+    var delay = (line.type === 'prompt') ? 400 : lineDelay;
+    setTimeout(nextLine, delay);
+  }
+  // Auto-scroll
+  termEl.parentElement.scrollTop = termEl.parentElement.scrollHeight;
+}
+
+function restartTerminal() {
+  termEl.innerHTML = '';
+  termEl.appendChild(cursorEl);
+  lineIndex = 0;
+  charIndex = 0;
+  currentSpan = null;
+  nextLine();
+}
+
+// Start after short delay
+setTimeout(nextLine, 800);
+
+</script>
+</body>
+</html>
