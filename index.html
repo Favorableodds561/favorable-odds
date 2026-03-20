@@ -653,6 +653,53 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
   .footer-links { flex-wrap: wrap; gap: 16px; }
   .footer-links a { font-size: 13px; }
   .footer-copy { font-size: 11px; line-height: 1.7; }
+
+  /* ── MOBILE BACKGROUND IMAGE TUNING ──
+     Each section gets its own size + focal point
+     so the most interesting part of each illustration
+     is always centered and visible on a phone screen  */
+
+  /* Hero — center the two coin faces */
+  .hero {
+    background-size: 180% auto;
+    background-position: center 40%;
+  }
+
+  /* About — center the illustration */
+  .about {
+    background-size: 220% auto;
+    background-position: center 30%;
+  }
+
+  /* What We Build — dark section, keep centered */
+  .what-we-build {
+    background-size: 200% auto;
+    background-position: center center;
+  }
+
+  /* Services — center the illustration */
+  .services {
+    background-size: 250% auto;
+    background-position: center 40%;
+  }
+
+  /* Advanced / Lead Gen */
+  .advanced {
+    background-size: 220% auto;
+    background-position: center 35%;
+  }
+
+  /* Process — center */
+  .how-it-works {
+    background-size: 200% auto;
+    background-position: center center;
+  }
+
+  /* Tech Stack — center */
+  .tech-stack {
+    background-size: 220% auto;
+    background-position: center 40%;
+  }
 }
 </style>
 </head>
@@ -1012,6 +1059,7 @@ document.querySelectorAll('[data-target]').forEach(function(el) { statsObserver.
 // ══════════════════════════════
 var parallaxSections = document.querySelectorAll('.about, .services, .how-it-works, .tech-stack, .advanced');
 window.addEventListener('scroll', function() {
+  if (window.innerWidth <= 900) return; // disable on mobile
   parallaxSections.forEach(function(section) {
     var rect = section.getBoundingClientRect();
     var offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * 0.08;
