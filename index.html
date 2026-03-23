@@ -1406,7 +1406,7 @@ function submitAudit() {
     email:     'hello@favorableodds.io'
   };
 
-  emailjs.send('service_blx7dqd', '31sfdwo', templateParams)
+  emailjs.send('service_blx7dqd', 'template_mk4t2nm', templateParams)
   .then(function(response) {
     console.log('EmailJS success:', response.status, response.text);
     document.getElementById('auditForm').style.display    = 'none';
