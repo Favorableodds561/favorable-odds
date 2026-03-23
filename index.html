@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('YVFMPQh2ifuDyFMUq');</script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -1378,35 +1380,37 @@ document.getElementById('navOverlay').addEventListener('click', function(e) {
 });
 
 // ══════════════════════════════
-// FREE AUDIT FORM
+// FREE AUDIT FORM — EmailJS
 // ══════════════════════════════
 function submitAudit() {
-  var name   = document.getElementById('auditName').value.trim();
-  var biz    = document.getElementById('auditBiz').value.trim();
-  var tools  = document.getElementById('auditTools').value.trim();
-  var pain   = document.getElementById('auditPain').value.trim();
+  var name  = document.getElementById('auditName').value.trim();
+  var biz   = document.getElementById('auditBiz').value.trim();
+  var tools = document.getElementById('auditTools').value.trim();
+  var pain  = document.getElementById('auditPain').value.trim();
 
   if (!name || !biz || !pain) {
     alert('Please fill in your name, business, and biggest headache — that\'s all we need.');
     return;
   }
 
-  var subject = 'Free Tech Audit Request — ' + name + ' (' + biz + ')';
-  var body    = 'NAME: ' + name + '\n\n'
-              + 'BUSINESS / INDUSTRY: ' + biz + '\n\n'
-              + 'CURRENT TOOLS: ' + (tools || 'Not specified') + '\n\n'
-              + 'BIGGEST TECH HEADACHE:\n' + pain + '\n\n'
-              + '---\nSent from favorableodds.io Free Audit Form';
+  var btn = document.querySelector('.audit-submit');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
 
-  window.location.href = 'mai' + 'lto:hello@favorableodds.io'
-    + '?subject=' + encodeURIComponent(subject)
-    + '&body='    + encodeURIComponent(body);
-
-  // Show success state after short delay
-  setTimeout(function() {
+  emailjs.send('service_blx7dqd', '31sfdwo', {
+    from_name: name,
+    business:  biz,
+    tools:     tools || 'Not specified',
+    pain:      pain
+  }).then(function() {
     document.getElementById('auditForm').style.display    = 'none';
     document.getElementById('auditSuccess').style.display = 'block';
-  }, 800);
+  }, function(error) {
+    btn.textContent = 'Send My Free Audit Request →';
+    btn.disabled = false;
+    alert('Something went wrong — please email us directly at hello@favorableodds.io');
+    console.error('EmailJS error:', error);
+  });
 }
 
 </script>
