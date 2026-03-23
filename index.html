@@ -1397,19 +1397,25 @@ function submitAudit() {
   btn.textContent = 'Sending...';
   btn.disabled = true;
 
-  emailjs.send('service_blx7dqd', '31sfdwo', {
+  var templateParams = {
     from_name: name,
+    name:      name,
     business:  biz,
     tools:     tools || 'Not specified',
-    pain:      pain
-  }).then(function() {
+    pain:      pain,
+    email:     'hello@favorableodds.io'
+  };
+
+  emailjs.send('service_blx7dqd', '31sfdwo', templateParams)
+  .then(function(response) {
+    console.log('EmailJS success:', response.status, response.text);
     document.getElementById('auditForm').style.display    = 'none';
     document.getElementById('auditSuccess').style.display = 'block';
   }, function(error) {
+    console.error('EmailJS error:', JSON.stringify(error));
     btn.textContent = 'Send My Free Audit Request →';
     btn.disabled = false;
-    alert('Something went wrong — please email us directly at hello@favorableodds.io');
-    console.error('EmailJS error:', error);
+    alert('Error ' + (error.status || '') + ': ' + (error.text || 'Send failed') + '\n\nPlease email us directly at hello@favorableodds.io');
   });
 }
 
