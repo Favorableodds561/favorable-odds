@@ -143,6 +143,8 @@ tfoot td{padding:10px 14px;}
     <button class="hbtn new" onclick="toggleNewClient()">＋ New Client</button>
     <button class="hbtn r"   onclick="deleteCurrentClient()">🗑 Delete Client</button>
     <button class="hbtn g"   onclick="exportBackup()">💾 Backup</button>
+    <button class="hbtn g"   onclick="saveData()" title="Manually save all data to browser storage">💾 Save</button>
+    <button class="hbtn g"   onclick="exportBackup()">📤 Backup</button>
     <button class="hbtn"     onclick="triggerImport()">📂 Restore</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
   </div>
@@ -264,8 +266,8 @@ tfoot td{padding:10px 14px;}
         </div>
         <div id="csvRows"></div>
         <div class="brow" style="margin-top:1.5rem">
-          <button class="bp" onclick="importAllPending()">✓ Add All Pending as Expenses</button>
-          <button class="bo" onclick="clearCSVImport()">Clear</button>
+          <button class="bp" onclick="importAllPending()">✓ Add All Remaining Pending as Expenses</button>
+          <button class="bo" onclick="clearCSVImport()">Clear &amp; Reset</button>
         </div>
       </div>
     </div>
@@ -651,7 +653,7 @@ function txRow(t, showDelete) {
     '<td>' + t.cat + '</td>' +
     '<td style="color:var(--muted)">' + (t.desc || '—') + '</td>' +
     '<td class="' + (isInc ? 'ap' : 'an') + '" style="text-align:right">' + (isInc ? '+' : '−') + fmt(t.amt) + '</td>' +
-    (showDelete ? '<td><button class="bd" onclick="deleteTx(\'' + t.id + '\')">Delete</button></td>' : '<td></td>') +
+    (showDelete ? '<td><button class="bd" onclick="deleteTx('' + t.id + '')">Delete</button></td>' : '<td></td>') +
     '</tr>';
 }
 
@@ -718,6 +720,10 @@ function renderLedger() {
 }
 
 // ── CSV IMPORT ─────────────────────────────────────────────────
+var CSV_PAGE_SIZE = 50;
+var csvPage = 0;
+var selectedRows = {};  // idx -> true
+
 function parseCSVLine(line) {
   var row = [], inQ = false, cell = '';
   for (var c = 0; c < line.length; c++) {
@@ -743,12 +749,9 @@ function parseCSV(text) {
 function normalizeDate(d) {
   if (!d) return '';
   d = d.trim().replace(/"/g, '');
-  // YYYY-MM-DD already good
   if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
-  // MM/DD/YYYY or MM-DD-YYYY
   var m = d.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
   if (m) return m[3] + '-' + m[1].padStart(2,'0') + '-' + m[2].padStart(2,'0');
-  // MM/DD/YY
   var m2 = d.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2})$/);
   if (m2) return '20' + m2[3] + '-' + m2[1].padStart(2,'0') + '-' + m2[2].padStart(2,'0');
   return d;
@@ -765,6 +768,8 @@ function loadCSVFile(e) {
     var nCol = parseInt($('csvDescCol').value);
     var aCol = parseInt($('csvAmtCol').value);
     csvRows = [];
+    selectedRows = {};
+    csvPage = 0;
     for (var i = skip; i < rows.length; i++) {
       var row = rows[i];
       if (!row || row.length < 2) continue;
@@ -773,53 +778,268 @@ function loadCSVFile(e) {
       var amtRaw  = (row[aCol] || '').replace(/[^\d.\-]/g, '').trim();
       var amt     = Math.abs(parseFloat(amtRaw));
       if (!desc && !dateRaw) continue;
-      csvRows.push({ dateRaw: dateRaw, desc: desc, amt: isNaN(amt) ? 0 : amt, status: 'pending', type: 'expense', cat: 'Other Expenses' });
+      csvRows.push({
+        dateRaw: dateRaw, desc: desc,
+        amt: isNaN(amt) ? 0 : amt,
+        status: 'pending', type: 'expense', cat: 'Other Expenses'
+      });
     }
     renderCSVRows();
   };
   reader.readAsText(file);
 }
 
-function renderCSVRows() {
-  var preview = $('csvPreview');
-  var rowDiv  = $('csvRows');
-  if (!csvRows.length) { preview.style.display = 'none'; showToast('No rows found. Check column settings.', 'e'); return; }
-  preview.style.display = 'block';
-  var pending = 0, added = 0, skipped = 0;
+function csvCounters() {
+  var pending = 0, added = 0, skipped = 0, sel = 0;
   for (var x = 0; x < csvRows.length; x++) {
     if (csvRows[x].status === 'pending') pending++;
     else if (csvRows[x].status === 'added') added++;
     else skipped++;
   }
-  $('csvProgress').textContent = pending + ' pending · ' + added + ' added · ' + skipped + ' skipped';
+  for (var k in selectedRows) { if (selectedRows[k]) sel++; }
+  return { pending: pending, added: added, skipped: skipped, selected: sel };
+}
+
+function renderCSVRows() {
+  var preview = $('csvPreview');
+  var rowDiv  = $('csvRows');
+  if (!csvRows.length) {
+    preview.style.display = 'none';
+    showToast('No rows found. Check column settings.', 'e');
+    return;
+  }
+  preview.style.display = 'block';
+
+  var c = csvCounters();
+  $('csvProgress').textContent = c.pending + ' pending · ' + c.added + ' added · ' + c.skipped + ' skipped' +
+    (c.selected ? ' · ' + c.selected + ' selected' : '');
+
   var catOpts = buildCatOptions(EXPENSE_GROUPS);
+  var totalPages = Math.ceil(csvRows.length / CSV_PAGE_SIZE);
+  var startIdx = csvPage * CSV_PAGE_SIZE;
+  var endIdx = Math.min(startIdx + CSV_PAGE_SIZE, csvRows.length);
+
   var h = '';
-  for (var i = 0; i < csvRows.length; i++) {
-    var row = csvRows[i];
-    var done = row.status !== 'pending';
-    var bc = row.status === 'added' ? 'var(--green)' : row.status === 'skipped' ? 'var(--muted)' : 'var(--border)';
-    var op = done ? '0.55' : '1';
-    h += '<div style="border:1px solid ' + bc + ';border-radius:var(--r);padding:12px 14px;margin-bottom:10px;opacity:' + op + ';background:rgba(10,18,30,.85)">';
-    h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px">';
-    h += '<div style="font-size:13px;color:var(--dim)">' + (row.dateRaw || '—') + ' &nbsp;·&nbsp; <span style="color:var(--white)">' + (row.desc || '—') + '</span></div>';
-    h += '<div style="font-size:15px;font-weight:700;color:var(--gold)">$' + (row.amt || 0).toFixed(2) + '</div>';
-    h += '</div>';
-    if (!done) {
-      h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
-      h += '<select id="csvCat_' + i + '" style="flex:1;min-width:180px;font-size:12px;padding:6px 10px">' + catOpts + '</select>';
-      h += '<button class="hbtn new" onclick="csvAction(' + i + ',\'income\')" style="font-size:12px;padding:5px 12px">⬆ Income</button>';
-      h += '<button class="hbtn r"   onclick="csvAction(' + i + ',\'expense\')" style="font-size:12px;padding:5px 12px">⬇ Expense</button>';
-      h += '<button class="hbtn"     onclick="csvAction(' + i + ',\'skip\')" style="font-size:12px;padding:5px 12px">Skip</button>';
-      h += '</div>';
-    } else {
-      var lbl = row.status === 'added'
-        ? '<span style="color:var(--green)">✓ ' + row.type + ' — ' + row.cat + '</span>'
-        : '<span style="color:var(--muted)">— Skipped</span>';
-      h += '<div style="font-size:12px;margin-top:4px">' + lbl + '</div>';
+
+  // ── BATCH TOOLBAR ────────────────────────────────────────────
+  h += '<div style="background:rgba(8,14,22,.95);border:1px solid var(--bgold);border-radius:var(--r);padding:12px 16px;margin-bottom:14px">';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px">';
+  h += '<span style="font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;margin-right:4px">Batch Actions</span>';
+  h += '<button class="hbtn" onclick="csvSelectAll(true)"  style="font-size:11px;padding:4px 10px">☑ Select All Pending</button>';
+  h += '<button class="hbtn" onclick="csvSelectAll(false)" style="font-size:11px;padding:4px 10px">☐ Deselect All</button>';
+  h += '<button class="hbtn new" onclick="csvBatchAction('income')"  style="font-size:11px;padding:4px 10px">⬆ Add Selected as Income</button>';
+  h += '<button class="hbtn r"   onclick="csvBatchAction('expense')" style="font-size:11px;padding:4px 10px">⬇ Add Selected as Expense</button>';
+  h += '<button class="hbtn"     onclick="csvBatchAction('skip')"    style="font-size:11px;padding:4px 10px">✕ Skip Selected</button>';
+  h += '</div>';
+
+  // Global category for batch
+  h += '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">';
+  h += '<span style="font-size:11px;color:var(--muted);white-space:nowrap">Batch category:</span>';
+  h += '<select id="csvBatchCat" style="flex:1;min-width:200px;font-size:12px;padding:6px 10px">' + catOpts + '</select>';
+  h += '<button class="hbtn" onclick="csvBatchApplyCat()" style="font-size:11px;padding:4px 10px">Apply to Selected</button>';
+  h += '</div>';
+  h += '</div>';
+
+  // ── FILTER BAR ───────────────────────────────────────────────
+  h += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">';
+  h += '<span style="font-size:11px;color:var(--muted)">Show:</span>';
+  h += '<button class="hbtn" id="flt_all"     onclick="csvSetFilter('all')"     style="font-size:11px;padding:4px 10px">All (' + csvRows.length + ')</button>';
+  h += '<button class="hbtn" id="flt_pending" onclick="csvSetFilter('pending')" style="font-size:11px;padding:4px 10px">Pending (' + c.pending + ')</button>';
+  h += '<button class="hbtn" id="flt_added"   onclick="csvSetFilter('added')"   style="font-size:11px;padding:4px 10px">Added (' + c.added + ')</button>';
+  h += '<button class="hbtn" id="flt_skipped" onclick="csvSetFilter('skipped')" style="font-size:11px;padding:4px 10px">Skipped (' + c.skipped + ')</button>';
+  h += '<input type="text" id="csvSearch" placeholder="Search description..." oninput="csvSearchFilter()" style="flex:1;min-width:160px;font-size:12px;padding:6px 10px">';
+  h += '</div>';
+
+  // ── ROWS ─────────────────────────────────────────────────────
+  var visibleRows = csvGetVisible();
+  var totalVis = visibleRows.length;
+  var totalVisPages = Math.ceil(totalVis / CSV_PAGE_SIZE);
+  var visStart = csvPage * CSV_PAGE_SIZE;
+  var visEnd = Math.min(visStart + CSV_PAGE_SIZE, totalVis);
+  var pageRows = visibleRows.slice(visStart, visEnd);
+
+  if (!totalVis) {
+    h += '<div class="es"><div class="ei">🔍</div><p>No rows match the current filter.</p></div>';
+  } else {
+    for (var p = 0; p < pageRows.length; p++) {
+      var i = pageRows[p].originalIdx;
+      var row = csvRows[i];
+      var done = row.status !== 'pending';
+      var isSel = selectedRows[i] ? true : false;
+      var bc = isSel ? 'var(--gold)' : (row.status === 'added' ? 'var(--green)' : row.status === 'skipped' ? 'var(--slate-dim,#4a6070)' : 'var(--border)');
+      var bg = isSel ? 'rgba(232,185,74,0.08)' : 'rgba(10,18,30,.85)';
+
+      h += '<div style="border:1px solid ' + bc + ';border-radius:var(--r);padding:10px 12px;margin-bottom:8px;background:' + bg + ';transition:all .15s">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">';
+
+      // Checkbox + info
+      h += '<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">';
+      if (!done) {
+        h += '<input type="checkbox" id="chk_' + i + '" ' + (isSel ? 'checked' : '') + ' onchange="csvToggleSel(' + i + ')" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0">';
+      } else {
+        h += '<div style="width:16px;flex-shrink:0"></div>';
+      }
+      h += '<div style="min-width:0">';
+      h += '<div style="font-size:12px;color:var(--muted)">' + (row.dateRaw || '—') + '</div>';
+      h += '<div style="font-size:13px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px">' + (row.desc || '—') + '</div>';
+      if (done) {
+        var lbl = row.status === 'added'
+          ? '<span style="color:var(--green);font-size:11px">✓ ' + row.type + ' — ' + row.cat + '</span>'
+          : '<span style="color:var(--muted);font-size:11px">— Skipped</span>';
+        h += lbl;
+      }
+      h += '</div></div>';
+
+      // Amount + actions
+      h += '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
+      h += '<div style="font-size:15px;font-weight:700;color:var(--gold);min-width:60px;text-align:right">$' + (row.amt || 0).toFixed(2) + '</div>';
+      if (!done) {
+        h += '<select id="csvCat_' + i + '" style="width:170px;font-size:11px;padding:5px 8px">' + catOpts + '</select>';
+        h += '<button class="hbtn new" onclick="csvAction(' + i + ','income')"  style="font-size:11px;padding:4px 9px">⬆</button>';
+        h += '<button class="hbtn r"   onclick="csvAction(' + i + ','expense')" style="font-size:11px;padding:4px 9px">⬇</button>';
+        h += '<button class="hbtn"     onclick="csvAction(' + i + ','skip')"    style="font-size:11px;padding:4px 9px">✕</button>';
+      } else {
+        h += '<button class="hbtn" onclick="csvUndo(' + i + ')" style="font-size:11px;padding:4px 9px;color:var(--muted)">Undo</button>';
+      }
+      h += '</div></div></div>';
     }
+  }
+
+  // ── PAGINATION ───────────────────────────────────────────────
+  if (totalVisPages > 1) {
+    h += '<div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap">';
+    h += '<button class="hbtn" onclick="csvGoPage(' + (csvPage - 1) + ')" ' + (csvPage === 0 ? 'disabled style="opacity:.4"' : '') + ' style="font-size:12px;padding:5px 12px">← Prev</button>';
+    var maxBtns = 7;
+    var half = Math.floor(maxBtns / 2);
+    var pStart = Math.max(0, csvPage - half);
+    var pEnd   = Math.min(totalVisPages - 1, pStart + maxBtns - 1);
+    if (pEnd - pStart < maxBtns - 1) pStart = Math.max(0, pEnd - maxBtns + 1);
+    if (pStart > 0) h += '<button class="hbtn" onclick="csvGoPage(0)" style="font-size:12px;padding:5px 10px">1</button><span style="color:var(--muted)">…</span>';
+    for (var pg = pStart; pg <= pEnd; pg++) {
+      var active = pg === csvPage ? 'background:var(--gold);color:var(--bg);border-color:var(--gold);' : '';
+      h += '<button class="hbtn" onclick="csvGoPage(' + pg + ')" style="font-size:12px;padding:5px 10px;' + active + '">' + (pg + 1) + '</button>';
+    }
+    if (pEnd < totalVisPages - 1) h += '<span style="color:var(--muted)">…</span><button class="hbtn" onclick="csvGoPage(' + (totalVisPages-1) + ')" style="font-size:12px;padding:5px 10px">' + totalVisPages + '</button>';
+    h += '<button class="hbtn" onclick="csvGoPage(' + (csvPage + 1) + ')" ' + (csvPage >= totalVisPages - 1 ? 'disabled style="opacity:.4"' : '') + ' style="font-size:12px;padding:5px 12px">Next →</button>';
+    h += '<span style="font-size:12px;color:var(--muted)">Page ' + (csvPage+1) + ' of ' + totalVisPages + ' (' + totalVis + ' rows)</span>';
     h += '</div>';
   }
+
   rowDiv.innerHTML = h;
+  highlightActiveFilter();
+}
+
+// Current filter/search state
+var csvFilter = 'all';
+var csvSearchTerm = '';
+
+function csvSetFilter(f) {
+  csvFilter = f;
+  csvPage = 0;
+  selectedRows = {};
+  renderCSVRows();
+}
+
+function csvSearchFilter() {
+  var inp = $('csvSearch');
+  csvSearchTerm = inp ? inp.value.toLowerCase() : '';
+  csvPage = 0;
+  renderCSVRows();
+}
+
+function highlightActiveFilter() {
+  var ids = ['flt_all','flt_pending','flt_added','flt_skipped'];
+  var map  = ['all','pending','added','skipped'];
+  for (var i = 0; i < ids.length; i++) {
+    var el = $(ids[i]);
+    if (!el) continue;
+    if (map[i] === csvFilter) {
+      el.style.background = 'var(--gold)';
+      el.style.color = 'var(--bg)';
+      el.style.borderColor = 'var(--gold)';
+    } else {
+      el.style.background = '';
+      el.style.color = '';
+      el.style.borderColor = '';
+    }
+  }
+}
+
+function csvGetVisible() {
+  var vis = [];
+  for (var i = 0; i < csvRows.length; i++) {
+    var row = csvRows[i];
+    if (csvFilter !== 'all' && row.status !== csvFilter) continue;
+    if (csvSearchTerm && (row.desc || '').toLowerCase().indexOf(csvSearchTerm) === -1 &&
+        (row.dateRaw || '').toLowerCase().indexOf(csvSearchTerm) === -1) continue;
+    vis.push({ originalIdx: i, row: row });
+  }
+  return vis;
+}
+
+function csvGoPage(p) {
+  var vis = csvGetVisible();
+  var total = Math.ceil(vis.length / CSV_PAGE_SIZE);
+  if (p < 0 || p >= total) return;
+  csvPage = p;
+  renderCSVRows();
+}
+
+function csvToggleSel(idx) {
+  selectedRows[idx] = !selectedRows[idx];
+  renderCSVRows();
+}
+
+function csvSelectAll(val) {
+  var vis = csvGetVisible();
+  for (var i = 0; i < vis.length; i++) {
+    var idx = vis[i].originalIdx;
+    if (csvRows[idx].status === 'pending') selectedRows[idx] = val;
+  }
+  renderCSVRows();
+}
+
+function csvBatchAction(action) {
+  if (!appState.currentClient) { showToast('Select a client first.', 'e'); return; }
+  var cat = $('csvBatchCat') ? $('csvBatchCat').value : 'Other Expenses';
+  var count = 0;
+  var txs = getClientTxs();
+  for (var k in selectedRows) {
+    if (!selectedRows[k]) continue;
+    var i = parseInt(k);
+    var row = csvRows[i];
+    if (row.status !== 'pending') continue;
+    if (action === 'skip') {
+      row.status = 'skipped';
+    } else {
+      txs.push({
+        id: 'tx_' + Date.now() + '_' + i,
+        date: normalizeDate(row.dateRaw),
+        type: action, cat: cat,
+        amt: row.amt, desc: row.desc,
+        addedAt: new Date().toISOString()
+      });
+      row.status = 'added'; row.type = action; row.cat = cat;
+    }
+    count++;
+  }
+  setClientTxs(txs);
+  if (action !== 'skip') saveData();
+  selectedRows = {};
+  renderCSVRows();
+  showToast((action === 'skip' ? 'Skipped ' : 'Added ') + count + ' transaction(s).', 's');
+}
+
+function csvBatchApplyCat() {
+  var cat = $('csvBatchCat') ? $('csvBatchCat').value : 'Other Expenses';
+  var count = 0;
+  for (var k in selectedRows) {
+    if (!selectedRows[k]) continue;
+    var i = parseInt(k);
+    var catSel = $('csvCat_' + i);
+    if (catSel) { catSel.value = cat; count++; }
+  }
+  showToast('Category applied to ' + count + ' row(s).', 's');
 }
 
 function csvAction(idx, action) {
@@ -830,47 +1050,66 @@ function csvAction(idx, action) {
   } else {
     var catSel = $('csvCat_' + idx);
     var cat = catSel ? catSel.value : 'Other Expenses';
-    var tx = {
+    var txs = getClientTxs();
+    txs.push({
       id: 'tx_' + Date.now() + '_' + idx,
       date: normalizeDate(row.dateRaw),
       type: action, cat: cat,
       amt: row.amt, desc: row.desc,
       addedAt: new Date().toISOString()
-    };
-    var txs = getClientTxs(); txs.push(tx); setClientTxs(txs); saveData();
+    });
+    setClientTxs(txs); saveData();
     row.status = 'added'; row.type = action; row.cat = cat;
   }
+  selectedRows[idx] = false;
+  renderCSVRows();
+}
+
+function csvUndo(idx) {
+  var row = csvRows[idx];
+  if (row.status === 'added') {
+    // Remove from txs
+    var txs = getClientTxs().filter(function(t) {
+      return t.id.indexOf('_' + idx) === -1 || t.desc !== row.desc;
+    });
+    setClientTxs(txs); saveData();
+  }
+  row.status = 'pending'; row.type = 'expense'; row.cat = 'Other Expenses';
   renderCSVRows();
 }
 
 function importAllPending() {
   if (!appState.currentClient) { showToast('Select a client first.', 'e'); return; }
+  var cat = $('csvBatchCat') ? $('csvBatchCat').value : 'Other Expenses';
   var added = 0;
+  var txs = getClientTxs();
   for (var i = 0; i < csvRows.length; i++) {
     if (csvRows[i].status !== 'pending') continue;
-    var catSel = $('csvCat_' + i);
-    var cat = catSel ? catSel.value : 'Other Expenses';
-    var tx = {
+    var rowCatSel = $('csvCat_' + i);
+    var rowCat = rowCatSel ? rowCatSel.value : cat;
+    txs.push({
       id: 'tx_' + Date.now() + '_' + i,
       date: normalizeDate(csvRows[i].dateRaw),
-      type: 'expense', cat: cat,
+      type: 'expense', cat: rowCat,
       amt: csvRows[i].amt, desc: csvRows[i].desc,
       addedAt: new Date().toISOString()
-    };
-    var txs = getClientTxs(); txs.push(tx); setClientTxs(txs); saveData();
-    csvRows[i].status = 'added'; csvRows[i].type = 'expense'; csvRows[i].cat = cat;
+    });
+    csvRows[i].status = 'added'; csvRows[i].type = 'expense'; csvRows[i].cat = rowCat;
     added++;
   }
+  setClientTxs(txs); saveData();
   renderCSVRows();
   showToast('Added ' + added + ' transactions!', 's');
 }
 
 function clearCSVImport() {
-  csvRows = [];
+  csvRows = []; selectedRows = {}; csvPage = 0;
+  csvFilter = 'all'; csvSearchTerm = '';
   $('csvRows').innerHTML = '';
   $('csvPreview').style.display = 'none';
   $('csvImportFile').value = '';
 }
+
 
 // ── CSV EXPORT ─────────────────────────────────────────────────
 function dlCSV(rows, filename) {
@@ -1004,7 +1243,7 @@ function renderReport() {
     '<div class="bg"><div class="bc"><div class="bh inc">Income Breakdown</div>' + breakdownTable(iC, tI) + '</div>' +
     '<div class="bc"><div class="bh exp">Expense Breakdown</div>' + breakdownTable(eC, tE) + '</div></div>' +
     '<div class="sc">' +
-    '<div style="font-family:\'DM Serif Display\',serif;font-size:17px;margin-bottom:1rem;color:var(--gold2)">Summary Statement</div>' +
+    '<div style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:1rem;color:var(--gold2)">Summary Statement</div>' +
     '<div class="sr"><span style="color:var(--dim)">Gross Income</span><span style="color:var(--green);font-weight:600">' + fmt(tI) + '</span></div>' +
     '<div class="sr"><span style="color:var(--muted)">Less: Total Expenses</span><span style="color:var(--red)">(' + fmt(tE) + ')</span></div>' +
     '<div class="sr tot"><span class="lb">Net ' + (net >= 0 ? 'Profit' : 'Loss') + '</span><span class="am" style="color:' + (net >= 0 ? 'var(--green)' : 'var(--red)') + '">' + fmt(Math.abs(net)) + '</span></div>' +
