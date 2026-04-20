@@ -1245,7 +1245,7 @@ function renderReport() {
     '<div class="bg"><div class="bc"><div class="bh inc">Income Breakdown</div>' + breakdownTable(iC, tI) + '</div>' +
     '<div class="bc"><div class="bh exp">Expense Breakdown</div>' + breakdownTable(eC, tE) + '</div></div>' +
     '<div class="sc">' +
-    '<div style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:1rem;color:var(--gold2)">Summary Statement</div>' +
+    '<div style="font-family:DM Serif Display,serif;font-size:17px;margin-bottom:1rem;color:var(--gold2)">Summary Statement</div>' +
     '<div class="sr"><span style="color:var(--dim)">Gross Income</span><span style="color:var(--green);font-weight:600">' + fmt(tI) + '</span></div>' +
     '<div class="sr"><span style="color:var(--muted)">Less: Total Expenses</span><span style="color:var(--red)">(' + fmt(tE) + ')</span></div>' +
     '<div class="sr tot"><span class="lb">Net ' + (net >= 0 ? 'Profit' : 'Loss') + '</span><span class="am" style="color:' + (net >= 0 ? 'var(--green)' : 'var(--red)') + '">' + fmt(Math.abs(net)) + '</span></div>' +
