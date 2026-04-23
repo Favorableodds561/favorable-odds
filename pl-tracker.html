@@ -150,15 +150,71 @@ tfoot td{padding:10px 14px;}
 .qi-preview-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);padding:7px 10px;border-bottom:1px solid var(--bgold);}
 .qi-preview-table td{padding:9px 10px;font-size:13px;color:var(--dim);border-bottom:1px solid var(--border);}
 .qi-preview-table td.r{text-align:right;color:var(--white);font-weight:500;}
-.qi-preview-totals{background:rgba(10,18,30,.70);border-radius:var(--r);padding:.9rem 1.1rem;float:right;min-width:240px;margin-bottom:1rem;}
+.qi-preview-totals{width:100%;border-top:1px solid var(--bgold);margin-top:0;margin-bottom:1rem;clear:both;}
 .qi-preview-totals table{width:100%;border-collapse:collapse;}
-.qi-preview-totals td{padding:4px 0;font-size:13px;color:var(--dim);}
-.qi-preview-totals td:last-child{text-align:right;color:var(--white);}
+.qi-preview-totals td{padding:7px 10px;font-size:13px;color:var(--dim);border-bottom:1px solid var(--border);}
+.qi-preview-totals td:last-child{text-align:right;color:var(--white);font-variant-numeric:tabular-nums;}
 .qi-preview-totals tr.grand td{font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold2);padding-top:9px;border-top:1px solid var(--bgold);}
 .qi-preview-totals tr.grand td:last-child{color:var(--green);}
 .qi-preview-note{clear:both;font-size:12px;color:var(--muted);line-height:1.6;padding:10px 14px;background:rgba(10,18,30,.70);border-radius:var(--r);margin-top:8px;}
 .qi-preview-footer{margin-top:1.25rem;text-align:center;font-size:11px;color:var(--muted);padding-top:.9rem;border-top:1px solid var(--border);}
-@media print{header,.tab-bar,.fb,.brow,button{display:none!important;}body{background:#fff;color:#000;}body::before{display:none;}#view-report{background:#fff;border:none;}}
+@media print{
+  /* Hide all chrome */
+  header,.tab-bar,.fb,.brow,button,
+  #view-entry,#view-import,#view-ledger,#view-report,
+  #view-quotes .card,#view-invoices .card,
+  #view-quotes>div:first-child,
+  #view-invoices .inv-metrics,
+  #view-invoices>div:nth-child(2),
+  #qg_preview .brow,#inv_preview .brow,
+  .toast{display:none!important;}
+  /* Full-page body */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#fff!important;color:#1a1a1a!important;font-family:'DM Sans',sans-serif;font-size:13px;}
+  body::before{display:none!important;}
+  main{max-width:100%!important;margin:0!important;padding:0!important;}
+  /* Show only the active preview */
+  #qg_preview,#inv_preview{
+    display:block!important;
+    background:#fff!important;
+    border:none!important;
+    padding:32px 40px!important;
+    margin:0!important;
+    width:100%!important;
+    box-shadow:none!important;
+  }
+  /* Preview header */
+  .qi-preview-hdr{display:flex!important;justify-content:space-between!important;margin-bottom:24px!important;border-bottom:2px solid #c8963c!important;padding-bottom:16px!important;}
+  .qi-preview-co{font-size:22px!important;color:#1a1a1a!important;font-weight:700!important;}
+  .qi-preview-sub{font-size:11px!important;color:#555!important;margin-top:4px!important;line-height:1.6!important;}
+  .qi-preview-meta{text-align:right!important;font-size:12px!important;color:#555!important;line-height:1.8!important;}
+  .qi-preview-meta strong{font-size:16px!important;color:#1a1a1a!important;display:block!important;margin-bottom:4px!important;}
+  /* Client box */
+  .qi-preview-client-box{border-left:4px solid #c8963c!important;padding:10px 14px!important;margin-bottom:20px!important;background:#fdf8ee!important;}
+  .qi-preview-client-box div:first-child{font-size:15px!important;font-weight:700!important;color:#1a1a1a!important;}
+  .qi-preview-client-box div:last-child{font-size:12px!important;color:#555!important;}
+  /* Line items table — full width */
+  .qi-preview-table{width:100%!important;border-collapse:collapse!important;margin-bottom:0!important;}
+  .qi-preview-table th{background:#f5f0e8!important;color:#7a5c1e!important;font-size:10px!important;text-transform:uppercase!important;letter-spacing:.06em!important;padding:8px 12px!important;border-bottom:2px solid #c8963c!important;text-align:left!important;}
+  .qi-preview-table th:not(:first-child){text-align:right!important;}
+  .qi-preview-table td{padding:9px 12px!important;border-bottom:1px solid #e8e0d0!important;color:#1a1a1a!important;font-size:13px!important;}
+  .qi-preview-table td.r{text-align:right!important;color:#1a1a1a!important;}
+  /* Totals — full width, no float */
+  .qi-preview-totals{float:none!important;min-width:unset!important;width:100%!important;border-top:2px solid #c8963c!important;border-radius:0!important;padding:0!important;background:transparent!important;margin-top:0!important;}
+  .qi-preview-totals table{width:100%!important;border-collapse:collapse!important;}
+  .qi-preview-totals td{padding:7px 12px!important;color:#333!important;font-size:13px!important;border-bottom:1px solid #e8e0d0!important;}
+  .qi-preview-totals td:first-child{text-align:left!important;}
+  .qi-preview-totals td:last-child{text-align:right!important;color:#1a1a1a!important;}
+  .qi-preview-totals tr.grand td{font-size:16px!important;font-weight:700!important;color:#1a1a1a!important;background:#f5f0e8!important;padding:10px 12px!important;border-top:2px solid #c8963c!important;}
+  .qi-preview-totals tr.grand td:last-child{color:#16a34a!important;}
+  /* Notes */
+  .qi-preview-note{background:#fdf8ee!important;border-left:3px solid #c8963c!important;padding:10px 14px!important;font-size:12px!important;color:#333!important;margin-top:12px!important;border-radius:0!important;}
+  .qi-preview-note strong{color:#7a5c1e!important;}
+  /* Footer */
+  .qi-preview-footer{text-align:center!important;font-size:11px!important;color:#888!important;margin-top:24px!important;padding-top:12px!important;border-top:1px solid #ddd!important;}
+  /* Badge */
+  .qi-badge{border:1px solid #c8963c!important;color:#7a5c1e!important;background:#fdf8ee!important;padding:2px 8px!important;border-radius:4px!important;font-size:10px!important;}
+}
 @media(max-width:700px){.form-grid{grid-template-columns:1fr;}.mr{grid-template-columns:1fr 1fr;}.bg{grid-template-columns:1fr;}.fw{grid-column:1;}main{padding:1.25rem 1rem 3rem;}.tab-bar{gap:2px;}.tab-btn{padding:7px 12px;font-size:12px;}}
 </style>
 </head>
@@ -1601,6 +1657,8 @@ function qgRenderSvcGrid() {
     var s = QG_SERVICES[i];
     h += '<button class="qi-svc-btn" onclick="qgAddSvcLine(' + i + ')">' + s.icon + ' ' + s.label + '</button>';
   }
+  // Misc button — adds a blank line so she can type anything custom
+  h += '<button class="qi-svc-btn" onclick="qgAddLine()" style="border-style:dashed;border-color:var(--gold3);color:var(--gold);grid-column:1/-1">✏ Misc / Custom — type your own description &amp; rate</button>';
   el.innerHTML = h;
 }
 
@@ -1731,12 +1789,12 @@ function qgShowPreview(q) {
     '<table class="qi-preview-table"><thead><tr><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>' +
     '<tbody>' + lh + '</tbody></table>' +
     '<div class="qi-preview-totals"><table>' +
-      '<tr><td>Subtotal</td><td>$' + q.sub.toFixed(2) + '</td></tr>' +
-      (q.disc > 0 ? '<tr><td>Discount</td><td>−$' + q.disc.toFixed(2) + '</td></tr>' : '') +
-      (q.taxR > 0 ? '<tr><td>Tax (' + q.taxR + '%)</td><td>$' + q.taxAmt.toFixed(2) + '</td></tr>' : '') +
-      '<tr class="grand"><td>TOTAL</td><td>$' + q.total.toFixed(2) + '</td></tr>' +
+      '<tr><td style="width:60%"></td><td style="font-weight:600">Subtotal</td><td>$' + q.sub.toFixed(2) + '</td></tr>' +
+      (q.disc > 0 ? '<tr><td></td><td>Discount</td><td>−$' + q.disc.toFixed(2) + '</td></tr>' : '') +
+      (q.taxR > 0 ? '<tr><td></td><td>Tax (' + q.taxR + '%)</td><td>$' + q.taxAmt.toFixed(2) + '</td></tr>' : '') +
+      '<tr class="grand"><td></td><td>QUOTE TOTAL</td><td>$' + q.total.toFixed(2) + '</td></tr>' +
     '</table></div>' +
-    (q.notes ? '<div class="qi-preview-note" style="margin-top:1.25rem"><strong style="color:var(--gold3)">Notes / Terms:</strong><br>' + q.notes.replace(/\n/g,'<br>') + '</div>' : '') +
+    (q.notes ? '<div class="qi-preview-note" style="margin-top:1rem"><strong style="color:var(--gold3)">Notes / Terms:</strong><br>' + q.notes.replace(/\n/g,'<br>') + '</div>' : '') +
     '<div class="qi-preview-footer">Quote valid until ' + (q.valid||'—') + '. Thank you for your business!</div>';
 
   document.getElementById('qg_previewBody').innerHTML = html;
@@ -2001,10 +2059,10 @@ function invShowPreview(inv) {
     '<table class="qi-preview-table"><thead><tr><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>' +
     '<tbody>' + lh + '</tbody></table>' +
     '<div class="qi-preview-totals"><table>' +
-      '<tr><td>Subtotal</td><td>$' + inv.sub.toFixed(2) + '</td></tr>' +
-      (inv.disc > 0 ? '<tr><td>Discount</td><td>−$' + inv.disc.toFixed(2) + '</td></tr>' : '') +
-      (inv.taxR > 0 ? '<tr><td>Tax (' + inv.taxR + '%)</td><td>$' + inv.taxAmt.toFixed(2) + '</td></tr>' : '') +
-      '<tr class="grand"><td>AMOUNT DUE</td><td>$' + inv.total.toFixed(2) + '</td></tr>' +
+      '<tr><td style="width:60%"></td><td style="font-weight:600">Subtotal</td><td>$' + inv.sub.toFixed(2) + '</td></tr>' +
+      (inv.disc > 0 ? '<tr><td></td><td>Discount</td><td>−$' + inv.disc.toFixed(2) + '</td></tr>' : '') +
+      (inv.taxR > 0 ? '<tr><td></td><td>Tax (' + inv.taxR + '%)</td><td>$' + inv.taxAmt.toFixed(2) + '</td></tr>' : '') +
+      '<tr class="grand"><td></td><td>AMOUNT DUE</td><td>$' + inv.total.toFixed(2) + '</td></tr>' +
     '</table></div>' +
     '<div style="clear:both;margin-top:1rem">' +
     (inv.lateFee > 0 ? '<div class="qi-preview-note">⚠ A late fee of ' + inv.lateFee + '% per month applies to past-due balances.</div>' : '') +
