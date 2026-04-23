@@ -199,7 +199,9 @@ tfoot td{padding:10px 14px;}
   .qi-preview-meta strong{font-size:16px!important;color:#1a1a1a!important;display:block!important;margin-bottom:4px!important;background:#fff!important;}
   /* ── Client box ── */
   .qi-preview-client-box{border-left:4px solid #c8963c!important;border-top:none!important;border-right:none!important;border-bottom:none!important;padding:10px 14px!important;margin-bottom:20px!important;background:#fdf8ee!important;}
-  .qi-preview-client-box div{background:#fdf8ee!important;}
+  .qi-preview-client-box div{background:#fdf8ee!important;color:#1a1a1a!important;}
+  .qi-preview-client-box div *{color:#1a1a1a!important;}
+  .qi-client-name{color:#1a1a1a!important;}
   .qi-preview-client-box div:first-child{font-size:15px!important;font-weight:700!important;color:#1a1a1a!important;}
   .qi-preview-client-box div:last-child{font-size:12px!important;color:#555!important;}
   /* ── Line items table — white rows ── */
@@ -2118,7 +2120,7 @@ function qgShowPreview(q) {
         '<br><span class="qi-badge ' + sc + '">' + (q.status||'Draft') + '</span></div>' +
     '</div>' +
     '<div class="qi-preview-client-box">' +
-      '<div style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--white)">' + (q.client||'—') + '</div>' +
+      '<div class="qi-client-name" style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--white)">' + (q.client||'—') + '</div>' +
       (q.contact ? '<div style="font-size:12px;color:var(--muted);margin-top:2px">' + q.contact + '</div>' : '') +
     '</div>' +
     '<table class="qi-preview-table"><thead><tr><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>' +
@@ -2388,7 +2390,7 @@ function invShowPreview(inv) {
         '<span class="qi-badge ' + sc + '">' + (inv.status||'Draft') + '</span></div>' +
     '</div>' +
     '<div class="qi-preview-client-box">' +
-      '<div style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--white)">' + (inv.client||'—') + '</div>' +
+      '<div class="qi-client-name" style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--white)">' + (inv.client||'—') + '</div>' +
       (inv.contact ? '<div style="font-size:12px;color:var(--muted);margin-top:2px">' + inv.contact + '</div>' : '') +
     '</div>' +
     '<table class="qi-preview-table"><thead><tr><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>' +
