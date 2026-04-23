@@ -120,111 +120,44 @@ tfoot td{padding:10px 14px;}
 .toast.s{border-left:4px solid var(--gold);}
 .toast.e{border-left:4px solid var(--red);}
 .toast.i{border-left:4px solid var(--slate);}
-/* ════════════════════════════════════════════════════════════════
-   ██████████████████████████████████████████████████████████████
-   QUOTE GENERATOR SECTION — all styles prefixed .qg-
-   Completely isolated from P&L section above.
-   ██████████████████████████████████████████████████████████████
-   ════════════════════════════════════════════════════════════════ */
-.qg-wrap{animation:sd .2s ease;}
-.qg-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
-.qg-card{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--bgold);border-radius:var(--rl);padding:1.5rem;box-shadow:0 4px 24px rgba(0,0,0,.5);}
-.qg-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold2);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
-.qg-title span{font-size:13px;font-weight:400;color:var(--muted);}
-.qg-services-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.qg-svc-btn{background:rgba(10,18,30,.70);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;text-align:left;transition:all .18s;display:flex;align-items:center;gap:8px;}
-.qg-svc-btn:hover{border-color:var(--gold);background:rgba(232,185,74,.08);}
-.qg-svc-btn.active{border-color:var(--gold);background:rgba(232,185,74,.14);box-shadow:0 0 0 2px rgba(232,185,74,.25);}
-.qg-svc-label{font-size:13px;color:var(--dim);font-weight:500;line-height:1.3;}
-.qg-svc-icon{font-size:18px;flex-shrink:0;}
-.qg-line-items{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
-.qg-li{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;background:rgba(8,14,22,.60);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;}
-.qg-li input{background:transparent;border:none;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;padding:0;}
-.qg-li input:focus{outline:none;}
-.qg-li-qty{width:50px;text-align:center;}
-.qg-li-rate{width:90px;text-align:right;}
-.qg-li-total{width:80px;text-align:right;color:var(--gold);font-weight:600;font-size:13px;}
-.qg-li-del{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0 4px;transition:opacity .15s;}
-.qg-li-del:hover{opacity:.7;}
-.qg-total-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--bgold);}
-.qg-total-label{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold2);}
-.qg-total-val{font-family:'DM Serif Display',serif;font-size:26px;color:var(--green);}
-.qg-preview{background:rgba(6,10,18,.98);border:1px solid var(--bgold);border-radius:var(--rl);padding:2rem;margin-top:20px;display:none;}
-.qg-preview.show{display:block;animation:sd .2s ease;}
-.qg-preview-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap;}
-.qg-preview-company{font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold2);}
-.qg-preview-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;}
-.qg-preview-meta{text-align:right;font-size:12px;color:var(--muted);line-height:1.8;}
-.qg-preview-meta strong{color:var(--gold2);font-size:14px;}
-.qg-preview-client{background:rgba(10,18,30,.70);border-left:3px solid var(--gold);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin-bottom:1.5rem;}
-.qg-preview-client-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--white);}
-.qg-preview-client-detail{font-size:12px;color:var(--muted);margin-top:3px;}
-.qg-preview-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;}
-.qg-preview-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);padding:8px 12px;border-bottom:1px solid var(--bgold);}
-.qg-preview-table td{padding:10px 12px;font-size:13px;color:var(--dim);border-bottom:1px solid var(--border);}
-.qg-preview-table td.amt{text-align:right;color:var(--white);font-weight:500;}
-.qg-preview-totals{background:rgba(10,18,30,.70);border-radius:var(--r);padding:1rem 1.25rem;float:right;min-width:260px;}
-.qg-preview-totals table{width:100%;border-collapse:collapse;}
-.qg-preview-totals td{padding:5px 0;font-size:13px;color:var(--dim);}
-.qg-preview-totals td:last-child{text-align:right;color:var(--white);}
-.qg-preview-totals tr.grand td{font-family:'DM Serif Display',serif;font-size:17px;color:var(--gold2);padding-top:10px;border-top:1px solid var(--bgold);}
-.qg-preview-totals tr.grand td:last-child{color:var(--green);}
-.qg-preview-notes{clear:both;margin-top:1.5rem;padding:12px 16px;background:rgba(10,18,30,.70);border-radius:var(--r);font-size:12px;color:var(--muted);line-height:1.7;}
-.qg-preview-footer{margin-top:1.5rem;text-align:center;font-size:11px;color:var(--muted);padding-top:1rem;border-top:1px solid var(--border);}
-.qg-quote-list{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;}
-.qg-ql-item{background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;transition:all .15s;}
-.qg-ql-item:hover{border-color:var(--gold);background:rgba(232,185,74,.06);}
-.qg-ql-item .ql-num{font-size:11px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;}
-.qg-ql-item .ql-client{font-size:13px;color:var(--white);font-weight:500;}
-.qg-ql-item .ql-svc{font-size:11px;color:var(--muted);margin-top:2px;}
-.qg-ql-item .ql-amt{font-family:'DM Serif Display',serif;font-size:16px;color:var(--green);}
-.qg-ql-item .ql-date{font-size:10px;color:var(--muted);}
-.qg-status-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.04em;}
-.qg-status-draft{background:rgba(139,163,190,.2);color:var(--slate);}
-.qg-status-sent{background:rgba(46,204,113,.15);color:var(--green);}
-.qg-status-accepted{background:rgba(232,185,74,.15);color:var(--gold);}
-.qg-status-declined{background:rgba(224,90,90,.15);color:var(--red);}
-/* ════════════════════════════════════════════════════════════════
-   ██████████████████████████████████████████████████████████████
-   INVOICE MANAGER SECTION — all styles prefixed .inv-
-   Completely isolated from P&L and Quote sections above.
-   ██████████████████████████████████████████████████████████████
-   ════════════════════════════════════════════════════════════════ */
-.inv-wrap{animation:sd .2s ease;}
-.inv-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.75rem;}
-.inv-metric{background:rgba(16,26,40,.92);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem 1rem;text-align:center;}
-.inv-metric.ag{border-top:3px solid var(--green);}
-.inv-metric.ar{border-top:3px solid var(--red);}
-.inv-metric.ao{border-top:3px solid var(--gold);}
-.inv-metric.as{border-top:3px solid var(--slate);}
-.inv-ml{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
-.inv-mv{font-family:'DM Serif Display',serif;font-size:22px;line-height:1;color:var(--white);}
-.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
-.inv-card{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--bgold);border-radius:var(--rl);padding:1.5rem;box-shadow:0 4px 24px rgba(0,0,0,.5);}
-.inv-card-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold2);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.inv-list{display:flex;flex-direction:column;gap:8px;max-height:460px;overflow-y:auto;}
-.inv-row{background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;transition:all .15s;cursor:pointer;}
-.inv-row:hover{border-color:var(--gold);background:rgba(232,185,74,.06);}
-.inv-row.overdue{border-left:3px solid var(--red);}
-.inv-row.paid{border-left:3px solid var(--green);opacity:.75;}
-.inv-row-top{display:flex;justify-content:space-between;align-items:center;gap:8px;}
-.inv-row-num{font-size:11px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;}
-.inv-row-client{font-size:13px;color:var(--white);font-weight:500;}
-.inv-row-amt{font-family:'DM Serif Display',serif;font-size:16px;color:var(--green);}
-.inv-row-bot{display:flex;justify-content:space-between;align-items:center;margin-top:4px;gap:8px;}
-.inv-row-desc{font-size:11px;color:var(--muted);}
-.inv-row-due{font-size:11px;color:var(--muted);}
-.inv-row-due.overdue{color:var(--red);}
-.inv-status-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.04em;}
-.inv-status-draft{background:rgba(139,163,190,.2);color:var(--slate);}
-.inv-status-sent{background:rgba(46,204,113,.15);color:var(--green);}
-.inv-status-paid{background:rgba(232,185,74,.15);color:var(--gold);}
-.inv-status-overdue{background:rgba(224,90,90,.15);color:var(--red);}
-.inv-status-cancelled{background:rgba(100,116,139,.2);color:#64748b;}
-.inv-preview{background:rgba(6,10,18,.98);border:1px solid var(--bgold);border-radius:var(--rl);padding:2rem;margin-top:20px;display:none;}
-.inv-preview.show{display:block;animation:sd .2s ease;}
-/* Reuse qg- preview styles for invoice preview - same design language */
-/* END INVOICE MANAGER STYLES */
+/* ═══════════════════════════════════════════════════
+   QUOTE & INVOICE SHARED STYLES
+   Prefixed to avoid any collision with P&L styles.
+   ═══════════════════════════════════════════════════ */
+.qi-line{display:grid;grid-template-columns:1fr 54px 94px 78px 26px;gap:5px;align-items:center;background:rgba(8,14,22,.60);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;}
+.qi-line input{background:transparent;border:none;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;padding:0;width:100%;}
+.qi-line input:focus{outline:none;}
+.qi-line .qi-center{text-align:center;}
+.qi-line .qi-right{text-align:right;color:var(--gold);font-weight:600;font-size:13px;}
+.qi-line .qi-del{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:15px;padding:0;line-height:1;}
+.qi-svc-btn{background:rgba(10,18,30,.70);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;cursor:pointer;text-align:left;transition:all .18s;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--dim);display:flex;align-items:center;gap:6px;}
+.qi-svc-btn:hover{border-color:var(--gold);color:var(--white);background:rgba(232,185,74,.08);}
+.qi-list-row{background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;cursor:pointer;transition:all .15s;}
+.qi-list-row:hover{border-color:var(--gold);background:rgba(232,185,74,.06);}
+.qi-list-row.overdue{border-left:3px solid var(--red);}
+.qi-list-row.paid{border-left:3px solid var(--green);}
+.qi-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.04em;}
+.qi-badge-draft{background:rgba(139,163,190,.2);color:var(--slate);}
+.qi-badge-sent{background:rgba(46,204,113,.15);color:var(--green);}
+.qi-badge-accepted,.qi-badge-paid{background:rgba(232,185,74,.15);color:var(--gold);}
+.qi-badge-declined,.qi-badge-overdue,.qi-badge-cancelled{background:rgba(224,90,90,.15);color:var(--red);}
+.qi-preview-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap;}
+.qi-preview-co{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold2);}
+.qi-preview-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6;}
+.qi-preview-meta{text-align:right;font-size:12px;color:var(--muted);line-height:1.8;}
+.qi-preview-client-box{background:rgba(10,18,30,.70);border-left:3px solid var(--gold);border-radius:0 var(--r) var(--r) 0;padding:10px 14px;margin-bottom:1.25rem;}
+.qi-preview-table{width:100%;border-collapse:collapse;margin-bottom:1.25rem;}
+.qi-preview-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);padding:7px 10px;border-bottom:1px solid var(--bgold);}
+.qi-preview-table td{padding:9px 10px;font-size:13px;color:var(--dim);border-bottom:1px solid var(--border);}
+.qi-preview-table td.r{text-align:right;color:var(--white);font-weight:500;}
+.qi-preview-totals{background:rgba(10,18,30,.70);border-radius:var(--r);padding:.9rem 1.1rem;float:right;min-width:240px;margin-bottom:1rem;}
+.qi-preview-totals table{width:100%;border-collapse:collapse;}
+.qi-preview-totals td{padding:4px 0;font-size:13px;color:var(--dim);}
+.qi-preview-totals td:last-child{text-align:right;color:var(--white);}
+.qi-preview-totals tr.grand td{font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold2);padding-top:9px;border-top:1px solid var(--bgold);}
+.qi-preview-totals tr.grand td:last-child{color:var(--green);}
+.qi-preview-note{clear:both;font-size:12px;color:var(--muted);line-height:1.6;padding:10px 14px;background:rgba(10,18,30,.70);border-radius:var(--r);margin-top:8px;}
+.qi-preview-footer{margin-top:1.25rem;text-align:center;font-size:11px;color:var(--muted);padding-top:.9rem;border-top:1px solid var(--border);}
 @media print{header,.tab-bar,.fb,.brow,button{display:none!important;}body{background:#fff;color:#000;}body::before{display:none;}#view-report{background:#fff;border:none;}}
 @media(max-width:700px){.form-grid{grid-template-columns:1fr;}.mr{grid-template-columns:1fr 1fr;}.bg{grid-template-columns:1fr;}.fw{grid-column:1;}main{padding:1.25rem 1rem 3rem;}.tab-bar{gap:2px;}.tab-btn{padding:7px 12px;font-size:12px;}}
 </style>
@@ -281,7 +214,7 @@ tfoot td{padding:10px 14px;}
     <button class="tab-btn"        onclick="showView('import',this)">📥 Import Statement</button>
     <button class="tab-btn"        onclick="showView('ledger',this)">Ledger</button>
     <button class="tab-btn"        onclick="showView('report',this)">P&amp;L Report</button>
-    <button class="tab-btn"        onclick="showView('quotes',this)">📝 Quote Generator</button>
+    <button class="tab-btn"        onclick="showView('quotes',this)">📝 Quotes</button>
     <button class="tab-btn"        onclick="showView('invoices',this)">🧾 Invoices</button>
   </div>
 
@@ -412,233 +345,174 @@ tfoot td{padding:10px 14px;}
     <div id="reportOut"></div>
   </div>
 
-<!-- ════════════════════════════════════════════════════════════════
-     QUOTE GENERATOR SECTION
-     Completely separate from P&L, Ledger, Report, and Import sections.
-     All IDs/functions prefixed qg_ or QG to prevent any naming collisions.
-     ════════════════════════════════════════════════════════════════ -->
-<div id="view-quotes" style="display:none" class="qg-wrap">
 
-  <div class="qg-grid">
+<!-- ═══════════════════════════════════════════════════
+     QUOTE GENERATOR — view-quotes
+     Isolated: all IDs prefixed qg_, storage key fo_quotes_v1
+     Does NOT share any state with the P&L tracker above.
+     ═══════════════════════════════════════════════════ -->
+<div id="view-quotes" style="display:none">
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
 
     <!-- LEFT: Build a Quote -->
-    <div class="qg-card">
-      <div class="qg-title">📝 Build a Quote <span id="qg_quoteNumLabel"></span></div>
+    <div class="card">
+      <div class="ct">📝 Build a Quote &nbsp;<span id="qg_numLabel" style="font-size:13px;font-weight:400;color:var(--gold)"></span></div>
 
-      <!-- Client info -->
       <div class="form-grid" style="margin-bottom:14px">
-        <div class="fg">
-          <span class="fl">Client Name</span>
-          <input type="text" id="qg_clientName" placeholder="e.g. Johnson LLC">
-        </div>
-        <div class="fg">
-          <span class="fl">Client Email / Phone</span>
-          <input type="text" id="qg_clientContact" placeholder="email or phone">
-        </div>
-        <div class="fg">
-          <span class="fl">Quote Date</span>
-          <input type="date" id="qg_date">
-        </div>
-        <div class="fg">
-          <span class="fl">Valid Until</span>
-          <input type="date" id="qg_validUntil">
-        </div>
+        <div class="fg"><span class="fl">Client Name</span>
+          <input type="text" id="qg_clientName" placeholder="e.g. Johnson LLC"></div>
+        <div class="fg"><span class="fl">Client Email / Phone</span>
+          <input type="text" id="qg_clientContact" placeholder="email or phone"></div>
+        <div class="fg"><span class="fl">Quote Date</span>
+          <input type="date" id="qg_date"></div>
+        <div class="fg"><span class="fl">Valid Until</span>
+          <input type="date" id="qg_validUntil"></div>
       </div>
 
-      <!-- Quick-add service buttons -->
-      <div class="fl" style="margin-bottom:8px">Quick-Add Service</div>
-      <div class="qg-services-grid" id="qg_svcBtns">
-        <!-- rendered by JS -->
-      </div>
+      <div class="fl" style="margin-bottom:6px">Quick-Add Service</div>
+      <div id="qg_svcGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
 
-      <!-- Line items -->
-      <div class="fl" style="margin-bottom:8px">Line Items</div>
-      <div style="display:grid;grid-template-columns:1fr 60px 100px 85px 28px;gap:6px;padding:4px 0;margin-bottom:4px">
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Description</span>
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:center">Qty</span>
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:right">Rate ($)</span>
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:right">Total</span>
-        <span></span>
+      <div class="fl" style="margin-bottom:6px">Line Items</div>
+      <div style="display:grid;grid-template-columns:1fr 54px 94px 78px 26px;gap:5px;padding:3px 0 5px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">
+        <span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Rate</span><span style="text-align:right">Total</span><span></span>
       </div>
-      <div class="qg-line-items" id="qg_lineItems"></div>
-
+      <div id="qg_lines" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px"></div>
       <button class="bo" onclick="qgAddLine()" style="width:100%;margin-bottom:14px;font-size:13px">+ Add Line Item</button>
 
-      <!-- Tax & discount -->
       <div class="form-grid" style="margin-bottom:14px">
-        <div class="fg">
-          <span class="fl">Tax Rate (%)</span>
-          <input type="number" id="qg_tax" value="0" min="0" max="100" step="0.1" oninput="qgCalcTotal()">
-        </div>
-        <div class="fg">
-          <span class="fl">Discount ($)</span>
-          <input type="number" id="qg_discount" value="0" min="0" step="0.01" oninput="qgCalcTotal()">
-        </div>
+        <div class="fg"><span class="fl">Tax Rate (%)</span>
+          <input type="number" id="qg_tax" value="0" min="0" max="100" step="0.1" oninput="qgCalcTotal()"></div>
+        <div class="fg"><span class="fl">Discount ($)</span>
+          <input type="number" id="qg_discount" value="0" min="0" step="0.01" oninput="qgCalcTotal()"></div>
       </div>
 
-      <!-- Notes -->
-      <div class="fg" style="margin-bottom:14px">
-        <span class="fl">Notes / Terms</span>
-        <textarea id="qg_notes" rows="3" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--white);background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;width:100%;resize:vertical" placeholder="Payment terms, disclaimers, thank-you note…"></textarea>
+      <div class="fg" style="margin-bottom:14px"><span class="fl">Notes / Terms</span>
+        <textarea id="qg_notes" rows="3" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--white);background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;width:100%;resize:vertical" placeholder="Payment terms, thank-you, disclaimers…"></textarea>
       </div>
 
-      <!-- Total + actions -->
-      <div class="qg-total-row">
-        <span class="qg-total-label">Quote Total</span>
-        <span class="qg-total-val" id="qg_totalDisplay">$0.00</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--bgold);margin-bottom:14px">
+        <span style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold2)">Quote Total</span>
+        <span style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--green)" id="qg_total">$0.00</span>
       </div>
       <div class="brow">
-        <button class="bp"  onclick="qgSaveAndPreview()">💾 Save &amp; Preview</button>
-        <button class="bo"  onclick="qgPrint()">🖨 Print / PDF</button>
-        <button class="bo"  onclick="qgNewQuote()">＋ New Quote</button>
+        <button class="bp"  onclick="qgSave()">💾 Save &amp; Preview</button>
+        <button class="bo"  onclick="window.print()">🖨 Print / PDF</button>
+        <button class="bo"  onclick="qgNew()">＋ New Quote</button>
       </div>
     </div>
 
     <!-- RIGHT: Saved Quotes -->
-    <div class="qg-card">
-      <div class="qg-title">📋 Saved Quotes</div>
+    <div class="card">
+      <div class="ct">📋 Saved Quotes</div>
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-        <input type="text" id="qg_search" placeholder="Search quotes…" oninput="qgRenderList()" style="flex:1;font-size:12px;padding:7px 11px">
-        <select id="qg_filterStatus" onchange="qgRenderList()" style="font-size:12px;padding:7px 11px;width:130px">
-          <option value="">All Statuses</option>
+        <input type="text" id="qg_search" placeholder="Search…" oninput="qgRenderList()" style="flex:1;font-size:12px;padding:7px 11px">
+        <select id="qg_fStatus" onchange="qgRenderList()" style="font-size:12px;padding:7px 11px;width:120px">
+          <option value="">All</option>
           <option value="Draft">Draft</option>
           <option value="Sent">Sent</option>
           <option value="Accepted">Accepted</option>
           <option value="Declined">Declined</option>
         </select>
       </div>
-      <div class="qg-quote-list" id="qg_quoteList"></div>
+      <div id="qg_list" style="display:flex;flex-direction:column;gap:8px;max-height:500px;overflow-y:auto"></div>
     </div>
   </div>
 
-  <!-- Quote Preview (print-friendly) -->
-  <div class="qg-preview" id="qg_preview">
-    <div id="qg_previewContent"></div>
+  <!-- Quote Preview -->
+  <div id="qg_preview" style="display:none;background:rgba(6,10,18,.98);border:1px solid var(--bgold);border-radius:var(--rl);padding:2rem;margin-top:4px">
+    <div id="qg_previewBody"></div>
     <div class="brow" style="margin-top:1.5rem">
-      <button class="bo" onclick="qgPrint()">🖨 Print / PDF</button>
-      <button class="bo" onclick="document.getElementById('qg_preview').classList.remove('show')">✕ Close Preview</button>
+      <button class="bo" onclick="window.print()">🖨 Print / PDF</button>
+      <button class="bo" onclick="document.getElementById('qg_preview').style.display='none'">✕ Close</button>
     </div>
   </div>
 </div>
 
 
-<!-- ════════════════════════════════════════════════════════════════
-     INVOICE MANAGER SECTION
-     Completely separate from all other sections.
-     All IDs/functions prefixed inv_ or INV to prevent collisions.
-     ════════════════════════════════════════════════════════════════ -->
-<div id="view-invoices" style="display:none" class="inv-wrap">
+<!-- ═══════════════════════════════════════════════════
+     INVOICE MANAGER — view-invoices
+     Isolated: all IDs prefixed inv_, storage key fo_invoices_v1
+     Does NOT share any state with the P&L tracker or Quotes above.
+     ═══════════════════════════════════════════════════ -->
+<div id="view-invoices" style="display:none">
 
-  <!-- Dashboard metrics -->
-  <div class="inv-metrics" id="inv_metrics">
-    <div class="inv-metric ao"><div class="inv-ml">Total Invoiced</div><div class="inv-mv" id="inv_mTotal">$0.00</div></div>
-    <div class="inv-metric ag"><div class="inv-ml">Paid</div><div class="inv-mv" id="inv_mPaid">$0.00</div></div>
-    <div class="inv-metric ar"><div class="inv-ml">Outstanding</div><div class="inv-mv" id="inv_mOut">$0.00</div></div>
-    <div class="inv-metric as"><div class="inv-ml">Overdue</div><div class="inv-mv" id="inv_mOverdue">$0.00</div></div>
+  <!-- Metrics bar -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.75rem">
+    <div class="mc as"><div class="ml">Total Invoiced</div><div class="mv mvo" id="inv_mTotal">$0.00</div></div>
+    <div class="mc ag"><div class="ml">Paid</div><div class="mv mvg" id="inv_mPaid">$0.00</div></div>
+    <div class="mc ar"><div class="ml">Outstanding</div><div class="mv mvr" id="inv_mOut">$0.00</div></div>
+    <div class="mc ar" style="border-top-color:var(--red)"><div class="ml">Overdue</div><div class="mv mvr" id="inv_mOver">$0.00</div></div>
   </div>
 
-  <div class="inv-grid">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
 
     <!-- LEFT: Create Invoice -->
-    <div class="inv-card">
-      <div class="inv-card-title">
-        🧾 Create Invoice
-        <span id="inv_numLabel" style="font-size:13px;font-weight:400;color:var(--gold)"></span>
-      </div>
+    <div class="card">
+      <div class="ct">🧾 Create Invoice &nbsp;<span id="inv_numLabel" style="font-size:13px;font-weight:400;color:var(--gold)"></span></div>
 
-      <!-- Client & dates -->
       <div class="form-grid" style="margin-bottom:14px">
-        <div class="fg">
-          <span class="fl">Client Name</span>
-          <input type="text" id="inv_clientName" placeholder="e.g. Smith Auto Repair">
-        </div>
-        <div class="fg">
-          <span class="fl">Client Email / Phone</span>
-          <input type="text" id="inv_clientContact" placeholder="email or phone">
-        </div>
-        <div class="fg">
-          <span class="fl">Invoice Date</span>
-          <input type="date" id="inv_date">
-        </div>
-        <div class="fg">
-          <span class="fl">Due Date</span>
-          <input type="date" id="inv_dueDate">
-        </div>
-        <div class="fg fw">
-          <span class="fl">PO / Reference Number (optional)</span>
-          <input type="text" id="inv_po" placeholder="PO-12345 or leave blank">
-        </div>
+        <div class="fg"><span class="fl">Client Name</span>
+          <input type="text" id="inv_clientName" placeholder="e.g. Smith Auto Repair"></div>
+        <div class="fg"><span class="fl">Client Email / Phone</span>
+          <input type="text" id="inv_clientContact" placeholder="email or phone"></div>
+        <div class="fg"><span class="fl">Invoice Date</span>
+          <input type="date" id="inv_date"></div>
+        <div class="fg"><span class="fl">Due Date</span>
+          <input type="date" id="inv_dueDate"></div>
+        <div class="fg fw"><span class="fl">PO / Reference (optional)</span>
+          <input type="text" id="inv_po" placeholder="PO-12345 or leave blank"></div>
       </div>
 
-      <!-- Line items -->
-      <div class="fl" style="margin-bottom:8px">Line Items</div>
-      <div style="display:grid;grid-template-columns:1fr 60px 100px 85px 28px;gap:6px;padding:4px 0;margin-bottom:4px">
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Description</span>
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:center">Qty</span>
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:right">Rate ($)</span>
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:right">Total</span>
-        <span></span>
+      <div class="fl" style="margin-bottom:6px">Line Items</div>
+      <div style="display:grid;grid-template-columns:1fr 54px 94px 78px 26px;gap:5px;padding:3px 0 5px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">
+        <span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Rate</span><span style="text-align:right">Total</span><span></span>
       </div>
-      <div class="qg-line-items" id="inv_lineItems"></div>
+      <div id="inv_lines" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px"></div>
       <button class="bo" onclick="invAddLine()" style="width:100%;margin-bottom:14px;font-size:13px">+ Add Line Item</button>
 
-      <!-- Tax & late fee -->
       <div class="form-grid" style="margin-bottom:14px">
-        <div class="fg">
-          <span class="fl">Tax Rate (%)</span>
-          <input type="number" id="inv_tax" value="0" min="0" max="100" step="0.1" oninput="invCalcTotal()">
-        </div>
-        <div class="fg">
-          <span class="fl">Discount ($)</span>
-          <input type="number" id="inv_discount" value="0" min="0" step="0.01" oninput="invCalcTotal()">
-        </div>
-        <div class="fg">
-          <span class="fl">Late Fee (%/month)</span>
-          <input type="number" id="inv_lateFee" value="0" min="0" max="25" step="0.1" placeholder="0">
-        </div>
-        <div class="fg">
-          <span class="fl">Status</span>
+        <div class="fg"><span class="fl">Tax Rate (%)</span>
+          <input type="number" id="inv_tax" value="0" min="0" max="100" step="0.1" oninput="invCalcTotal()"></div>
+        <div class="fg"><span class="fl">Discount ($)</span>
+          <input type="number" id="inv_discount" value="0" min="0" step="0.01" oninput="invCalcTotal()"></div>
+        <div class="fg"><span class="fl">Late Fee (%/month)</span>
+          <input type="number" id="inv_lateFee" value="0" min="0" step="0.1" placeholder="0"></div>
+        <div class="fg"><span class="fl">Status</span>
           <select id="inv_status">
             <option value="Draft">Draft</option>
             <option value="Sent">Sent</option>
             <option value="Paid">Paid</option>
             <option value="Overdue">Overdue</option>
             <option value="Cancelled">Cancelled</option>
-          </select>
-        </div>
+          </select></div>
       </div>
 
-      <!-- Payment method -->
-      <div class="fg" style="margin-bottom:14px">
-        <span class="fl">Payment Method / Instructions</span>
-        <input type="text" id="inv_payMethod" placeholder="e.g. Zelle: 689-243-9704 · Check payable to A-All Insurance Group Inc">
-      </div>
+      <div class="fg" style="margin-bottom:10px"><span class="fl">Payment Method / Instructions</span>
+        <input type="text" id="inv_payMethod" placeholder="e.g. Zelle: 689-243-9704 · Check to A-All Insurance Group Inc"></div>
 
-      <!-- Notes -->
-      <div class="fg" style="margin-bottom:14px">
-        <span class="fl">Notes / Terms</span>
+      <div class="fg" style="margin-bottom:14px"><span class="fl">Notes / Terms</span>
         <textarea id="inv_notes" rows="2" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--white);background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;width:100%;resize:vertical" placeholder="Late fee policy, thank you, etc."></textarea>
       </div>
 
-      <!-- Total -->
-      <div class="qg-total-row">
-        <span class="qg-total-label">Invoice Total</span>
-        <span class="qg-total-val" id="inv_totalDisplay">$0.00</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--bgold);margin-bottom:14px">
+        <span style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold2)">Invoice Total</span>
+        <span style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--green)" id="inv_total">$0.00</span>
       </div>
       <div class="brow">
-        <button class="bp"  onclick="invSaveAndPreview()">💾 Save &amp; Preview</button>
-        <button class="bo"  onclick="invPrint()">🖨 Print / PDF</button>
-        <button class="bo"  onclick="invNewInvoice()">＋ New Invoice</button>
+        <button class="bp"  onclick="invSave()">💾 Save &amp; Preview</button>
+        <button class="bo"  onclick="window.print()">🖨 Print / PDF</button>
+        <button class="bo"  onclick="invNew()">＋ New Invoice</button>
       </div>
     </div>
 
     <!-- RIGHT: Invoice List -->
-    <div class="inv-card">
-      <div class="inv-card-title">📋 Invoice History</div>
+    <div class="card">
+      <div class="ct">📋 Invoice History</div>
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-        <input type="text" id="inv_search" placeholder="Search invoices…" oninput="invRenderList()" style="flex:1;font-size:12px;padding:7px 11px">
-        <select id="inv_filterStatus" onchange="invRenderList()" style="font-size:12px;padding:7px 11px;width:130px">
-          <option value="">All Statuses</option>
+        <input type="text" id="inv_search" placeholder="Search…" oninput="invRenderList()" style="flex:1;font-size:12px;padding:7px 11px">
+        <select id="inv_fStatus" onchange="invRenderList()" style="font-size:12px;padding:7px 11px;width:120px">
+          <option value="">All</option>
           <option value="Draft">Draft</option>
           <option value="Sent">Sent</option>
           <option value="Paid">Paid</option>
@@ -647,16 +521,16 @@ tfoot td{padding:10px 14px;}
         </select>
         <button class="bo" onclick="invExportCSV()" style="font-size:11px;padding:6px 12px;white-space:nowrap">↓ CSV</button>
       </div>
-      <div class="inv-list" id="inv_list"></div>
+      <div id="inv_list" style="display:flex;flex-direction:column;gap:8px;max-height:540px;overflow-y:auto"></div>
     </div>
   </div>
 
   <!-- Invoice Preview -->
-  <div class="inv-preview" id="inv_preview">
-    <div id="inv_previewContent"></div>
+  <div id="inv_preview" style="display:none;background:rgba(6,10,18,.98);border:1px solid var(--bgold);border-radius:var(--rl);padding:2rem;margin-top:4px">
+    <div id="inv_previewBody"></div>
     <div class="brow" style="margin-top:1.5rem">
-      <button class="bo" onclick="invPrint()">🖨 Print / PDF</button>
-      <button class="bo" onclick="document.getElementById('inv_preview').classList.remove('show')">✕ Close Preview</button>
+      <button class="bo" onclick="window.print()">🖨 Print / PDF</button>
+      <button class="bo" onclick="document.getElementById('inv_preview').style.display='none'">✕ Close</button>
     </div>
   </div>
 </div>
@@ -1661,519 +1535,8 @@ function showView(v, btn) {
   if (v === 'report') { populateRepYears(); populateRepMonths(); renderReport(); }
 }
 
-
-// ════════════════════════════════════════════════════════════════
-// ██████████████████████████████████████████████████████████████
-// QUOTE GENERATOR — all vars/functions prefixed qg_ / QG_
-// Completely isolated from P&L code above.
-// ██████████████████████████████████████████████████████████████
-// ════════════════════════════════════════════════════════════════
-
-var QG_KEY = 'fo_quotes_v1';
-var qgState = { quotes: [], nextNum: 1001 };
-var qgLines  = [];
-var qgEditId = null;
-
-// Service catalog — Miriam's full range of services
-var QG_SERVICES = [
-  { icon: '🚗', label: 'Auto Insurance',        desc: 'Auto insurance quote / policy service',   rate: 0 },
-  { icon: '🚤', label: 'Boat Insurance',         desc: 'Boat / watercraft insurance',             rate: 0 },
-  { icon: '🏍', label: 'Motorcycle Insurance',   desc: 'Motorcycle insurance quote',              rate: 0 },
-  { icon: '🏢', label: 'General Liability',      desc: 'General liability insurance policy',      rate: 0 },
-  { icon: '📊', label: 'Accounting / Tax',       desc: 'Monthly accounting & tax services',       rate: 175 },
-  { icon: '💰', label: 'Payroll Services',       desc: 'Payroll processing & management',         rate: 150 },
-  { icon: '📝', label: 'LLC Formation',          desc: 'LLC formation & filing',                  rate: 500 },
-  { icon: '🏪', label: 'Sole Proprietor Setup',  desc: 'Sole proprietor business setup',          rate: 250 },
-  { icon: '📋', label: 'Bookkeeping',            desc: 'Monthly bookkeeping services',            rate: 200 },
-  { icon: '🧾', label: 'Tax Preparation',        desc: 'Individual / business tax return',        rate: 350 },
-  { icon: '📈', label: 'Financial Consulting',   desc: 'Business financial consulting (per hr)',  rate: 125 },
-  { icon: '⚙',  label: 'Business Registration', desc: 'Business registration & compliance',      rate: 300 }
-];
-
-function qgLoadState() {
-  try {
-    var raw = localStorage.getItem(QG_KEY);
-    if (raw) qgState = JSON.parse(raw);
-    if (!Array.isArray(qgState.quotes)) qgState.quotes = [];
-    if (!qgState.nextNum) qgState.nextNum = 1001;
-  } catch(e) {}
-}
-
-function qgSaveState() {
-  try { localStorage.setItem(QG_KEY, JSON.stringify(qgState)); } catch(e) {}
-}
-
-function qgRenderServiceBtns() {
-  var h = '';
-  for (var i = 0; i < QG_SERVICES.length; i++) {
-    var s = QG_SERVICES[i];
-    h += '<button class="qg-svc-btn" onclick="qgAddServiceLine(' + i + ')">' +
-         '<span class="qg-svc-icon">' + s.icon + '</span>' +
-         '<span class="qg-svc-label">' + s.label + '</span></button>';
-  }
-  $('qg_svcBtns').innerHTML = h;
-}
-
-function qgAddServiceLine(svcIdx) {
-  var s = QG_SERVICES[svcIdx];
-  qgLines.push({ desc: s.desc, qty: 1, rate: s.rate });
-  qgRenderLines();
-  qgCalcTotal();
-}
-
-function qgAddLine() {
-  qgLines.push({ desc: '', qty: 1, rate: 0 });
-  qgRenderLines();
-  qgCalcTotal();
-}
-
-function qgRemoveLine(idx) {
-  qgLines.splice(idx, 1);
-  qgRenderLines();
-  qgCalcTotal();
-}
-
-function qgRenderLines() {
-  var h = '';
-  for (var i = 0; i < qgLines.length; i++) {
-    var l = qgLines[i];
-    var tot = (l.qty || 0) * (l.rate || 0);
-    h += '<div class="qg-li">' +
-         '<input type="text" placeholder="Service description" value="' + (l.desc||'') + '" ' +
-         'oninput="qgLines[' + i + '].desc=this.value">' +
-         '<input type="number" class="qg-li-qty" value="' + (l.qty||1) + '" min="0.5" step="0.5" ' +
-         'oninput="qgLines[' + i + '].qty=parseFloat(this.value)||0;qgCalcTotal()">' +
-         '<input type="number" class="qg-li-rate" value="' + (l.rate||'') + '" min="0" step="0.01" ' +
-         'placeholder="0.00" oninput="qgLines[' + i + '].rate=parseFloat(this.value)||0;qgCalcTotal()">' +
-         '<span class="qg-li-total">$' + tot.toFixed(2) + '</span>' +
-         '<button class="qg-li-del" onclick="qgRemoveLine(' + i + ')">✕</button>' +
-         '</div>';
-  }
-  if (!h) h = '<div style="font-size:12px;color:var(--muted);padding:6px 0">No line items — click a service or "+ Add Line Item".</div>';
-  $('qg_lineItems').innerHTML = h;
-}
-
-function qgCalcTotal() {
-  var sub = 0;
-  for (var i = 0; i < qgLines.length; i++) sub += (qgLines[i].qty||0) * (qgLines[i].rate||0);
-  var disc = parseFloat($('qg_discount').value) || 0;
-  var tax  = parseFloat($('qg_tax').value)      || 0;
-  var taxed = Math.max(0, sub - disc) * (tax / 100);
-  var total = Math.max(0, sub - disc) + taxed;
-  // Re-render line totals
-  var lis = document.querySelectorAll('.qg-li .qg-li-total');
-  for (var j = 0; j < lis.length && j < qgLines.length; j++) {
-    lis[j].textContent = '$' + ((qgLines[j].qty||0) * (qgLines[j].rate||0)).toFixed(2);
-  }
-  $('qg_totalDisplay').textContent = '$' + total.toFixed(2);
-}
-
-function qgCollectData() {
-  var sub = 0;
-  for (var i = 0; i < qgLines.length; i++) sub += (qgLines[i].qty||0) * (qgLines[i].rate||0);
-  var disc = parseFloat($('qg_discount').value) || 0;
-  var tax  = parseFloat($('qg_tax').value)      || 0;
-  var taxed = Math.max(0, sub - disc) * (tax / 100);
-  return {
-    id:          qgEditId || ('q_' + Date.now()),
-    num:         qgEditId ? qgState.quotes.find(function(q){return q.id===qgEditId;}).num : qgState.nextNum,
-    clientName:  ($('qg_clientName').value  || '').trim(),
-    clientContact: ($('qg_clientContact').value || '').trim(),
-    date:        $('qg_date').value,
-    validUntil:  $('qg_validUntil').value,
-    lines:       JSON.parse(JSON.stringify(qgLines)),
-    subtotal:    sub,
-    discount:    disc,
-    tax:         tax,
-    taxAmt:      taxed,
-    total:       Math.max(0, sub - disc) + taxed,
-    notes:       ($('qg_notes').value || '').trim(),
-    status:      'Draft',
-    createdAt:   new Date().toISOString()
-  };
-}
-
-function qgSaveAndPreview() {
-  var data = qgCollectData();
-  if (!data.clientName) { showToast('Please enter a client name.', 'e'); return; }
-  if (!data.lines.length) { showToast('Please add at least one line item.', 'e'); return; }
-  if (!qgEditId) {
-    qgState.quotes.unshift(data);
-    qgState.nextNum++;
-  } else {
-    var idx = qgState.quotes.findIndex(function(q){return q.id===qgEditId;});
-    if (idx >= 0) qgState.quotes[idx] = data;
-  }
-  qgSaveState();
-  qgRenderList();
-  qgShowPreview(data);
-  showToast('Quote #' + data.num + ' saved!', 's');
-}
-
-function qgShowPreview(q) {
-  var sub = (q.subtotal||0), disc = (q.discount||0), taxA = (q.taxAmt||0), tot = (q.total||0);
-  var linesHtml = '';
-  for (var i = 0; i < q.lines.length; i++) {
-    var l = q.lines[i]; var lt = (l.qty||0)*(l.rate||0);
-    linesHtml += '<tr><td>' + (l.desc||'—') + '</td><td style="text-align:right">' + l.qty +
-                 '</td><td class="amt">$' + (l.rate||0).toFixed(2) + '</td><td class="amt">$' + lt.toFixed(2) + '</td></tr>';
-  }
-  var html =
-    '<div class="qg-preview-header">' +
-    '<div><div class="qg-preview-company">A-All Insurance Group Inc</div>' +
-    '<div class="qg-preview-sub">Insurance · Accounting · Tax · Business Formation<br>West Palm Beach, FL · (689) 243-9704 · a-allinsurance.com</div></div>' +
-    '<div class="qg-preview-meta"><strong>QUOTE #' + q.num + '</strong><br>Date: ' + (q.date||'—') + '<br>Valid Until: ' + (q.validUntil||'—') +
-    '<br><span class="qg-status-badge qg-status-' + (q.status||'draft').toLowerCase() + '">' + (q.status||'Draft') + '</span></div>' +
-    '</div>' +
-    '<div class="qg-preview-client">' +
-    '<div class="qg-preview-client-name">' + (q.clientName||'—') + '</div>' +
-    (q.clientContact ? '<div class="qg-preview-client-detail">' + q.clientContact + '</div>' : '') +
-    '</div>' +
-    '<table class="qg-preview-table"><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>' +
-    '<tbody>' + linesHtml + '</tbody></table>' +
-    '<div class="qg-preview-totals"><table>' +
-    '<tr><td>Subtotal</td><td>$' + sub.toFixed(2) + '</td></tr>' +
-    (disc > 0 ? '<tr><td>Discount</td><td>−$' + disc.toFixed(2) + '</td></tr>' : '') +
-    (q.tax > 0 ? '<tr><td>Tax (' + q.tax + '%)</td><td>$' + taxA.toFixed(2) + '</td></tr>' : '') +
-    '<tr class="grand"><td>TOTAL</td><td>$' + tot.toFixed(2) + '</td></tr>' +
-    '</table></div>' +
-    (q.notes ? '<div class="qg-preview-notes" style="margin-top:1.5rem"><strong style="color:var(--gold3)">Notes / Terms:</strong><br>' + q.notes.replace(/\n/g,'<br>') + '</div>' : '') +
-    '<div class="qg-preview-footer">This quote is valid until ' + (q.validUntil||'—') + '. To accept, please contact us. Thank you for your business!</div>';
-  $('qg_previewContent').innerHTML = html;
-  $('qg_preview').classList.add('show');
-  $('qg_preview').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function qgPrint() { window.print(); }
-
-function qgNewQuote() {
-  qgEditId = null;
-  qgLines  = [];
-  $('qg_clientName').value    = '';
-  $('qg_clientContact').value = '';
-  $('qg_date').value          = new Date().toISOString().split('T')[0];
-  $('qg_validUntil').value    = '';
-  $('qg_tax').value           = '0';
-  $('qg_discount').value      = '0';
-  $('qg_notes').value         = '';
-  qgRenderLines();
-  qgCalcTotal();
-  $('qg_preview').classList.remove('show');
-  $('qg_quoteNumLabel').textContent = '#' + qgState.nextNum;
-}
-
-function qgLoadQuote(id) {
-  var q = qgState.quotes.find(function(x){return x.id===id;});
-  if (!q) return;
-  qgEditId = id;
-  qgLines = JSON.parse(JSON.stringify(q.lines || []));
-  $('qg_clientName').value      = q.clientName    || '';
-  $('qg_clientContact').value   = q.clientContact || '';
-  $('qg_date').value            = q.date          || '';
-  $('qg_validUntil').value      = q.validUntil    || '';
-  $('qg_tax').value             = q.tax           || 0;
-  $('qg_discount').value        = q.discount      || 0;
-  $('qg_notes').value           = q.notes         || '';
-  qgRenderLines();
-  qgCalcTotal();
-  $('qg_quoteNumLabel').textContent = '#' + q.num + ' (editing)';
-  qgShowPreview(q);
-  document.getElementById('view-quotes').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function qgUpdateStatus(id, status) {
-  var q = qgState.quotes.find(function(x){return x.id===id;});
-  if (q) { q.status = status; qgSaveState(); qgRenderList(); showToast('Quote #' + q.num + ' marked ' + status, 's'); }
-}
-
-function qgDeleteQuote(id) {
-  var q = qgState.quotes.find(function(x){return x.id===id;});
-  if (!q) return;
-  if (!confirm('Delete Quote #' + q.num + ' for ' + (q.clientName||'?') + '?\n\nCannot be undone.')) return;
-  qgState.quotes = qgState.quotes.filter(function(x){return x.id!==id;});
-  qgSaveState(); qgRenderList();
-  showToast('Quote deleted.', 'i');
-}
-
-function qgRenderList() {
-  var search = (($('qg_search')||{}).value||'').toLowerCase();
-  var fstatus = ($('qg_filterStatus')||{}).value || '';
-  var qs = qgState.quotes.filter(function(q) {
-    if (fstatus && q.status !== fstatus) return false;
-    if (search && (q.clientName||'').toLowerCase().indexOf(search) === -1 &&
-        String(q.num).indexOf(search) === -1) return false;
-    return true;
-  });
-  var list = $('qg_quoteList');
-  if (!list) return;
-  if (!qs.length) {
-    list.innerHTML = '<div class="es"><div class="ei">📝</div><p>No quotes yet. Build one on the left!</p></div>';
-    return;
-  }
-  var h = '';
-  for (var i = 0; i < qs.length; i++) {
-    var q = qs[i];
-    var sc = 'qg-status-' + (q.status||'draft').toLowerCase();
-    h += '<div class="qg-ql-item">' +
-         '<div style="flex:1;min-width:0">' +
-         '<div style="display:flex;align-items:center;gap:8px">' +
-         '<span class="ql-num">#' + q.num + '</span>' +
-         '<span class="qg-status-badge ' + sc + '">' + (q.status||'Draft') + '</span></div>' +
-         '<div class="ql-client">' + (q.clientName||'—') + '</div>' +
-         '<div class="ql-svc">' + q.lines.map(function(l){return l.desc;}).filter(Boolean).slice(0,2).join(' · ') + '</div>' +
-         '</div>' +
-         '<div style="text-align:right;flex-shrink:0">' +
-         '<div class="ql-amt">$' + (q.total||0).toFixed(2) + '</div>' +
-         '<div class="ql-date">' + (q.date||'') + '</div>' +
-         '<div style="display:flex;gap:4px;margin-top:6px;justify-content:flex-end">' +
-         '<button class="hbtn" onclick="qgLoadQuote(&quot;' + q.id + '&quot;)" style="font-size:10px;padding:3px 8px">Edit</button>' +
-         '<button class="hbtn new" onclick="qgUpdateStatus(&quot;' + q.id + '&quot;,&quot;Sent&quot;)" style="font-size:10px;padding:3px 8px">Sent</button>' +
-         '<button class="hbtn g" onclick="qgUpdateStatus(&quot;' + q.id + '&quot;,&quot;Accepted&quot;)" style="font-size:10px;padding:3px 8px">✓Accept</button>' +
-         '<button class="hbtn r" onclick="qgDeleteQuote(&quot;' + q.id + '&quot;)" style="font-size:10px;padding:3px 8px">Del</button>' +
-         '</div></div>' +
-         '</div>';
-  }
-  list.innerHTML = h;
-}
-
-// Init Quote Generator on view switch
-function qgInit() {
-  qgLoadState();
-  qgNewQuote();
-  qgRenderServiceBtns();
-  qgRenderList();
-}
-
-
-// ════════════════════════════════════════════════════════════════
-// ██████████████████████████████████████████████████████████████
-// INVOICE MANAGER — all vars/functions prefixed inv_ / INV_
-// Completely isolated from P&L and Quote Generator sections.
-// ██████████████████████████████████████████████████████████████
-// ════════════════════════════════════════════════════════════════
-
-var INV_KEY = 'fo_invoices_v1';
-var invState = { invoices: [], nextNum: 1001 };
-var invLines  = [];
-var invEditId = null;
-
-function invLoadState() {
-  try {
-    var raw = localStorage.getItem(INV_KEY);
-    if (raw) invState = JSON.parse(raw);
-    if (!Array.isArray(invState.invoices)) invState.invoices = [];
-    if (!invState.nextNum) invState.nextNum = 1001;
-  } catch(e) {}
-}
-
-function invSaveState() {
-  try { localStorage.setItem(INV_KEY, JSON.stringify(invState)); } catch(e) {}
-}
-
-function invAddLine() {
-  invLines.push({ desc: '', qty: 1, rate: 0 });
-  invRenderLines();
-  invCalcTotal();
-}
-
-function invRemoveLine(idx) {
-  invLines.splice(idx, 1);
-  invRenderLines();
-  invCalcTotal();
-}
-
-function invRenderLines() {
-  var h = '';
-  for (var i = 0; i < invLines.length; i++) {
-    var l = invLines[i];
-    var tot = (l.qty||0) * (l.rate||0);
-    h += '<div class="qg-li">' +
-         '<input type="text" placeholder="Service description" value="' + (l.desc||'') + '" ' +
-         'oninput="invLines[' + i + '].desc=this.value">' +
-         '<input type="number" class="qg-li-qty" value="' + (l.qty||1) + '" min="0.5" step="0.5" ' +
-         'oninput="invLines[' + i + '].qty=parseFloat(this.value)||0;invCalcTotal()">' +
-         '<input type="number" class="qg-li-rate" value="' + (l.rate||'') + '" min="0" step="0.01" ' +
-         'placeholder="0.00" oninput="invLines[' + i + '].rate=parseFloat(this.value)||0;invCalcTotal()">' +
-         '<span class="qg-li-total">$' + tot.toFixed(2) + '</span>' +
-         '<button class="qg-li-del" onclick="invRemoveLine(' + i + ')">✕</button>' +
-         '</div>';
-  }
-  if (!h) h = '<div style="font-size:12px;color:var(--muted);padding:6px 0">No line items yet — click "+ Add Line Item".</div>';
-  $('inv_lineItems').innerHTML = h;
-}
-
-function invCalcTotal() {
-  var sub = 0;
-  for (var i = 0; i < invLines.length; i++) sub += (invLines[i].qty||0) * (invLines[i].rate||0);
-  var disc = parseFloat($('inv_discount').value) || 0;
-  var tax  = parseFloat($('inv_tax').value)      || 0;
-  var taxed = Math.max(0, sub - disc) * (tax / 100);
-  var total = Math.max(0, sub - disc) + taxed;
-  var lis = document.querySelectorAll('#inv_lineItems .qg-li .qg-li-total');
-  for (var j = 0; j < lis.length && j < invLines.length; j++) {
-    lis[j].textContent = '$' + ((invLines[j].qty||0) * (invLines[j].rate||0)).toFixed(2);
-  }
-  $('inv_totalDisplay').textContent = '$' + total.toFixed(2);
-}
-
-function invCollectData() {
-  var sub = 0;
-  for (var i = 0; i < invLines.length; i++) sub += (invLines[i].qty||0) * (invLines[i].rate||0);
-  var disc = parseFloat($('inv_discount').value) || 0;
-  var tax  = parseFloat($('inv_tax').value)      || 0;
-  var taxed = Math.max(0, sub - disc) * (tax / 100);
-  return {
-    id:            invEditId || ('inv_' + Date.now()),
-    num:           invEditId ? invState.invoices.find(function(x){return x.id===invEditId;}).num : invState.nextNum,
-    clientName:    ($('inv_clientName').value  || '').trim(),
-    clientContact: ($('inv_clientContact').value || '').trim(),
-    date:          $('inv_date').value,
-    dueDate:       $('inv_dueDate').value,
-    po:            ($('inv_po').value || '').trim(),
-    lines:         JSON.parse(JSON.stringify(invLines)),
-    subtotal:      sub,
-    discount:      disc,
-    tax:           tax,
-    taxAmt:        taxed,
-    total:         Math.max(0, sub - disc) + taxed,
-    lateFee:       parseFloat($('inv_lateFee').value) || 0,
-    payMethod:     ($('inv_payMethod').value || '').trim(),
-    notes:         ($('inv_notes').value || '').trim(),
-    status:        $('inv_status').value || 'Draft',
-    createdAt:     new Date().toISOString()
-  };
-}
-
-function invSaveAndPreview() {
-  var data = invCollectData();
-  if (!data.clientName) { showToast('Please enter a client name.', 'e'); return; }
-  if (!data.lines.length) { showToast('Please add at least one line item.', 'e'); return; }
-  if (!invEditId) {
-    invState.invoices.unshift(data);
-    invState.nextNum++;
-  } else {
-    var idx = invState.invoices.findIndex(function(x){return x.id===invEditId;});
-    if (idx >= 0) invState.invoices[idx] = data;
-  }
-  invSaveState();
-  invRenderList();
-  invUpdateMetrics();
-  invShowPreview(data);
-  showToast('Invoice #' + data.num + ' saved!', 's');
-}
-
-function invShowPreview(inv) {
-  var sub = (inv.subtotal||0), disc = (inv.discount||0), taxA = (inv.taxAmt||0), tot = (inv.total||0);
-  var today = new Date().toISOString().split('T')[0];
-  var isOver = inv.dueDate && inv.dueDate < today && inv.status !== 'Paid' && inv.status !== 'Cancelled';
-  var linesHtml = '';
-  for (var i = 0; i < inv.lines.length; i++) {
-    var l = inv.lines[i]; var lt = (l.qty||0)*(l.rate||0);
-    linesHtml += '<tr><td>' + (l.desc||'—') + '</td><td style="text-align:right">' + l.qty +
-                 '</td><td class="amt">$' + (l.rate||0).toFixed(2) + '</td><td class="amt">$' + lt.toFixed(2) + '</td></tr>';
-  }
-  var sc = 'qg-status-' + (inv.status||'draft').toLowerCase();
-  var html =
-    '<div class="qg-preview-header">' +
-    '<div><div class="qg-preview-company">A-All Insurance Group Inc</div>' +
-    '<div class="qg-preview-sub">Insurance · Accounting · Tax · Business Formation<br>West Palm Beach, FL · (689) 243-9704 · a-allinsurance.com</div></div>' +
-    '<div class="qg-preview-meta"><strong>INVOICE #' + inv.num + '</strong><br>' +
-    (inv.po ? 'PO: ' + inv.po + '<br>' : '') +
-    'Date: ' + (inv.date||'—') + '<br>Due: <span style="color:' + (isOver?'var(--red)':'var(--dim)') + '">' + (inv.dueDate||'—') + '</span>' +
-    '<br><span class="inv-status-badge inv-status-' + (inv.status||'draft').toLowerCase() + '">' + (inv.status||'Draft') + '</span></div>' +
-    '</div>' +
-    '<div class="qg-preview-client">' +
-    '<div class="qg-preview-client-name">' + (inv.clientName||'—') + '</div>' +
-    (inv.clientContact ? '<div class="qg-preview-client-detail">' + inv.clientContact + '</div>' : '') +
-    '</div>' +
-    '<table class="qg-preview-table"><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>' +
-    '<tbody>' + linesHtml + '</tbody></table>' +
-    '<div class="qg-preview-totals"><table>' +
-    '<tr><td>Subtotal</td><td>$' + sub.toFixed(2) + '</td></tr>' +
-    (disc > 0 ? '<tr><td>Discount</td><td>−$' + disc.toFixed(2) + '</td></tr>' : '') +
-    (inv.tax > 0 ? '<tr><td>Tax (' + inv.tax + '%)</td><td>$' + taxA.toFixed(2) + '</td></tr>' : '') +
-    '<tr class="grand"><td>AMOUNT DUE</td><td>$' + tot.toFixed(2) + '</td></tr>' +
-    '</table></div>' +
-    (inv.lateFee > 0 ? '<div class="qg-preview-notes" style="margin-top:1rem;clear:both">⚠ A late fee of ' + inv.lateFee + '% per month will be applied to balances past the due date.</div>' : '<div style="clear:both"></div>') +
-    (inv.payMethod ? '<div class="qg-preview-notes" style="margin-top:8px"><strong style="color:var(--gold3)">Payment:</strong> ' + inv.payMethod + '</div>' : '') +
-    (inv.notes ? '<div class="qg-preview-notes" style="margin-top:8px"><strong style="color:var(--gold3)">Notes:</strong><br>' + inv.notes.replace(/\n/g,'<br>') + '</div>' : '') +
-    '<div class="qg-preview-footer">Thank you for your business! Please remit payment by ' + (inv.dueDate||'—') + '.</div>';
-  $('inv_previewContent').innerHTML = html;
-  $('inv_preview').classList.add('show');
-  $('inv_preview').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function invPrint() { window.print(); }
-
-function invNewInvoice() {
-  invEditId = null;
-  invLines  = [];
-  $('inv_clientName').value    = '';
-  $('inv_clientContact').value = '';
-  $('inv_date').value          = new Date().toISOString().split('T')[0];
-  var due = new Date(); due.setDate(due.getDate() + 30);
-  $('inv_dueDate').value       = due.toISOString().split('T')[0];
-  $('inv_po').value            = '';
-  $('inv_tax').value           = '0';
-  $('inv_discount').value      = '0';
-  $('inv_lateFee').value       = '0';
-  $('inv_payMethod').value     = '';
-  $('inv_notes').value         = '';
-  $('inv_status').value        = 'Draft';
-  invRenderLines();
-  invCalcTotal();
-  $('inv_preview').classList.remove('show');
-  $('inv_numLabel').textContent = '#' + invState.nextNum;
-}
-
-function invLoadInvoice(id) {
-  var inv = invState.invoices.find(function(x){return x.id===id;});
-  if (!inv) return;
-  invEditId = id;
-  invLines = JSON.parse(JSON.stringify(inv.lines || []));
-  $('inv_clientName').value    = inv.clientName    || '';
-  $('inv_clientContact').value = inv.clientContact || '';
-  $('inv_date').value          = inv.date          || '';
-  $('inv_dueDate').value       = inv.dueDate       || '';
-  $('inv_po').value            = inv.po            || '';
-  $('inv_tax').value           = inv.tax           || 0;
-  $('inv_discount').value      = inv.discount      || 0;
-  $('inv_lateFee').value       = inv.lateFee       || 0;
-  $('inv_payMethod').value     = inv.payMethod     || '';
-  $('inv_notes').value         = inv.notes         || '';
-  $('inv_status').value        = inv.status        || 'Draft';
-  invRenderLines();
-  invCalcTotal();
-  $('inv_numLabel').textContent = '#' + inv.num + ' (editing)';
-  invShowPreview(inv);
-  document.getElementById('view-invoices').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function invUpdateStatus(id, status) {
-  var inv = invState.invoices.find(function(x){return x.id===id;});
-  if (inv) { inv.status = status; invSaveState(); invRenderList(); invUpdateMetrics(); showToast('Invoice #' + inv.num + ' marked ' + status, 's'); }
-}
-
-function invDeleteInvoice(id) {
-  var inv = invState.invoices.find(function(x){return x.id===id;});
-  if (!inv) return;
-  if (!confirm('Delete Invoice #' + inv.num + ' for ' + (inv.clientName||'?') + '?\n\nCannot be undone.')) return;
-  invState.invoices = invState.invoices.filter(function(x){return x.id!==id;});
-  invSaveState(); invRenderList(); invUpdateMetrics();
-  showToast('Invoice deleted.', 'i');
-}
-
-function invUpdateMetrics() {
-  var today = new Date().toISOString().split('T')[0];
-  var mTotal = 0, mPaid = 0, mOut = 0, mOver = 0;
-  for (var i = 0; i < invState.invoices.length; i++) {
-    var inv = invState.invoices[i];
-    mTotal += inv.total || 0;
-    if (inv.status === 'Paid')    mPaid += inv.total || 0;
-    if (inv.status !== 'Paid' && inv.status !== 'Cancelled') {
-      mOut += inv.total || 0;
-      if (inv.dueDate && inv.dueDate < today) mOver += inv.total || 0;
-    }\n  }\n  $('inv_mTotal').textContent   = '$' + mTotal.toFixed(2);\n  $('inv_mPaid').textContent    = '$' + mPaid.toFixed(2);\n  $('inv_mOut').textContent     = '$' + mOut.toFixed(2);\n  $('inv_mOverdue').textContent = '$' + mOver.toFixed(2);\n}\n\nfunction invRenderList() {\n  var today = new Date().toISOString().split('T')[0];\n  var search = (($('inv_search')||{}).value||'').toLowerCase();\n  var fstatus = ($('inv_filterStatus')||{}).value || '';\n  var invs = invState.invoices.filter(function(inv) {\n    if (fstatus && inv.status !== fstatus) return false;\n    if (search && (inv.clientName||'').toLowerCase().indexOf(search) === -1 &&\n        String(inv.num).indexOf(search) === -1) return false;\n    return true;\n  });\n  var list = $('inv_list');\n  if (!list) return;\n  if (!invs.length) {\n    list.innerHTML = '<div class=\"es\"><div class=\"ei\">🧾</div><p>No invoices yet. Create one on the left!</p></div>';\n    return;\n  }\n  var h = '';\n  for (var i = 0; i < invs.length; i++) {\n    var inv = invs[i];\n    var isOver = inv.dueDate && inv.dueDate < today && inv.status !== 'Paid' && inv.status !== 'Cancelled';\n    var rowClass = inv.status === 'Paid' ? 'inv-row paid' : (isOver ? 'inv-row overdue' : 'inv-row');\n    var sc = 'inv-status-' + (inv.status||'draft').toLowerCase();\n    h += '<div class=\"' + rowClass + '\" onclick=\"invLoadInvoice(&quot;' + inv.id + '&quot;)\">' +\n         '<div class=\"inv-row-top\">' +\n         '<div style=\"display:flex;align-items:center;gap:8px\">' +\n         '<span class=\"inv-row-num\">#' + inv.num + '</span>' +\n         '<span class=\"inv-status-badge ' + sc + '\">' + (inv.status||'Draft') + '</span>' +\n         '</div>' +\n         '<span class=\"inv-row-amt\">$' + (inv.total||0).toFixed(2) + '</span>' +\n         '</div>' +\n         '<div class=\"inv-row-bot\">' +\n         '<span class=\"inv-row-client\">' + (inv.clientName||'—') + '</span>' +\n         '<span class=\"inv-row-due' + (isOver?' overdue':'') + '\">Due: ' + (inv.dueDate||'—') + '</span>' +\n         '</div>' +\n         '<div style=\"display:flex;gap:4px;margin-top:8px;flex-wrap:wrap\" onclick=\"event.stopPropagation()\">' +\n         '<button class=\"hbtn\" onclick=\"invLoadInvoice(&quot;' + inv.id + '&quot;)\" style=\"font-size:10px;padding:3px 8px\">Edit</button>' +\n         '<button class=\"hbtn new\" onclick=\"invUpdateStatus(&quot;' + inv.id + '&quot;,&quot;Sent&quot;)\" style=\"font-size:10px;padding:3px 8px\">Sent</button>' +\n         '<button class=\"hbtn g\" onclick=\"invUpdateStatus(&quot;' + inv.id + '&quot;,&quot;Paid&quot;)\" style=\"font-size:10px;padding:3px 8px\">✓ Paid</button>' +\n         '<button class=\"hbtn r\" onclick=\"invDeleteInvoice(&quot;' + inv.id + '&quot;)\" style=\"font-size:10px;padding:3px 8px\">Del</button>' +\n         '</div></div>';\n  }\n  list.innerHTML = h;\n}\n\nfunction invExportCSV() {\n  var headers = ['Invoice #','Client','Date','Due','Status','Subtotal','Discount','Tax','Total','PO'];\n  var rows = [headers];\n  for (var i = 0; i < invState.invoices.length; i++) {\n    var inv = invState.invoices[i];\n    rows.push([inv.num, inv.clientName||'', inv.date||'', inv.dueDate||'', inv.status||'',\n      (inv.subtotal||0).toFixed(2), (inv.discount||0).toFixed(2),\n      (inv.taxAmt||0).toFixed(2), (inv.total||0).toFixed(2), inv.po||'']);\n  }\n  var lines = [];\n  for (var r = 0; r < rows.length; r++) {\n    var cells = rows[r].map(function(c){ return '\"' + String(c).replace(/\"/g,'\"\"') + '\"'; });\n    lines.push(cells.join(','));\n  }\n  var blob = new Blob([lines.join('\\r\\n')], {type:'text/csv;charset=utf-8;'});\n  var url = URL.createObjectURL(blob);\n  var a = document.createElement('a');\n  a.href = url; a.download = 'Invoices_' + new Date().toISOString().split('T')[0] + '.csv';\n  document.body.appendChild(a); a.click();\n  document.body.removeChild(a);\n  URL.revokeObjectURL(url);\n  showToast('Invoices exported!', 's');\n}\n\n// Init Invoice Manager on view switch\nfunction invInit() {\n  invLoadState();\n  invNewInvoice();\n  invRenderList();\n  invUpdateMetrics();\n}\n\n// ════════════════════════════════════════════════════════════════\n// PATCH showView() to handle the 2 new tabs\n// We wrap the ORIGINAL function — no existing code is modified.\n// ════════════════════════════════════════════════════════════════\n(function() {\n  var _orig = showView;\n  var _qgInited  = false;\n  var _invInited = false;\n  showView = function(v, btn) {\n    // Show / hide the two new views\n    var qv = $('view-quotes');\n    var iv = $('view-invoices');\n    if (qv) qv.style.display = v === 'quotes'   ? 'block' : 'none';\n    if (iv) iv.style.display = v === 'invoices' ? 'block' : 'none';\n    // For non-new views, call the original handler\n    if (v !== 'quotes' && v !== 'invoices') {\n      _orig(v, btn);\n    } else {\n      // Handle tab button highlight for new tabs\n      var tabs = document.querySelectorAll('.tab-btn');\n      for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');\n      if (btn) btn.classList.add('active');\n      // Also hide the standard views when a new tab is shown\n      var std = ['entry','import','ledger','report'];\n      for (var k = 0; k < std.length; k++) {\n        var el = $('view-' + std[k]);\n        if (el) el.style.display = 'none';\n      }\n    }\n    // Lazy-init the new sections\n    if (v === 'quotes' && !_qgInited) { qgInit(); _qgInited = true; }\n    if (v === 'invoices' && !_invInited) { invInit(); _invInited = true; }\n  };\n})();\n// END NEW SECTIONS
+// ── BOOT ───────────────────────────────────────────────────────
+function refreshAll() {
   populateClientSel();
   updateCats();
   renderRecent();
@@ -2185,6 +1548,700 @@ function invUpdateMetrics() {
 // Runs immediately — script is at bottom of body so DOM is ready
 loadData();
 refreshAll();
+
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION A: QUOTE GENERATOR
+// Storage key:  fo_quotes_v1   (completely separate from fo_pl_v3)
+// All globals:  QG_* prefix
+// All functions: qg* prefix
+// ═══════════════════════════════════════════════════════════════
+
+var QG_STORE = 'fo_quotes_v1';
+var QG_NEXT  = 1001;
+var QG_LIST  = [];
+var QG_LINES = [];
+var QG_EDIT  = null;
+
+var QG_SERVICES = [
+  { icon:'🚗', label:'Auto Insurance',        desc:'Auto insurance policy service',          rate:0   },
+  { icon:'🚤', label:'Boat Insurance',         desc:'Boat / watercraft insurance',            rate:0   },
+  { icon:'🏍', label:'Motorcycle Insurance',   desc:'Motorcycle insurance quote',             rate:0   },
+  { icon:'🏢', label:'General Liability',      desc:'General liability insurance policy',     rate:0   },
+  { icon:'📊', label:'Accounting / Tax',       desc:'Monthly accounting & tax services',      rate:175 },
+  { icon:'💰', label:'Payroll Services',       desc:'Payroll processing & management',        rate:150 },
+  { icon:'📝', label:'LLC Formation',          desc:'LLC formation & state filing',           rate:500 },
+  { icon:'🏪', label:'Sole Proprietor Setup',  desc:'Sole proprietor business setup',         rate:250 },
+  { icon:'📋', label:'Bookkeeping',            desc:'Monthly bookkeeping services',           rate:200 },
+  { icon:'🧾', label:'Tax Preparation',        desc:'Individual / business tax return prep',  rate:350 },
+  { icon:'📈', label:'Financial Consulting',   desc:'Business financial consulting (per hr)', rate:125 },
+  { icon:'⚙',  label:'Business Registration', desc:'Business registration & compliance',     rate:300 }
+];
+
+function qgLoad() {
+  try {
+    var raw = localStorage.getItem(QG_STORE);
+    if (raw) {
+      var d = JSON.parse(raw);
+      QG_LIST = d.list || [];
+      QG_NEXT = d.next || 1001;
+    }
+  } catch(e) { QG_LIST = []; QG_NEXT = 1001; }
+}
+
+function qgPersist() {
+  try { localStorage.setItem(QG_STORE, JSON.stringify({ list: QG_LIST, next: QG_NEXT })); } catch(e) {}
+}
+
+function qgRenderSvcGrid() {
+  var el = document.getElementById('qg_svcGrid');
+  if (!el) return;
+  var h = '';
+  for (var i = 0; i < QG_SERVICES.length; i++) {
+    var s = QG_SERVICES[i];
+    h += '<button class="qi-svc-btn" onclick="qgAddSvcLine(' + i + ')">' + s.icon + ' ' + s.label + '</button>';
+  }
+  el.innerHTML = h;
+}
+
+function qgAddSvcLine(idx) {
+  var s = QG_SERVICES[idx];
+  QG_LINES.push({ desc: s.desc, qty: 1, rate: s.rate });
+  qgRenderLines();
+  qgCalcTotal();
+}
+
+function qgAddLine() {
+  QG_LINES.push({ desc: '', qty: 1, rate: 0 });
+  qgRenderLines();
+  qgCalcTotal();
+}
+
+function qgDelLine(i) {
+  QG_LINES.splice(i, 1);
+  qgRenderLines();
+  qgCalcTotal();
+}
+
+function qgRenderLines() {
+  var el = document.getElementById('qg_lines');
+  if (!el) return;
+  if (!QG_LINES.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:4px 0">No items — pick a service above or add manually.</div>';
+    return;
+  }
+  var h = '';
+  for (var i = 0; i < QG_LINES.length; i++) {
+    var L = QG_LINES[i];
+    var tot = ((L.qty||0) * (L.rate||0)).toFixed(2);
+    h += '<div class="qi-line">' +
+      '<input type="text" placeholder="Description" value="' + (L.desc||'').replace(/"/g,'&quot;') + '" oninput="QG_LINES[' + i + '].desc=this.value">' +
+      '<input type="number" class="qi-center" value="' + (L.qty||1) + '" min="0.5" step="0.5" style="width:100%" oninput="QG_LINES[' + i + '].qty=parseFloat(this.value)||0;qgCalcTotal()">' +
+      '<input type="number" class="qi-right" style="width:100%;text-align:right" value="' + (L.rate||'') + '" min="0" step="0.01" placeholder="0.00" oninput="QG_LINES[' + i + '].rate=parseFloat(this.value)||0;qgCalcTotal()">' +
+      '<span class="qi-right">$' + tot + '</span>' +
+      '<button class="qi-del" onclick="qgDelLine(' + i + ')">✕</button>' +
+      '</div>';
+  }
+  el.innerHTML = h;
+}
+
+function qgCalcTotal() {
+  var sub = 0;
+  for (var i = 0; i < QG_LINES.length; i++) sub += (QG_LINES[i].qty||0) * (QG_LINES[i].rate||0);
+  var disc = parseFloat(document.getElementById('qg_discount').value) || 0;
+  var taxR = parseFloat(document.getElementById('qg_tax').value) || 0;
+  var after = Math.max(0, sub - disc);
+  var total = after + after * (taxR / 100);
+  var el = document.getElementById('qg_total');
+  if (el) el.textContent = '$' + total.toFixed(2);
+  // Refresh line totals display
+  var rows = document.querySelectorAll('#qg_lines .qi-line');
+  for (var j = 0; j < rows.length && j < QG_LINES.length; j++) {
+    var spans = rows[j].querySelectorAll('.qi-right');
+    if (spans.length >= 1) spans[spans.length - 1].textContent = '$' + ((QG_LINES[j].qty||0)*(QG_LINES[j].rate||0)).toFixed(2);
+  }
+}
+
+function qgGatherData() {
+  var sub = 0;
+  for (var i = 0; i < QG_LINES.length; i++) sub += (QG_LINES[i].qty||0) * (QG_LINES[i].rate||0);
+  var disc = parseFloat(document.getElementById('qg_discount').value) || 0;
+  var taxR = parseFloat(document.getElementById('qg_taxfield') ? document.getElementById('qg_taxfield').value : document.getElementById('qg_tax').value) || 0;
+  taxR = parseFloat(document.getElementById('qg_tax').value) || 0;
+  var after = Math.max(0, sub - disc);
+  var taxAmt = after * (taxR / 100);
+  var existing = QG_EDIT ? QG_LIST.find(function(q){ return q.id === QG_EDIT; }) : null;
+  return {
+    id:      QG_EDIT || ('q_' + Date.now()),
+    num:     existing ? existing.num : QG_NEXT,
+    client:  (document.getElementById('qg_clientName').value || '').trim(),
+    contact: (document.getElementById('qg_clientContact').value || '').trim(),
+    date:    document.getElementById('qg_date').value,
+    valid:   document.getElementById('qg_validUntil').value,
+    lines:   JSON.parse(JSON.stringify(QG_LINES)),
+    sub:     sub,
+    disc:    disc,
+    taxR:    taxR,
+    taxAmt:  taxAmt,
+    total:   after + taxAmt,
+    notes:   (document.getElementById('qg_notes').value || '').trim(),
+    status:  'Draft',
+    saved:   new Date().toISOString()
+  };
+}
+
+function qgSave() {
+  var d = qgGatherData();
+  if (!d.client) { showToast('Please enter a client name.', 'e'); return; }
+  if (!d.lines.length) { showToast('Please add at least one line item.', 'e'); return; }
+  if (!QG_EDIT) {
+    QG_LIST.unshift(d);
+    QG_NEXT++;
+  } else {
+    var idx = QG_LIST.findIndex(function(q){ return q.id === QG_EDIT; });
+    if (idx >= 0) QG_LIST[idx] = d;
+  }
+  qgPersist();
+  qgRenderList();
+  qgShowPreview(d);
+  showToast('Quote #' + d.num + ' saved!', 's');
+}
+
+function qgShowPreview(q) {
+  var lh = '';
+  for (var i = 0; i < q.lines.length; i++) {
+    var L = q.lines[i];
+    lh += '<tr><td>' + (L.desc||'—') + '</td><td class="r" style="width:48px">' + (L.qty||0) + '</td>' +
+          '<td class="r" style="width:80px">$' + (L.rate||0).toFixed(2) + '</td>' +
+          '<td class="r" style="width:80px">$' + ((L.qty||0)*(L.rate||0)).toFixed(2) + '</td></tr>';
+  }
+  var sc = 'qi-badge-' + (q.status||'draft').toLowerCase();
+  var html =
+    '<div class="qi-preview-hdr">' +
+      '<div><div class="qi-preview-co">A-All Insurance Group Inc</div>' +
+      '<div class="qi-preview-sub">Insurance · Accounting · Tax · Business Formation<br>West Palm Beach, FL · (689) 243-9704 · a-allinsurance.com</div></div>' +
+      '<div class="qi-preview-meta"><strong>QUOTE #' + q.num + '</strong><br>Date: ' + (q.date||'—') +
+        '<br>Valid Until: ' + (q.valid||'—') +
+        '<br><span class="qi-badge ' + sc + '">' + (q.status||'Draft') + '</span></div>' +
+    '</div>' +
+    '<div class="qi-preview-client-box">' +
+      '<div style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--white)">' + (q.client||'—') + '</div>' +
+      (q.contact ? '<div style="font-size:12px;color:var(--muted);margin-top:2px">' + q.contact + '</div>' : '') +
+    '</div>' +
+    '<table class="qi-preview-table"><thead><tr><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>' +
+    '<tbody>' + lh + '</tbody></table>' +
+    '<div class="qi-preview-totals"><table>' +
+      '<tr><td>Subtotal</td><td>$' + q.sub.toFixed(2) + '</td></tr>' +
+      (q.disc > 0 ? '<tr><td>Discount</td><td>−$' + q.disc.toFixed(2) + '</td></tr>' : '') +
+      (q.taxR > 0 ? '<tr><td>Tax (' + q.taxR + '%)</td><td>$' + q.taxAmt.toFixed(2) + '</td></tr>' : '') +
+      '<tr class="grand"><td>TOTAL</td><td>$' + q.total.toFixed(2) + '</td></tr>' +
+    '</table></div>' +
+    (q.notes ? '<div class="qi-preview-note" style="margin-top:1.25rem"><strong style="color:var(--gold3)">Notes / Terms:</strong><br>' + q.notes.replace(/\n/g,'<br>') + '</div>' : '') +
+    '<div class="qi-preview-footer">Quote valid until ' + (q.valid||'—') + '. Thank you for your business!</div>';
+
+  document.getElementById('qg_previewBody').innerHTML = html;
+  var pv = document.getElementById('qg_preview');
+  pv.style.display = 'block';
+  pv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function qgNew() {
+  QG_EDIT = null; QG_LINES = [];
+  document.getElementById('qg_clientName').value    = '';
+  document.getElementById('qg_clientContact').value = '';
+  document.getElementById('qg_date').value          = new Date().toISOString().split('T')[0];
+  document.getElementById('qg_validUntil').value    = '';
+  document.getElementById('qg_tax').value           = '0';
+  document.getElementById('qg_discount').value      = '0';
+  document.getElementById('qg_notes').value         = '';
+  qgRenderLines();
+  qgCalcTotal();
+  document.getElementById('qg_preview').style.display = 'none';
+  var nl = document.getElementById('qg_numLabel');
+  if (nl) nl.textContent = '#' + QG_NEXT;
+}
+
+function qgLoadQuote(id) {
+  var q = QG_LIST.find(function(x){ return x.id === id; });
+  if (!q) return;
+  QG_EDIT = id; QG_LINES = JSON.parse(JSON.stringify(q.lines||[]));
+  document.getElementById('qg_clientName').value    = q.client  || '';
+  document.getElementById('qg_clientContact').value = q.contact || '';
+  document.getElementById('qg_date').value          = q.date    || '';
+  document.getElementById('qg_validUntil').value    = q.valid   || '';
+  document.getElementById('qg_tax').value           = q.taxR    || 0;
+  document.getElementById('qg_discount').value      = q.disc    || 0;
+  document.getElementById('qg_notes').value         = q.notes   || '';
+  qgRenderLines(); qgCalcTotal();
+  var nl = document.getElementById('qg_numLabel');
+  if (nl) nl.textContent = '#' + q.num + ' (editing)';
+  qgShowPreview(q);
+}
+
+function qgSetStatus(id, status) {
+  var q = QG_LIST.find(function(x){ return x.id === id; });
+  if (!q) return;
+  q.status = status; qgPersist(); qgRenderList();
+  showToast('Quote #' + q.num + ' → ' + status, 's');
+}
+
+function qgDelete(id) {
+  var q = QG_LIST.find(function(x){ return x.id === id; });
+  if (!q) return;
+  if (!confirm('Delete Quote #' + q.num + ' for "' + q.client + '"?\nCannot be undone.')) return;
+  QG_LIST = QG_LIST.filter(function(x){ return x.id !== id; });
+  qgPersist(); qgRenderList();
+  showToast('Quote deleted.', 'i');
+}
+
+function qgRenderList() {
+  var el = document.getElementById('qg_list');
+  if (!el) return;
+  var search  = ((document.getElementById('qg_search')||{}).value||'').toLowerCase();
+  var fStatus = ((document.getElementById('qg_fStatus')||{}).value||'');
+  var items = QG_LIST.filter(function(q) {
+    if (fStatus && q.status !== fStatus) return false;
+    if (search && (q.client||'').toLowerCase().indexOf(search) < 0 &&
+        String(q.num).indexOf(search) < 0) return false;
+    return true;
+  });
+  if (!items.length) {
+    el.innerHTML = '<div class="es"><div class="ei">📝</div><p>No quotes yet. Build one on the left!</p></div>';
+    return;
+  }
+  var h = '';
+  for (var i = 0; i < items.length; i++) {
+    var q = items[i];
+    var sc = 'qi-badge-' + (q.status||'draft').toLowerCase();
+    var svcs = (q.lines||[]).map(function(L){ return L.desc; }).filter(Boolean).slice(0,2).join(' · ');
+    h += '<div class="qi-list-row">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+        '<div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">' +
+            '<span style="font-size:11px;font-weight:700;color:var(--gold)">#' + q.num + '</span>' +
+            '<span class="qi-badge ' + sc + '">' + (q.status||'Draft') + '</span>' +
+          '</div>' +
+          '<div style="font-size:13px;color:var(--white);font-weight:500">' + (q.client||'—') + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + svcs + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--green)">$' + (q.total||0).toFixed(2) + '</div>' +
+          '<div style="font-size:10px;color:var(--muted)">' + (q.date||'') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap">' +
+        '<button class="hbtn" onclick="qgLoadQuote(\'' + q.id + '\')" style="font-size:10px;padding:3px 8px">Edit</button>' +
+        '<button class="hbtn new" onclick="qgSetStatus(\'' + q.id + '\',\'Sent\')" style="font-size:10px;padding:3px 8px">Sent</button>' +
+        '<button class="hbtn g" onclick="qgSetStatus(\'' + q.id + '\',\'Accepted\')" style="font-size:10px;padding:3px 8px">✓ Accepted</button>' +
+        '<button class="hbtn r" onclick="qgDelete(\'' + q.id + '\')" style="font-size:10px;padding:3px 8px">Delete</button>' +
+      '</div>' +
+    '</div>';
+  }
+  el.innerHTML = h;
+}
+
+function qgInit() {
+  qgLoad();
+  qgNew();
+  qgRenderSvcGrid();
+  qgRenderList();
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION B: INVOICE MANAGER
+// Storage key:  fo_invoices_v1  (completely separate from all others)
+// All globals:  INV_* prefix
+// All functions: inv* prefix
+// ═══════════════════════════════════════════════════════════════
+
+var INV_STORE = 'fo_invoices_v1';
+var INV_NEXT  = 1001;
+var INV_LIST  = [];
+var INV_LINES = [];
+var INV_EDIT  = null;
+
+function invLoad() {
+  try {
+    var raw = localStorage.getItem(INV_STORE);
+    if (raw) {
+      var d = JSON.parse(raw);
+      INV_LIST = d.list || [];
+      INV_NEXT = d.next || 1001;
+    }
+  } catch(e) { INV_LIST = []; INV_NEXT = 1001; }
+}
+
+function invPersist() {
+  try { localStorage.setItem(INV_STORE, JSON.stringify({ list: INV_LIST, next: INV_NEXT })); } catch(e) {}
+}
+
+function invAddLine() {
+  INV_LINES.push({ desc: '', qty: 1, rate: 0 });
+  invRenderLines(); invCalcTotal();
+}
+
+function invDelLine(i) {
+  INV_LINES.splice(i, 1);
+  invRenderLines(); invCalcTotal();
+}
+
+function invRenderLines() {
+  var el = document.getElementById('inv_lines');
+  if (!el) return;
+  if (!INV_LINES.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:4px 0">No items yet — click "+ Add Line Item".</div>';
+    return;
+  }
+  var h = '';
+  for (var i = 0; i < INV_LINES.length; i++) {
+    var L = INV_LINES[i];
+    var tot = ((L.qty||0) * (L.rate||0)).toFixed(2);
+    h += '<div class="qi-line">' +
+      '<input type="text" placeholder="Description" value="' + (L.desc||'').replace(/"/g,'&quot;') + '" oninput="INV_LINES[' + i + '].desc=this.value">' +
+      '<input type="number" class="qi-center" value="' + (L.qty||1) + '" min="0.5" step="0.5" style="width:100%" oninput="INV_LINES[' + i + '].qty=parseFloat(this.value)||0;invCalcTotal()">' +
+      '<input type="number" class="qi-right" style="width:100%;text-align:right" value="' + (L.rate||'') + '" min="0" step="0.01" placeholder="0.00" oninput="INV_LINES[' + i + '].rate=parseFloat(this.value)||0;invCalcTotal()">' +
+      '<span class="qi-right">$' + tot + '</span>' +
+      '<button class="qi-del" onclick="invDelLine(' + i + ')">✕</button>' +
+      '</div>';
+  }
+  el.innerHTML = h;
+}
+
+function invCalcTotal() {
+  var sub = 0;
+  for (var i = 0; i < INV_LINES.length; i++) sub += (INV_LINES[i].qty||0) * (INV_LINES[i].rate||0);
+  var disc = parseFloat(document.getElementById('inv_discount').value) || 0;
+  var taxR = parseFloat(document.getElementById('inv_tax').value) || 0;
+  var after = Math.max(0, sub - disc);
+  var total = after + after * (taxR / 100);
+  var el = document.getElementById('inv_total');
+  if (el) el.textContent = '$' + total.toFixed(2);
+  // refresh line totals
+  var rows = document.querySelectorAll('#inv_lines .qi-line');
+  for (var j = 0; j < rows.length && j < INV_LINES.length; j++) {
+    var spans = rows[j].querySelectorAll('.qi-right');
+    if (spans.length) spans[spans.length-1].textContent = '$' + ((INV_LINES[j].qty||0)*(INV_LINES[j].rate||0)).toFixed(2);
+  }
+}
+
+function invGatherData() {
+  var sub = 0;
+  for (var i = 0; i < INV_LINES.length; i++) sub += (INV_LINES[i].qty||0) * (INV_LINES[i].rate||0);
+  var disc  = parseFloat(document.getElementById('inv_discount').value) || 0;
+  var taxR  = parseFloat(document.getElementById('inv_tax').value) || 0;
+  var after = Math.max(0, sub - disc);
+  var taxAmt = after * (taxR / 100);
+  var existing = INV_EDIT ? INV_LIST.find(function(x){ return x.id === INV_EDIT; }) : null;
+  return {
+    id:       INV_EDIT || ('inv_' + Date.now()),
+    num:      existing ? existing.num : INV_NEXT,
+    client:   (document.getElementById('inv_clientName').value    || '').trim(),
+    contact:  (document.getElementById('inv_clientContact').value || '').trim(),
+    date:     document.getElementById('inv_date').value,
+    due:      document.getElementById('inv_dueDate').value,
+    po:       (document.getElementById('inv_po').value || '').trim(),
+    lines:    JSON.parse(JSON.stringify(INV_LINES)),
+    sub:      sub,
+    disc:     disc,
+    taxR:     taxR,
+    taxAmt:   taxAmt,
+    total:    after + taxAmt,
+    lateFee:  parseFloat(document.getElementById('inv_lateFee').value) || 0,
+    pay:      (document.getElementById('inv_payMethod').value || '').trim(),
+    notes:    (document.getElementById('inv_notes').value    || '').trim(),
+    status:   document.getElementById('inv_status').value || 'Draft',
+    saved:    new Date().toISOString()
+  };
+}
+
+function invSave() {
+  var d = invGatherData();
+  if (!d.client) { showToast('Please enter a client name.', 'e'); return; }
+  if (!d.lines.length) { showToast('Please add at least one line item.', 'e'); return; }
+  if (!INV_EDIT) {
+    INV_LIST.unshift(d);
+    INV_NEXT++;
+  } else {
+    var idx = INV_LIST.findIndex(function(x){ return x.id === INV_EDIT; });
+    if (idx >= 0) INV_LIST[idx] = d;
+  }
+  invPersist();
+  invRenderList();
+  invUpdateMetrics();
+  invShowPreview(d);
+  showToast('Invoice #' + d.num + ' saved!', 's');
+}
+
+function invShowPreview(inv) {
+  var today = new Date().toISOString().split('T')[0];
+  var isOver = inv.due && inv.due < today && inv.status !== 'Paid' && inv.status !== 'Cancelled';
+  var lh = '';
+  for (var i = 0; i < inv.lines.length; i++) {
+    var L = inv.lines[i];
+    lh += '<tr><td>' + (L.desc||'—') + '</td><td class="r" style="width:48px">' + (L.qty||0) + '</td>' +
+          '<td class="r" style="width:80px">$' + (L.rate||0).toFixed(2) + '</td>' +
+          '<td class="r" style="width:80px">$' + ((L.qty||0)*(L.rate||0)).toFixed(2) + '</td></tr>';
+  }
+  var sc = 'qi-badge-' + (inv.status||'draft').toLowerCase();
+  var html =
+    '<div class="qi-preview-hdr">' +
+      '<div><div class="qi-preview-co">A-All Insurance Group Inc</div>' +
+      '<div class="qi-preview-sub">Insurance · Accounting · Tax · Business Formation<br>West Palm Beach, FL · (689) 243-9704 · a-allinsurance.com</div></div>' +
+      '<div class="qi-preview-meta"><strong>INVOICE #' + inv.num + '</strong><br>' +
+        (inv.po ? 'PO: ' + inv.po + '<br>' : '') +
+        'Date: ' + (inv.date||'—') + '<br>' +
+        'Due: <span style="color:' + (isOver?'var(--red)':'var(--dim)') + '">' + (inv.due||'—') + '</span><br>' +
+        '<span class="qi-badge ' + sc + '">' + (inv.status||'Draft') + '</span></div>' +
+    '</div>' +
+    '<div class="qi-preview-client-box">' +
+      '<div style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--white)">' + (inv.client||'—') + '</div>' +
+      (inv.contact ? '<div style="font-size:12px;color:var(--muted);margin-top:2px">' + inv.contact + '</div>' : '') +
+    '</div>' +
+    '<table class="qi-preview-table"><thead><tr><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>' +
+    '<tbody>' + lh + '</tbody></table>' +
+    '<div class="qi-preview-totals"><table>' +
+      '<tr><td>Subtotal</td><td>$' + inv.sub.toFixed(2) + '</td></tr>' +
+      (inv.disc > 0 ? '<tr><td>Discount</td><td>−$' + inv.disc.toFixed(2) + '</td></tr>' : '') +
+      (inv.taxR > 0 ? '<tr><td>Tax (' + inv.taxR + '%)</td><td>$' + inv.taxAmt.toFixed(2) + '</td></tr>' : '') +
+      '<tr class="grand"><td>AMOUNT DUE</td><td>$' + inv.total.toFixed(2) + '</td></tr>' +
+    '</table></div>' +
+    '<div style="clear:both;margin-top:1rem">' +
+    (inv.lateFee > 0 ? '<div class="qi-preview-note">⚠ A late fee of ' + inv.lateFee + '% per month applies to past-due balances.</div>' : '') +
+    (inv.pay  ? '<div class="qi-preview-note" style="margin-top:6px"><strong style="color:var(--gold3)">Payment:</strong> ' + inv.pay + '</div>' : '') +
+    (inv.notes ? '<div class="qi-preview-note" style="margin-top:6px"><strong style="color:var(--gold3)">Notes:</strong><br>' + inv.notes.replace(/\n/g,'<br>') + '</div>' : '') +
+    '</div>' +
+    '<div class="qi-preview-footer">Thank you for your business! Please remit by ' + (inv.due||'—') + '.</div>';
+
+  document.getElementById('inv_previewBody').innerHTML = html;
+  var pv = document.getElementById('inv_preview');
+  pv.style.display = 'block';
+  pv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function invNew() {
+  INV_EDIT = null; INV_LINES = [];
+  document.getElementById('inv_clientName').value    = '';
+  document.getElementById('inv_clientContact').value = '';
+  document.getElementById('inv_date').value          = new Date().toISOString().split('T')[0];
+  var due = new Date(); due.setDate(due.getDate() + 30);
+  document.getElementById('inv_dueDate').value       = due.toISOString().split('T')[0];
+  document.getElementById('inv_po').value            = '';
+  document.getElementById('inv_tax').value           = '0';
+  document.getElementById('inv_discount').value      = '0';
+  document.getElementById('inv_lateFee').value       = '0';
+  document.getElementById('inv_payMethod').value     = '';
+  document.getElementById('inv_notes').value         = '';
+  document.getElementById('inv_status').value        = 'Draft';
+  invRenderLines(); invCalcTotal();
+  document.getElementById('inv_preview').style.display = 'none';
+  var nl = document.getElementById('inv_numLabel');
+  if (nl) nl.textContent = '#' + INV_NEXT;
+}
+
+function invLoadInvoice(id) {
+  var inv = INV_LIST.find(function(x){ return x.id === id; });
+  if (!inv) return;
+  INV_EDIT = id; INV_LINES = JSON.parse(JSON.stringify(inv.lines||[]));
+  document.getElementById('inv_clientName').value    = inv.client  || '';
+  document.getElementById('inv_clientContact').value = inv.contact || '';
+  document.getElementById('inv_date').value          = inv.date    || '';
+  document.getElementById('inv_dueDate').value       = inv.due     || '';
+  document.getElementById('inv_po').value            = inv.po      || '';
+  document.getElementById('inv_tax').value           = inv.taxR    || 0;
+  document.getElementById('inv_discount').value      = inv.disc    || 0;
+  document.getElementById('inv_lateFee').value       = inv.lateFee || 0;
+  document.getElementById('inv_payMethod').value     = inv.pay     || '';
+  document.getElementById('inv_notes').value         = inv.notes   || '';
+  document.getElementById('inv_status').value        = inv.status  || 'Draft';
+  invRenderLines(); invCalcTotal();
+  var nl = document.getElementById('inv_numLabel');
+  if (nl) nl.textContent = '#' + inv.num + ' (editing)';
+  invShowPreview(inv);
+  document.getElementById('view-invoices').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function invSetStatus(id, status) {
+  var inv = INV_LIST.find(function(x){ return x.id === id; });
+  if (!inv) return;
+  inv.status = status; invPersist(); invRenderList(); invUpdateMetrics();
+  showToast('Invoice #' + inv.num + ' → ' + status, 's');
+}
+
+function invDeleteInvoice(id) {
+  var inv = INV_LIST.find(function(x){ return x.id === id; });
+  if (!inv) return;
+  if (!confirm('Delete Invoice #' + inv.num + ' for "' + inv.client + '"?\nCannot be undone.')) return;
+  INV_LIST = INV_LIST.filter(function(x){ return x.id !== id; });
+  invPersist(); invRenderList(); invUpdateMetrics();
+  showToast('Invoice deleted.', 'i');
+}
+
+function invUpdateMetrics() {
+  var today = new Date().toISOString().split('T')[0];
+  var mT=0, mP=0, mO=0, mOv=0;
+  for (var i = 0; i < INV_LIST.length; i++) {
+    var inv = INV_LIST[i];
+    mT += inv.total || 0;
+    if (inv.status === 'Paid') { mP += inv.total || 0; continue; }
+    if (inv.status === 'Cancelled') continue;
+    mO += inv.total || 0;
+    if (inv.due && inv.due < today) mOv += inv.total || 0;
+  }
+  var set = function(id, v) { var el = document.getElementById(id); if (el) el.textContent = '$' + v.toFixed(2); };
+  set('inv_mTotal', mT); set('inv_mPaid', mP); set('inv_mOut', mO); set('inv_mOver', mOv);
+}
+
+function invRenderList() {
+  var el = document.getElementById('inv_list');
+  if (!el) return;
+  var today   = new Date().toISOString().split('T')[0];
+  var search  = ((document.getElementById('inv_search')||{}).value||'').toLowerCase();
+  var fStatus = ((document.getElementById('inv_fStatus')||{}).value||'');
+  var items = INV_LIST.filter(function(inv) {
+    if (fStatus && inv.status !== fStatus) return false;
+    if (search && (inv.client||'').toLowerCase().indexOf(search) < 0 &&
+        String(inv.num).indexOf(search) < 0) return false;
+    return true;
+  });
+  if (!items.length) {
+    el.innerHTML = '<div class="es"><div class="ei">🧾</div><p>No invoices yet. Create one on the left!</p></div>';
+    return;
+  }
+  var h = '';
+  for (var i = 0; i < items.length; i++) {
+    var inv = items[i];
+    var isOver = inv.due && inv.due < today && inv.status !== 'Paid' && inv.status !== 'Cancelled';
+    var rc = 'qi-list-row' + (inv.status==='Paid'?' paid':'') + (isOver?' overdue':'');
+    var sc = 'qi-badge-' + (inv.status||'draft').toLowerCase();
+    h += '<div class="' + rc + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+        '<div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">' +
+            '<span style="font-size:11px;font-weight:700;color:var(--gold)">#' + inv.num + '</span>' +
+            '<span class="qi-badge ' + sc + '">' + (inv.status||'Draft') + '</span>' +
+            (isOver ? '<span style="font-size:10px;color:var(--red);font-weight:700">OVERDUE</span>' : '') +
+          '</div>' +
+          '<div style="font-size:13px;color:var(--white);font-weight:500">' + (inv.client||'—') + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);margin-top:1px">Due: ' + (inv.due||'—') + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-family:\'DM Serif Display\',serif;font-size:15px;color:var(--green)">$' + (inv.total||0).toFixed(2) + '</div>' +
+          '<div style="font-size:10px;color:var(--muted)">' + (inv.date||'') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap">' +
+        '<button class="hbtn" onclick="invLoadInvoice(\'' + inv.id + '\')" style="font-size:10px;padding:3px 8px">Edit</button>' +
+        '<button class="hbtn new" onclick="invSetStatus(\'' + inv.id + '\',\'Sent\')" style="font-size:10px;padding:3px 8px">Sent</button>' +
+        '<button class="hbtn g" onclick="invSetStatus(\'' + inv.id + '\',\'Paid\')" style="font-size:10px;padding:3px 8px">✓ Paid</button>' +
+        '<button class="hbtn r" onclick="invDeleteInvoice(\'' + inv.id + '\')" style="font-size:10px;padding:3px 8px">Delete</button>' +
+      '</div>' +
+    '</div>';
+  }
+  el.innerHTML = h;
+}
+
+function invExportCSV() {
+  var rows = [['Invoice #','Client','Date','Due','Status','Subtotal','Discount','Tax','Total','PO']];
+  for (var i = 0; i < INV_LIST.length; i++) {
+    var inv = INV_LIST[i];
+    rows.push([inv.num, inv.client||'', inv.date||'', inv.due||'', inv.status||'',
+      (inv.sub||0).toFixed(2), (inv.disc||0).toFixed(2),
+      (inv.taxAmt||0).toFixed(2), (inv.total||0).toFixed(2), inv.po||'']);
+  }
+  var lines = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(','); });
+  var blob = new Blob([lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'Invoices_' + new Date().toISOString().split('T')[0] + '.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('Invoices exported!', 's');
+}
+
+function invInit() {
+  invLoad();
+  invNew();
+  invRenderList();
+  invUpdateMetrics();
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION C: EXTEND showView() TO HANDLE NEW TABS
+// The original showView handles: entry, import, ledger, report
+// We add:  quotes, invoices
+// Approach: extend the views array and add init hooks.
+// NO modification to original function body — we patch it here.
+// ═══════════════════════════════════════════════════════════════
+(function() {
+  var _orig = showView;
+  var _qgReady = false;
+  var _invReady = false;
+
+  showView = function(v, btn) {
+    // Always hide the two new views first
+    var qv = document.getElementById('view-quotes');
+    var iv = document.getElementById('view-invoices');
+    if (qv) qv.style.display = 'none';
+    if (iv) iv.style.display = 'none';
+
+    if (v === 'quotes' || v === 'invoices') {
+      // Manually handle tabs for new views (same logic as original)
+      var allTabs = document.querySelectorAll('.tab-btn');
+      for (var j = 0; j < allTabs.length; j++) allTabs[j].classList.remove('active');
+      if (btn) btn.classList.add('active');
+      // Hide all original views
+      var orig = ['entry','import','ledger','report'];
+      for (var k = 0; k < orig.length; k++) {
+        var oel = document.getElementById('view-' + orig[k]);
+        if (oel) oel.style.display = 'none';
+      }
+      // Show the correct new view
+      if (v === 'quotes')   { if (qv) qv.style.display = 'block'; if (!_qgReady)  { qgInit();  _qgReady  = true; } }
+      if (v === 'invoices') { if (iv) iv.style.display = 'block'; if (!_invReady) { invInit(); _invReady = true; } }
+    } else {
+      // Let original handle its own views
+      _orig(v, btn);
+    }
+  };
+})();
+// ═══════════════════════════════════════════════════════════════
+// END NEW SECTIONS — P&L tracker code above is untouched
+// ═══════════════════════════════════════════════════════════════
+
+
+// ── AUTO-SEED: Embedded backup data ──────────────────────────
+// This seeds client data if localStorage is empty.
+// It will NOT overwrite data already saved by the user.
+// To force-restore, click "Restore" in the toolbar and re-upload the backup.
+(function() {
+  var SEED_KEY = 'fo_pl_v3';
+  var existing = localStorage.getItem(SEED_KEY);
+  var alreadySeeded = false;
+  if (existing) {
+    try {
+      var parsed = JSON.parse(existing);
+      if (parsed && parsed.clients && Object.keys(parsed.clients).length > 0) {
+        alreadySeeded = true;
+      }
+    } catch(e) {}
+  }
+  if (!alreadySeeded) {
+    var seedData = {"clients":{"c_1776698566304":{"name":"O & E Bakery (DBA - Napoleon Bakery)","biz":"S-Corp","txs":[{"id":"tx_1776699209365","date":"2026-03-01","type":"income","cat":"Sales / Revenue","amt":17604.06,"desc":"Amount Collected March 2026","addedAt":"2026-04-20T15:33:29.365Z"},{"id":"tx_1776699739693","date":"2026-03-20","type":"expense","cat":"Payroll Taxes","amt":1156.91,"desc":"FLA DEPT REVENUE C01 CORPORATE ACH xxxxx7868","addedAt":"2026-04-20T15:42:19.693Z"},{"id":"tx_1776699777259","date":"2026-03-20","type":"expense","cat":"Payroll Taxes","amt":1183.8,"desc":"FLA DEPT REVENUE C01 CORPORATE ACH xxxxx6204","addedAt":"2026-04-20T15:42:57.259Z"},{"id":"tx_1776699828125","date":"2026-03-16","type":"expense","cat":"Utilities \u2014 Phone","amt":257.74,"desc":"ATT Payment","addedAt":"2026-04-20T15:43:48.125Z"},{"id":"tx_1776699894608","date":"2026-03-12","type":"expense","cat":"Utilities \u2014 Electric","amt":101.82,"desc":"FPL Direct Debit xxxxxx1252","addedAt":"2026-04-20T15:44:54.608Z"},{"id":"tx_1776699920925","date":"2026-03-12","type":"expense","cat":"Utilities \u2014 Electric","amt":948.63,"desc":"FPL Direct Debit xxxxxx8858","addedAt":"2026-04-20T15:45:20.925Z"},{"id":"tx_1776699992808","date":"2026-03-11","type":"expense","cat":"Software & Subscriptions","amt":38,"desc":"Intuit Qbooks Online xxx8453","addedAt":"2026-04-20T15:46:32.808Z"},{"id":"tx_1776700031257","date":"2026-03-11","type":"expense","cat":"Software & Subscriptions","amt":63,"desc":"Intuit Qbooks Payxxx8509","addedAt":"2026-04-20T15:47:11.257Z"},{"id":"tx_1776700056357","date":"2026-03-11","type":"expense","cat":"Computer & Tech Equipment","amt":124.95,"desc":"Clover Fees","addedAt":"2026-04-20T15:47:36.357Z"},{"id":"tx_1776700215906","date":"2026-03-06","type":"expense","cat":"Business Licenses & Permits","amt":513.07,"desc":"City Of West Palm ACH Web","addedAt":"2026-04-20T15:50:15.906Z"},{"id":"tx_1776700469287","date":"2026-03-08","type":"expense","cat":"Wages & Salaries","amt":480,"desc":"Payroll Check# 5026","addedAt":"2026-04-20T15:54:29.287Z"},{"id":"tx_1776700492437","date":"2026-03-25","type":"expense","cat":"Wages & Salaries","amt":480,"desc":"Payroll Check# 5029","addedAt":"2026-04-20T15:54:52.437Z"},{"id":"tx_1776700536153","date":"2026-03-25","type":"expense","cat":"Wages & Salaries","amt":480,"desc":"Payroll Check# 5032","addedAt":"2026-04-20T15:55:36.153Z"},{"id":"tx_1776700780186","date":"2026-03-25","type":"expense","cat":"Wages & Salaries","amt":700,"desc":"Payroll Check# 5031","addedAt":"2026-04-20T15:59:40.186Z"},{"id":"tx_1776700806685","date":"2026-03-25","type":"expense","cat":"Wages & Salaries","amt":700,"desc":"Payroll Check# 5028","addedAt":"2026-04-20T16:00:06.685Z"},{"id":"tx_1776701573882","date":"2026-03-25","type":"expense","cat":"Other Expenses","amt":1213.37,"desc":"Delicias Import Check# 5030","addedAt":"2026-04-20T16:12:53.882Z"},{"id":"tx_1776701667364","date":"2026-03-12","type":"expense","cat":"Wages & Salaries","amt":700,"desc":"Payroll Check# 5027","addedAt":"2026-04-20T16:14:27.364Z"},{"id":"tx_1776701976228","date":"2026-03-04","type":"expense","cat":"Wages & Salaries","amt":480,"desc":"Payroll Check# 5025","addedAt":"2026-04-20T16:19:36.228Z"},{"id":"tx_1776702014795","date":"2026-03-04","type":"expense","cat":"Wages & Salaries","amt":700,"desc":"Payroll Check# 5024","addedAt":"2026-04-20T16:20:14.795Z"},{"id":"tx_1776702111477","date":"2026-03-02","type":"expense","cat":"Bank Fees & Charges","amt":87,"desc":"Service Charge Period Ending 02/27/2026","addedAt":"2026-04-20T16:21:51.477Z"},{"id":"tx_1776702173327","date":"2026-03-02","type":"expense","cat":"Bank Fees & Charges","amt":77.81,"desc":"PNC Merchant Fee","addedAt":"2026-04-20T16:22:53.327Z"},{"id":"tx_1776702224160","date":"2026-03-02","type":"expense","cat":"Bank Fees & Charges","amt":18.54,"desc":"PNC Merchant Interchng xxxxxxxx0992","addedAt":"2026-04-20T16:23:44.160Z"},{"id":"tx_1776702288710","date":"2026-03-02","type":"expense","cat":"Bank Fees & Charges","amt":352.89,"desc":"PNC Merchant Discount xxxxxxxx0992","addedAt":"2026-04-20T16:24:48.710Z"},{"id":"tx_1776703400206","date":"2026-03-10","type":"expense","cat":"Business Insurance","amt":2091.54,"desc":"Biberk Insurance","addedAt":"2026-04-20T16:43:20.206Z"},{"id":"tx_1776703673654","date":"2026-03-07","type":"expense","cat":"Other Expenses","amt":42.71,"desc":"Costco Whse #0180","addedAt":"2026-04-20T16:47:53.654Z"},{"id":"tx_1776703701554","date":"2026-03-07","type":"expense","cat":"Other Expenses","amt":11.53,"desc":"Don Victorio's Market","addedAt":"2026-04-20T16:48:21.554Z"},{"id":"tx_1776703771454","date":"2026-03-06","type":"expense","cat":"Other Expenses","amt":62.45,"desc":"SAMSCLUB #8157","addedAt":"2026-04-20T16:49:31.454Z"},{"id":"tx_1776703787320","date":"2026-03-06","type":"expense","cat":"Other Expenses","amt":135.12,"desc":"Restaurant Depot","addedAt":"2026-04-20T16:49:47.320Z"},{"id":"tx_1776703827903","date":"2026-03-05","type":"expense","cat":"Other Expenses","amt":360.96,"desc":"Costco Whse #0180","addedAt":"2026-04-20T16:50:27.903Z"},{"id":"tx_1776703902802","date":"2026-03-05","type":"expense","cat":"Other Expenses","amt":227.44,"desc":"Restaurant Depot","addedAt":"2026-04-20T16:51:42.802Z"},{"id":"tx_1776704530600","date":"2026-03-03","type":"expense","cat":"Other Expenses","amt":223.59,"desc":"ABC Fine Wine/Spirits 091","addedAt":"2026-04-20T17:02:10.600Z"},{"id":"tx_1776704617415","date":"2026-03-03","type":"expense","cat":"Other Expenses","amt":23.87,"desc":"WInn-Dixie #0309","addedAt":"2026-04-20T17:03:37.415Z"},{"id":"tx_1776704752514","date":"2026-03-02","type":"expense","cat":"Repairs & Maintenance","amt":85.2,"desc":"PY Bugsy's Pest Solution","addedAt":"2026-04-20T17:05:52.514Z"},{"id":"tx_1776704833313","date":"2026-03-01","type":"expense","cat":"Other Expenses","amt":20.49,"desc":"Don Victorio's Market","addedAt":"2026-04-20T17:07:13.313Z"}],"createdAt":"2026-04-20T15:22:46.304Z"},"c_1776705507109":{"name":"Elohim Glass & Mirrors (Ariel Glass and Mirror)","biz":"S-Corp","txs":[{"id":"tx_1776705632674","date":"2026-03-25","type":"expense","cat":"Other Expenses","amt":1500,"desc":"Chase Receipt# 3692","addedAt":"2026-04-20T17:20:32.674Z"},{"id":"tx_1776705668974","date":"2026-03-16","type":"expense","cat":"Other Expenses","amt":260,"desc":"Schnieders Glass Services LLC Receipt# 3691","addedAt":"2026-04-20T17:21:08.974Z"},{"id":"tx_1776705718341","date":"2026-03-04","type":"expense","cat":"Other Expenses","amt":50,"desc":"Florida Dept. of State Receipt# 3688","addedAt":"2026-04-20T17:21:58.341Z"},{"id":"tx_1776705746790","date":"2026-03-04","type":"expense","cat":"Other Expenses","amt":35,"desc":"Florida Dept. of State Receipt# 3689","addedAt":"2026-04-20T17:22:26.790Z"},{"id":"tx_1776705781290","date":"2026-03-16","type":"expense","cat":"Other Expenses","amt":50,"desc":"Osvaldo Lopez Receipt# 3690","addedAt":"2026-04-20T17:23:01.291Z"},{"id":"tx_1776705911357","date":"2026-03-03","type":"expense","cat":"Auto \u2014 Mileage / Fuel","amt":56.62,"desc":"Shell Oil Greenacres","addedAt":"2026-04-20T17:25:11.357Z"},{"id":"tx_1776705982056","date":"2026-03-05","type":"expense","cat":"Other Expenses","amt":16.16,"desc":"SQ Window Parts Warehouse Boca Raton","addedAt":"2026-04-20T17:26:22.056Z"},{"id":"tx_1776706016889","date":"2026-03-05","type":"expense","cat":"Other Expenses","amt":39,"desc":"Racetrac 562","addedAt":"2026-04-20T17:26:56.889Z"},{"id":"tx_1776706048822","date":"2026-03-05","type":"expense","cat":"Other Expenses","amt":105,"desc":"Magic Mirror & Shower WPB","addedAt":"2026-04-20T17:27:28.822Z"},{"id":"tx_1776706185255","date":"2026-03-06","type":"expense","cat":"Bank Fees & Charges","amt":72.25,"desc":"Interest Fee Charges","addedAt":"2026-04-20T17:29:45.255Z"},{"id":"tx_1776706285204","date":"2026-03-06","type":"income","cat":"Sales / Revenue","amt":350,"desc":"Invoice# 3183","addedAt":"2026-04-20T17:31:25.204Z"},{"id":"tx_1776706322253","date":"2026-03-09","type":"income","cat":"Sales / Revenue","amt":1800,"desc":"Invoice# 3184","addedAt":"2026-04-20T17:32:02.253Z"},{"id":"tx_1776706359239","date":"2026-03-11","type":"income","cat":"Sales / Revenue","amt":1043.7,"desc":"Invoice# 3185","addedAt":"2026-04-20T17:32:39.239Z"},{"id":"tx_1776706410338","date":"2026-03-17","type":"income","cat":"Sales / Revenue","amt":1300,"desc":"Invoice# 3187","addedAt":"2026-04-20T17:33:30.338Z"},{"id":"tx_1776706445853","date":"2026-03-17","type":"income","cat":"Sales / Revenue","amt":900,"desc":"Invoice# 3186","addedAt":"2026-04-20T17:34:05.853Z"},{"id":"tx_1776706496153","date":"2026-03-18","type":"income","cat":"Sales / Revenue","amt":1099.99,"desc":"Invoice# 3188","addedAt":"2026-04-20T17:34:56.153Z"},{"id":"tx_1776707883213","date":"2026-03-06","type":"income","cat":"Sales / Revenue","amt":479.25,"desc":"Invoice# 766607","addedAt":"2026-04-20T17:58:03.213Z"},{"id":"tx_1776707955262","date":"2026-03-20","type":"income","cat":"Sales / Revenue","amt":319.5,"desc":"Invoice# 766608","addedAt":"2026-04-20T17:59:15.262Z"},{"id":"tx_1776708129028","date":"2026-03-02","type":"expense","cat":"Utilities \u2014 Phone","amt":223.57,"desc":"ATT","addedAt":"2026-04-20T18:02:09.028Z"},{"id":"tx_1776708149745","date":"2026-03-20","type":"expense","cat":"Utilities \u2014 Internet","amt":96,"desc":"ATT","addedAt":"2026-04-20T18:02:29.745Z"},{"id":"tx_1776708194645","date":"2026-03-25","type":"expense","cat":"Rent (Equipment)","amt":17.87,"desc":"AT&T Device/Equip Shi","addedAt":"2026-04-20T18:03:14.645Z"},{"id":"tx_1776708359427","date":"2026-03-02","type":"expense","cat":"Business Insurance","amt":36.85,"desc":"State Farm Trace# 021000020340787","addedAt":"2026-04-20T18:05:59.427Z"},{"id":"tx_1776708394677","date":"2026-03-03","type":"expense","cat":"Business Insurance","amt":579.63,"desc":"State Farm Trace# 021000020475742","addedAt":"2026-04-20T18:06:34.677Z"},{"id":"tx_1776708448993","date":"2026-03-30","type":"expense","cat":"Business Insurance","amt":36.85,"desc":"State Farm Trace# 021000023423623","addedAt":"2026-04-20T18:07:28.993Z"},{"id":"tx_1776708480976","date":"2026-03-31","type":"expense","cat":"Business Insurance","amt":579.6,"desc":"State Farm Trace# 021000027401376","addedAt":"2026-04-20T18:08:00.976Z"}],"createdAt":"2026-04-20T17:18:27.109Z"},"c_1776709507667":{"name":"Jim McDonald Enterprises Inc","biz":"S-Corp","txs":[{"id":"tx_1776709877398","date":"2025-01-06","type":"expense","cat":"Bank Fees & Charges","amt":80,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-20T18:31:17.398Z"},{"id":"tx_1776710013164","date":"2025-01-03","type":"expense","cat":"Other Expenses","amt":678.77,"desc":"Prime Storage","addedAt":"2026-04-20T18:33:33.164Z"},{"id":"tx_1776710038014","date":"2025-01-06","type":"expense","cat":"Other Expenses","amt":76.79,"desc":"Group One Safety","addedAt":"2026-04-20T18:33:58.014Z"},{"id":"tx_1776710225897","date":"2025-01-22","type":"expense","cat":"Other Expenses","amt":51.25,"desc":"Internet Payment B2P Palm B Constitutional","addedAt":"2026-04-20T18:37:05.897Z"},{"id":"tx_1776710258461","date":"2025-01-22","type":"expense","cat":"Business Insurance","amt":212.82,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T18:37:38.461Z"},{"id":"tx_1776710281178","date":"2025-01-23","type":"expense","cat":"Business Insurance","amt":210.66,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T18:38:01.178Z"},{"id":"tx_1776710406810","date":"2025-01-29","type":"expense","cat":"Other Expenses","amt":282.93,"desc":"COMCAST","addedAt":"2026-04-20T18:40:06.810Z"},{"id":"tx_1776710644691","date":"2025-01-12","type":"expense","cat":"Other Expenses","amt":25,"desc":"Palm Beach County Sheriffs Office - Alarm Check# 4775","addedAt":"2026-04-20T18:44:04.691Z"},{"id":"tx_1776710693524","date":"2025-01-17","type":"expense","cat":"Other Expenses","amt":1118.65,"desc":"Kasa Appliance Check# 4776","addedAt":"2026-04-20T18:44:53.524Z"},{"id":"tx_1776710723024","date":"2025-01-17","type":"expense","cat":"Other Expenses","amt":500,"desc":"Soap That Glass Check# 4777","addedAt":"2026-04-20T18:45:23.024Z"},{"id":"tx_1776711736617","date":"2025-01-13","type":"expense","cat":"Other Expenses","amt":75,"desc":"SouthFlo Check# 4773","addedAt":"2026-04-20T19:02:16.617Z"},{"id":"tx_1776711863916","date":"2025-01-27","type":"expense","cat":"Other Expenses","amt":42,"desc":"United States Treasury Check# 4780","addedAt":"2026-04-20T19:04:23.916Z"},{"id":"tx_1776712034382","date":"2025-01-04","type":"expense","cat":"Other Expenses","amt":1780,"desc":"Mike Hundley Check# 4782","addedAt":"2026-04-20T19:07:14.382Z"},{"id":"tx_1776712218513","date":"2025-01-07","type":"expense","cat":"Other Expenses","amt":1830,"desc":"Mike Hundley Check# 4771","addedAt":"2026-04-20T19:10:18.513Z"},{"id":"tx_1776712242730","date":"2025-01-01","type":"expense","cat":"Other Expenses","amt":80,"desc":"Kasa Appliance Check# 4783","addedAt":"2026-04-20T19:10:42.730Z"},{"id":"tx_1776712324746","date":"2025-01-07","type":"expense","cat":"Wages & Salaries","amt":400,"desc":"Dilma McDonald Check# 4774","addedAt":"2026-04-20T19:12:04.746Z"},{"id":"tx_1776712422745","date":"2025-01-21","type":"expense","cat":"Other Expenses","amt":850,"desc":"Soap That Glass Check# 4778","addedAt":"2026-04-20T19:13:42.745Z"},{"id":"tx_1776712471711","date":"2025-01-28","type":"expense","cat":"Other Expenses","amt":100,"desc":"Astrid Moreno Check# 4781","addedAt":"2026-04-20T19:14:31.711Z"},{"id":"tx_1776713033724","date":"2025-02-04","type":"expense","cat":"Bank Fees & Charges","amt":72,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-20T19:23:53.724Z"},{"id":"tx_1776713134123","date":"2025-02-04","type":"expense","cat":"Other Expenses","amt":678.77,"desc":"Prime Storage","addedAt":"2026-04-20T19:25:34.123Z"},{"id":"tx_1776713217056","date":"2025-02-11","type":"expense","cat":"Other Expenses","amt":2211,"desc":"Insurance Citizens Prem","addedAt":"2026-04-20T19:26:57.056Z"},{"id":"tx_1776713377222","date":"2025-02-18","type":"expense","cat":"Auto \u2014 Insurance","amt":577.72,"desc":"Capital One Auto","addedAt":"2026-04-20T19:29:37.222Z"},{"id":"tx_1776713409904","date":"2025-02-18","type":"expense","cat":"Utilities \u2014 Electric","amt":270.56,"desc":"FPL","addedAt":"2026-04-20T19:30:09.904Z"},{"id":"tx_1776713534937","date":"2025-02-18","type":"expense","cat":"Business Insurance","amt":212.82,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T19:32:14.937Z"},{"id":"tx_1776713584687","date":"2025-02-24","type":"expense","cat":"Business Insurance","amt":251.45,"desc":"Group One Safety","addedAt":"2026-04-20T19:33:04.687Z"},{"id":"tx_1776713624753","date":"2025-02-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-20T19:33:44.753Z"},{"id":"tx_1776713678436","date":"2025-02-25","type":"expense","cat":"Business Insurance","amt":210.66,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T19:34:38.436Z"},{"id":"tx_1776713766901","date":"2025-03-03","type":"expense","cat":"Other Expenses","amt":282.93,"desc":"COMCAST","addedAt":"2026-04-20T19:36:06.901Z"},{"id":"tx_1776713807484","date":"2025-03-04","type":"expense","cat":"Other Expenses","amt":62,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-20T19:36:47.484Z"},{"id":"tx_1776713854934","date":"2025-03-04","type":"expense","cat":"Other Expenses","amt":678.77,"desc":"Prime Storage","addedAt":"2026-04-20T19:37:34.934Z"},{"id":"tx_1776713907617","date":"2025-03-05","type":"expense","cat":"Auto \u2014 Insurance","amt":500,"desc":"Car pay Capital One Auto","addedAt":"2026-04-20T19:38:27.617Z"},{"id":"tx_1776713991833","date":"2025-03-06","type":"expense","cat":"Other Expenses","amt":1975.05,"desc":"B2P Palm B Constitutional","addedAt":"2026-04-20T19:39:51.833Z"},{"id":"tx_1776714470111","date":"2025-03-12","type":"expense","cat":"Other Expenses","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-20T19:47:50.111Z"},{"id":"tx_1776714521995","date":"2025-03-14","type":"expense","cat":"Utilities \u2014 Electric","amt":265.6,"desc":"FPL","addedAt":"2026-04-20T19:48:41.995Z"},{"id":"tx_1776714592177","date":"2025-03-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-20T19:49:52.177Z"},{"id":"tx_1776714622611","date":"2025-03-25","type":"expense","cat":"Business Insurance","amt":209.5,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T19:50:22.611Z"},{"id":"tx_1776714670876","date":"2025-03-31","type":"expense","cat":"Other Expenses","amt":282.93,"desc":"COMCAST","addedAt":"2026-04-20T19:51:10.876Z"},{"id":"tx_1776714753959","date":"2025-03-05","type":"expense","cat":"Other Expenses","amt":1382.5,"desc":"United States Treasury Check# 4779","addedAt":"2026-04-20T19:52:33.959Z"},{"id":"tx_1776714916027","date":"2025-03-01","type":"expense","cat":"Other Expenses","amt":250,"desc":"Accounting & Tax Finance Check# 4786","addedAt":"2026-04-20T19:55:16.027Z"},{"id":"tx_1776714999143","date":"2025-03-01","type":"expense","cat":"Other Expenses","amt":175,"desc":"Accounting & Tax Finance Chec# 4787","addedAt":"2026-04-20T19:56:39.143Z"},{"id":"tx_1776715096742","date":"2025-03-01","type":"expense","cat":"Other Expenses","amt":175,"desc":"Accounting & Tax Finance Check# 4788","addedAt":"2026-04-20T19:58:16.742Z"},{"id":"tx_1776715147108","date":"2025-03-05","type":"expense","cat":"Other Expenses","amt":1640,"desc":"Mike Hundley Check# 4789","addedAt":"2026-04-20T19:59:07.108Z"},{"id":"tx_1776715186291","date":"2025-03-05","type":"expense","cat":"Wages & Salaries","amt":900,"desc":"Dilma McDonalds Check# 4790","addedAt":"2026-04-20T19:59:46.291Z"},{"id":"tx_1776715331741","date":"2025-03-05","type":"expense","cat":"Other Expenses","amt":1010,"desc":"Loor Customs Check# 4791","addedAt":"2026-04-20T20:02:11.741Z"},{"id":"tx_1776715387723","date":"2025-03-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 8296","addedAt":"2026-04-20T20:03:07.723Z"},{"id":"tx_1776715572072","date":"2025-04-03","type":"expense","cat":"Other Expenses","amt":678.77,"desc":"Prime Storage","addedAt":"2026-04-20T20:06:12.072Z"},{"id":"tx_1776715616722","date":"2025-04-04","type":"expense","cat":"Other Expenses","amt":54,"desc":"Recurring Internet Payment","addedAt":"2026-04-20T20:06:56.722Z"},{"id":"tx_1776715747521","date":"2025-04-04","type":"expense","cat":"Other Expenses","amt":500,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-20T20:09:07.521Z"},{"id":"tx_1776715802904","date":"2025-04-07","type":"expense","cat":"Other Expenses","amt":79.87,"desc":"Group One Safety","addedAt":"2026-04-20T20:10:02.904Z"},{"id":"tx_1776715925203","date":"2025-04-14","type":"expense","cat":"Utilities \u2014 Electric","amt":262.83,"desc":"FPL","addedAt":"2026-04-20T20:12:05.203Z"},{"id":"tx_1776715958219","date":"2025-04-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charge","addedAt":"2026-04-20T20:12:38.219Z"},{"id":"tx_1776716010952","date":"2025-04-22","type":"expense","cat":"Other Expenses","amt":175.44,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T20:13:30.952Z"},{"id":"tx_1776716052251","date":"2025-04-23","type":"expense","cat":"Business Insurance","amt":201.54,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T20:14:12.251Z"},{"id":"tx_1776716134634","date":"2025-04-29","type":"expense","cat":"Other Expenses","amt":282.76,"desc":"COMCAST","addedAt":"2026-04-20T20:15:34.634Z"},{"id":"tx_1776716196800","date":"2025-04-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 3932","addedAt":"2026-04-20T20:16:36.800Z"},{"id":"tx_1776716235583","date":"2025-04-02","type":"expense","cat":"Other Expenses","amt":1710.8,"desc":"Mike Hundley Check# 4795","addedAt":"2026-04-20T20:17:15.583Z"},{"id":"tx_1776716275033","date":"2025-04-05","type":"expense","cat":"Other Expenses","amt":6.5,"desc":"F DOT Check# 4796","addedAt":"2026-04-20T20:17:55.033Z"},{"id":"tx_1776716353183","date":"2025-04-12","type":"expense","cat":"Other Expenses","amt":700,"desc":"Manny Padillo Check# 4797","addedAt":"2026-04-20T20:19:13.183Z"},{"id":"tx_1776716434598","date":"2025-04-12","type":"expense","cat":"Other Expenses","amt":100,"desc":"Manny Padillo Check# 4798","addedAt":"2026-04-20T20:20:34.598Z"},{"id":"tx_1776716546615","date":"2025-04-10","type":"expense","cat":"Wages & Salaries","amt":600,"desc":"Dilma McDonald Check# 4799","addedAt":"2026-04-20T20:22:26.615Z"},{"id":"tx_1776716595749","date":"2025-04-16","type":"expense","cat":"Other Expenses","amt":95,"desc":"Window Doctor Check# 4800","addedAt":"2026-04-20T20:23:15.749Z"},{"id":"tx_1776716647965","date":"2025-04-17","type":"expense","cat":"Other Expenses","amt":1800,"desc":"Jo Maz Melendez Falconi Check# 4801","addedAt":"2026-04-20T20:24:07.965Z"},{"id":"tx_1776716748031","date":"2025-04-20","type":"expense","cat":"Other Expenses","amt":400,"desc":"Astrid Moreno Check# 4803","addedAt":"2026-04-20T20:25:48.031Z"},{"id":"tx_1776716787897","date":"2025-04-29","type":"expense","cat":"Other Expenses","amt":175,"desc":"Accounting & Tax Filing Check# 4804","addedAt":"2026-04-20T20:26:27.897Z"},{"id":"tx_1776716905780","date":"2025-05-05","type":"expense","cat":"Other Expenses","amt":678.77,"desc":"Prime Storage","addedAt":"2026-04-20T20:28:25.780Z"},{"id":"tx_1776717033696","date":"2025-05-05","type":"expense","cat":"Other Expenses","amt":31,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-20T20:30:33.696Z"},{"id":"tx_1776717079762","date":"2025-05-13","type":"expense","cat":"Other Expenses","amt":5400,"desc":"HCL Group","addedAt":"2026-04-20T20:31:19.762Z"},{"id":"tx_1776717132328","date":"2025-05-19","type":"expense","cat":"Other Expenses","amt":366.58,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-20T20:32:12.328Z"},{"id":"tx_1776717165045","date":"2025-05-20","type":"expense","cat":"Other Expenses","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T20:32:45.045Z"},{"id":"tx_1776717195478","date":"2025-05-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-20T20:33:15.478Z"},{"id":"tx_1776717234927","date":"2025-05-23","type":"expense","cat":"Bank Fees & Charges","amt":205.5,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T20:33:54.927Z"},{"id":"tx_1776717269994","date":"2025-05-29","type":"expense","cat":"Other Expenses","amt":282.76,"desc":"COMCAST","addedAt":"2026-04-20T20:34:29.994Z"},{"id":"tx_1776717303677","date":"2025-05-30","type":"expense","cat":"Utilities \u2014 Electric","amt":270.76,"desc":"FPL","addedAt":"2026-04-20T20:35:03.677Z"},{"id":"tx_1776717372593","date":"2025-05-27","type":"expense","cat":"Other Expenses","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-20T20:36:12.593Z"},{"id":"tx_1776717380009","date":"2025-05-27","type":"expense","cat":"Other Expenses","amt":350,"desc":"Accounting & Tax","addedAt":"2026-04-20T20:36:20.009Z"},{"id":"tx_1776717425659","date":"2025-05-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 2287","addedAt":"2026-04-20T20:37:05.659Z"},{"id":"tx_1776717492075","date":"2025-05-11","type":"expense","cat":"Other Expenses","amt":375,"desc":"Nelsons Check# 4807","addedAt":"2026-04-20T20:38:12.075Z"},{"id":"tx_1776717527876","date":"2025-05-02","type":"expense","cat":"Other Expenses","amt":120,"desc":"Kasa Appliance Check# 4808","addedAt":"2026-04-20T20:38:47.876Z"},{"id":"tx_1776717565042","date":"2025-05-05","type":"expense","cat":"Other Expenses","amt":1590,"desc":"Mike Hundley Check# 4809","addedAt":"2026-04-20T20:39:25.042Z"},{"id":"tx_1776717611075","date":"2025-05-10","type":"expense","cat":"Other Expenses","amt":120,"desc":"Galy Gould Check# 4810","addedAt":"2026-04-20T20:40:11.075Z"},{"id":"tx_1776717641658","date":"2025-05-20","type":"expense","cat":"Other Expenses","amt":1900,"desc":"Southwest Greens Check# 4812","addedAt":"2026-04-20T20:40:41.658Z"},{"id":"tx_1776717687891","date":"2025-06-23","type":"expense","cat":"Other Expenses","amt":1075,"desc":"Accounting Tax Firm Check# 4816","addedAt":"2026-04-20T20:41:27.891Z"},{"id":"tx_1776717710807","date":"2025-06-30","type":"expense","cat":"Other Expenses","amt":95,"desc":"Kasa Appliance Check# 4817","addedAt":"2026-04-20T20:41:50.807Z"},{"id":"tx_1776717737390","date":"2025-06-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 4334","addedAt":"2026-04-20T20:42:17.390Z"},{"id":"tx_1776717769157","date":"2025-04-16","type":"expense","cat":"Other Expenses","amt":225,"desc":"Landscaping Check# 4802","addedAt":"2026-04-20T20:42:49.157Z"},{"id":"tx_1776717923539","date":"2025-04-16","type":"expense","cat":"Other Expenses","amt":400,"desc":"Landscaping Check# 4811","addedAt":"2026-04-20T20:45:23.539Z"},{"id":"tx_1776717998622","date":"2025-06-02","type":"expense","cat":"Other Expenses","amt":1730,"desc":"Mike Hundley Check# 4813","addedAt":"2026-04-20T20:46:38.622Z"},{"id":"tx_1776718113822","date":"2025-06-11","type":"expense","cat":"Other Expenses","amt":1631,"desc":"Dilma McDonalds Check#4814","addedAt":"2026-04-20T20:48:33.822Z"},{"id":"tx_1776718443888","date":"2025-06-03","type":"expense","cat":"Other Expenses","amt":781.77,"desc":"Prime Storage","addedAt":"2026-04-20T20:54:03.888Z"},{"id":"tx_1776718528638","date":"2025-06-04","type":"expense","cat":"Other Expenses","amt":25,"desc":"Recurring Internet Payment","addedAt":"2026-04-20T20:55:28.638Z"},{"id":"tx_1776718560137","date":"2025-06-20","type":"expense","cat":"Other Expenses","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T20:56:00.137Z"},{"id":"tx_1776718602554","date":"2025-06-23","type":"expense","cat":"Other Expenses","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-20T20:56:42.554Z"},{"id":"tx_1776718629904","date":"2025-06-23","type":"expense","cat":"Other Expenses","amt":280,"desc":"KCL Holding","addedAt":"2026-04-20T20:57:09.904Z"},{"id":"tx_1776718653303","date":"2025-06-23","type":"expense","cat":"Other Expenses","amt":400,"desc":"Accounting & Tax","addedAt":"2026-04-20T20:57:33.303Z"},{"id":"tx_1776718677503","date":"2025-06-23","type":"expense","cat":"Other Expenses","amt":5,"desc":"Service Charges","addedAt":"2026-04-20T20:57:57.503Z"},{"id":"tx_1776718705370","date":"2025-06-24","type":"expense","cat":"Other Expenses","amt":205.5,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T20:58:25.370Z"},{"id":"tx_1776718771070","date":"2025-06-30","type":"expense","cat":"Other Expenses","amt":282.79,"desc":"COMCAST","addedAt":"2026-04-20T20:59:31.070Z"},{"id":"tx_1776718835402","date":"2025-07-03","type":"expense","cat":"Other Expenses","amt":781.77,"desc":"Prime Storagte","addedAt":"2026-04-20T21:00:35.402Z"},{"id":"tx_1776718866686","date":"2025-07-07","type":"expense","cat":"Other Expenses","amt":25,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-20T21:01:06.686Z"},{"id":"tx_1776718906119","date":"2025-07-01","type":"expense","cat":"Utilities \u2014 Electric","amt":282.11,"desc":"FPL","addedAt":"2026-04-20T21:01:46.119Z"},{"id":"tx_1776718954518","date":"2025-07-07","type":"expense","cat":"Utilities \u2014 Electric","amt":79.87,"desc":"Group One Safety","addedAt":"2026-04-20T21:02:34.518Z"},{"id":"tx_1776718992235","date":"2025-07-07","type":"expense","cat":"Other Expenses","amt":647.2,"desc":"Sharp Energy","addedAt":"2026-04-20T21:03:12.235Z"},{"id":"tx_1776719073868","date":"2025-07-11","type":"expense","cat":"Other Expenses","amt":288.86,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-20T21:04:33.868Z"},{"id":"tx_1776719129934","date":"2025-07-15","type":"expense","cat":"Utilities \u2014 Electric","amt":290.03,"desc":"FPL","addedAt":"2026-04-20T21:05:29.934Z"},{"id":"tx_1776719164484","date":"2025-07-21","type":"expense","cat":"Other Expenses","amt":5,"desc":"Service Charge","addedAt":"2026-04-20T21:06:04.484Z"},{"id":"tx_1776719205517","date":"2025-07-22","type":"expense","cat":"Business Insurance","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T21:06:45.517Z"},{"id":"tx_1776719223017","date":"2025-07-22","type":"expense","cat":"Business Insurance","amt":205.5,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T21:07:03.017Z"},{"id":"tx_1776719269767","date":"2025-07-29","type":"expense","cat":"Other Expenses","amt":282.79,"desc":"COMCAST","addedAt":"2026-04-20T21:07:49.767Z"},{"id":"tx_1776719338201","date":"2025-07-31","type":"expense","cat":"Other Expenses","amt":176.52,"desc":"Honor Capital - ET Green PRO","addedAt":"2026-04-20T21:08:58.201Z"},{"id":"tx_1776719377166","date":"2025-07-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 2742","addedAt":"2026-04-20T21:09:37.166Z"},{"id":"tx_1776719401399","date":"2025-06-14","type":"expense","cat":"Other Expenses","amt":500,"desc":"Landscaping Check# 4815","addedAt":"2026-04-20T21:10:01.399Z"},{"id":"tx_1776719440916","date":"2025-07-03","type":"expense","cat":"Other Expenses","amt":100,"desc":"South Flo Solutions Check# 4818","addedAt":"2026-04-20T21:10:40.916Z"},{"id":"tx_1776719473315","date":"2025-07-03","type":"expense","cat":"Other Expenses","amt":1890,"desc":"Mike Hundley Check# 4819","addedAt":"2026-04-20T21:11:13.315Z"},{"id":"tx_1776719537331","date":"2025-07-07","type":"expense","cat":"Other Expenses","amt":150,"desc":"Landscaping Check# 4820","addedAt":"2026-04-20T21:12:17.331Z"},{"id":"tx_1776719894853","date":"2025-07-16","type":"expense","cat":"Other Expenses","amt":600,"desc":"AQ Soft Check# 4821","addedAt":"2026-04-20T21:18:14.853Z"},{"id":"tx_1776719950936","date":"2025-07-19","type":"expense","cat":"Other Expenses","amt":140,"desc":"MRO Management","addedAt":"2026-04-20T21:19:10.936Z"},{"id":"tx_1776720007220","date":"2025-07-23","type":"expense","cat":"Other Expenses","amt":4.4,"desc":"Florida Department of Revenue Check# 4823","addedAt":"2026-04-20T21:20:07.220Z"},{"id":"tx_1776720172386","date":"2025-07-23","type":"expense","cat":"Other Expenses","amt":1273.2,"desc":"United States Treasury Check# 4824","addedAt":"2026-04-20T21:22:52.386Z"},{"id":"tx_1776720198902","date":"2025-07-26","type":"expense","cat":"Other Expenses","amt":200,"desc":"Landscaping Check# 4825","addedAt":"2026-04-20T21:23:18.902Z"},{"id":"tx_1776720243702","date":"2025-07-26","type":"expense","cat":"Other Expenses","amt":150,"desc":"MRO Management Check# 4826","addedAt":"2026-04-20T21:24:03.702Z"},{"id":"tx_1776720879650","date":"2025-08-04","type":"expense","cat":"Other Expenses","amt":781.77,"desc":"Prime Storage","addedAt":"2026-04-20T21:34:39.650Z"},{"id":"tx_1776720911833","date":"2025-08-05","type":"expense","cat":"Other Expenses","amt":25,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-20T21:35:11.833Z"},{"id":"tx_1776720953016","date":"2025-08-11","type":"expense","cat":"Other Expenses","amt":2684,"desc":"HCL Group","addedAt":"2026-04-20T21:35:53.016Z"},{"id":"tx_1776721015167","date":"2025-08-13","type":"expense","cat":"Other Expenses","amt":300,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-20T21:36:55.167Z"},{"id":"tx_1776721101600","date":"2025-08-20","type":"expense","cat":"Other Expenses","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-20T21:38:21.600Z"},{"id":"tx_1776721143815","date":"2025-08-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-20T21:39:03.815Z"},{"id":"tx_1776721216548","date":"2025-08-25","type":"expense","cat":"Business Insurance","amt":205.5,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-20T21:40:16.548Z"},{"id":"tx_1776721278432","date":"2025-08-27","type":"expense","cat":"Other Expenses","amt":66,"desc":"B2P Palm B Constitutional","addedAt":"2026-04-20T21:41:18.432Z"},{"id":"tx_1776721313531","date":"2025-08-29","type":"expense","cat":"Other Expenses","amt":234.49,"desc":"COMCAST","addedAt":"2026-04-20T21:41:53.532Z"},{"id":"tx_1776721389898","date":"2025-08-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 4742","addedAt":"2026-04-20T21:43:09.898Z"},{"id":"tx_1776721433798","date":"2025-08-01","type":"expense","cat":"Other Expenses","amt":375,"desc":"Nelsons Check# 4827","addedAt":"2026-04-20T21:43:53.798Z"},{"id":"tx_1776721480349","date":"2025-08-05","type":"expense","cat":"Other Expenses","amt":1610,"desc":"Mike Hundley Check# 4828","addedAt":"2026-04-20T21:44:40.349Z"},{"id":"tx_1776792529808","date":"2025-09-04","type":"expense","cat":"Other Expenses","amt":25,"desc":"Recurring Internet Payment Capital One","addedAt":"2026-04-21T17:28:49.808Z"},{"id":"tx_1776792999954","date":"2025-09-12","type":"expense","cat":"Other Expenses","amt":305.38,"desc":"FPL","addedAt":"2026-04-21T17:36:39.954Z"},{"id":"tx_1776793070754","date":"2025-09-22","type":"expense","cat":"Business Insurance","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-21T17:37:50.754Z"},{"id":"tx_1776793100953","date":"2025-09-23","type":"expense","cat":"Business Insurance","amt":204.44,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-21T17:38:20.953Z"},{"id":"tx_1776793195421","date":"2025-09-23","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T17:39:55.421Z"},{"id":"tx_1776793358585","date":"2025-09-29","type":"expense","cat":"Other Expenses","amt":247.87,"desc":"COMCAST","addedAt":"2026-04-21T17:42:38.585Z"},{"id":"tx_1776793418968","date":"2025-09-30","type":"expense","cat":"Auto \u2014 Insurance","amt":400,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-21T17:43:38.968Z"},{"id":"tx_1776793465917","date":"2025-09-23","type":"expense","cat":"Auto \u2014 Insurance","amt":277.72,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-21T17:44:25.917Z"},{"id":"tx_1776793572034","date":"2025-09-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 3179","addedAt":"2026-04-21T17:46:12.034Z"},{"id":"tx_1776793633850","date":"2025-09-21","type":"expense","cat":"Other Expenses","amt":1760,"desc":"Mike Hundley Check# 4830","addedAt":"2026-04-21T17:47:13.850Z"},{"id":"tx_1776793780466","date":"2025-09-03","type":"expense","cat":"Professional Services (CPA / Legal)","amt":400,"desc":"Daisy Martinez Check# 4831","addedAt":"2026-04-21T17:49:40.466Z"},{"id":"tx_1776793826832","date":"2025-09-07","type":"expense","cat":"Other Expenses","amt":360,"desc":"ACE Check# 4832","addedAt":"2026-04-21T17:50:26.832Z"},{"id":"tx_1776793874565","date":"2025-09-12","type":"expense","cat":"Other Expenses","amt":200,"desc":"Dilma McDonald Check# 4833","addedAt":"2026-04-21T17:51:14.565Z"},{"id":"tx_1776794017614","date":"2025-10-02","type":"expense","cat":"Other Expenses","amt":89.01,"desc":"Honor Capital - ET GREEN PRO","addedAt":"2026-04-21T17:53:37.614Z"},{"id":"tx_1776794041964","date":"2025-10-03","type":"expense","cat":"Other Expenses","amt":781.77,"desc":"Prime Storage","addedAt":"2026-04-21T17:54:01.964Z"},{"id":"tx_1776794242748","date":"2025-10-03","type":"expense","cat":"Other Expenses","amt":650,"desc":"Zelle Business Payment - Brittles Pressure Cleaning","addedAt":"2026-04-21T17:57:22.748Z"},{"id":"tx_1776794317644","date":"2025-10-07","type":"expense","cat":"Other Expenses","amt":79.87,"desc":"Group One Safety","addedAt":"2026-04-21T17:58:37.644Z"},{"id":"tx_1776794358328","date":"2025-10-15","type":"expense","cat":"Utilities \u2014 Electric","amt":317.4,"desc":"FPL","addedAt":"2026-04-21T17:59:18.328Z"},{"id":"tx_1776794409844","date":"2025-10-21","type":"expense","cat":"Business Insurance","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-21T18:00:09.844Z"},{"id":"tx_1776794461209","date":"2025-10-23","type":"expense","cat":"Business Insurance","amt":198.71,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-21T18:01:01.209Z"},{"id":"tx_1776794486258","date":"2025-10-21","type":"expense","cat":"Bank Fees & Charges","amt":14.75,"desc":"Service Charges","addedAt":"2026-04-21T18:01:26.258Z"},{"id":"tx_1776794694374","date":"2025-10-29","type":"expense","cat":"Other Expenses","amt":257.64,"desc":"COMCAST","addedAt":"2026-04-21T18:04:54.374Z"},{"id":"tx_1776794747273","date":"2025-10-31","type":"expense","cat":"Other Expenses","amt":950,"desc":"Zelle Business Payment - Jim Tolliver","addedAt":"2026-04-21T18:05:47.273Z"},{"id":"tx_1776794785556","date":"2025-10-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Chec# 1470","addedAt":"2026-04-21T18:06:25.556Z"},{"id":"tx_1776794823006","date":"2025-08-23","type":"expense","cat":"Other Expenses","amt":225,"desc":"Land Soap Check# 4829","addedAt":"2026-04-21T18:07:03.006Z"},{"id":"tx_1776794871455","date":"2025-09-20","type":"expense","cat":"Other Expenses","amt":175,"desc":"Landscaping Check# 4834","addedAt":"2026-04-21T18:07:51.455Z"},{"id":"tx_1776794922940","date":"2025-10-05","type":"expense","cat":"Other Expenses","amt":1600,"desc":"Mike Hundley Check# 4835","addedAt":"2026-04-21T18:08:42.940Z"},{"id":"tx_1776794965438","date":"2025-10-09","type":"expense","cat":"Other Expenses","amt":120,"desc":"Kasa Appliance Check# 4836","addedAt":"2026-04-21T18:09:25.438Z"},{"id":"tx_1776795383435","date":"2025-10-09","type":"expense","cat":"Other Expenses","amt":650,"desc":"Soap That Glass Check# 4837","addedAt":"2026-04-21T18:16:23.435Z"},{"id":"tx_1776795497084","date":"2025-10-08","type":"expense","cat":"Other Expenses","amt":400,"desc":"Iguana Check# 4838","addedAt":"2026-04-21T18:18:17.084Z"},{"id":"tx_1776796196929","date":"2025-10-14","type":"expense","cat":"Other Expenses","amt":550,"desc":"Brittle Pressure Washing Check# 4839","addedAt":"2026-04-21T18:29:56.929Z"},{"id":"tx_1776796829490","date":"2025-10-15","type":"expense","cat":"Other Expenses","amt":950,"desc":"Doley Mullings Check# 4840","addedAt":"2026-04-21T18:40:29.490Z"},{"id":"tx_1776796853856","date":"2025-10-29","type":"expense","cat":"Other Expenses","amt":380,"desc":"Soap That Glass Check# 4841","addedAt":"2026-04-21T18:40:53.856Z"},{"id":"tx_1776796885056","date":"2025-10-27","type":"expense","cat":"Other Expenses","amt":360,"desc":"ACE Check# 4842","addedAt":"2026-04-21T18:41:25.056Z"},{"id":"tx_1776796912890","date":"2025-10-30","type":"expense","cat":"Other Expenses","amt":550,"desc":"Soap That Glass Check# 4843","addedAt":"2026-04-21T18:41:52.890Z"},{"id":"tx_1776797051405","date":"2025-11-03","type":"expense","cat":"Other Expenses","amt":817.51,"desc":"Prime Storage","addedAt":"2026-04-21T18:44:11.405Z"},{"id":"tx_1776797080555","date":"2025-11-04","type":"expense","cat":"Other Expenses","amt":89.01,"desc":"Honor Capital - ET GREEN PRO","addedAt":"2026-04-21T18:44:40.555Z"},{"id":"tx_1776797109204","date":"2025-11-04","type":"expense","cat":"Other Expenses","amt":2684,"desc":"HCL Home INS","addedAt":"2026-04-21T18:45:09.204Z"},{"id":"tx_1776797154321","date":"2025-11-13","type":"expense","cat":"Other Expenses","amt":177.72,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-21T18:45:54.321Z"},{"id":"tx_1776797180338","date":"2025-11-14","type":"expense","cat":"Utilities \u2014 Electric","amt":318.39,"desc":"FPL","addedAt":"2026-04-21T18:46:20.338Z"},{"id":"tx_1776797240654","date":"2025-11-20","type":"expense","cat":"Business Insurance","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-21T18:47:20.654Z"},{"id":"tx_1776797257270","date":"2025-11-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T18:47:37.270Z"},{"id":"tx_1776797281170","date":"2025-11-25","type":"expense","cat":"Business Insurance","amt":202.66,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-21T18:48:01.170Z"},{"id":"tx_1776797453252","date":"2025-11-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 3526","addedAt":"2026-04-21T18:50:53.252Z"},{"id":"tx_1776797532051","date":"2025-11-05","type":"expense","cat":"Other Expenses","amt":1960,"desc":"Mike Hundley Check# 4845","addedAt":"2026-04-21T18:52:12.051Z"},{"id":"tx_1776797564985","date":"2025-11-18","type":"expense","cat":"Other Expenses","amt":900,"desc":"Dilma McDonald Check# 4846","addedAt":"2026-04-21T18:52:44.985Z"},{"id":"tx_1776797724313","date":"2025-11-10","type":"expense","cat":"Professional Services (CPA / Legal)","amt":600,"desc":"Daisy Martinez Check# 4847","addedAt":"2026-04-21T18:55:24.313Z"},{"id":"tx_1776797932028","date":"2025-12-01","type":"expense","cat":"Other Expenses","amt":257.64,"desc":"COMCAST","addedAt":"2026-04-21T18:58:52.028Z"},{"id":"tx_1776798586922","date":"2025-12-03","type":"expense","cat":"Other Expenses","amt":817.51,"desc":"Prime Storage","addedAt":"2026-04-21T19:09:46.922Z"},{"id":"tx_1776798740353","date":"2025-12-03","type":"expense","cat":"Other Expenses","amt":89.01,"desc":"Honor Capital - ET Green Pro","addedAt":"2026-04-21T19:12:20.353Z"},{"id":"tx_1776798827169","date":"2025-12-15","type":"expense","cat":"Other Expenses","amt":288.86,"desc":"Car Pay Capital One Auto","addedAt":"2026-04-21T19:13:47.169Z"},{"id":"tx_1776798865590","date":"2025-12-22","type":"expense","cat":"Business Insurance","amt":175.46,"desc":"INS PREM PROG EXPRESS","addedAt":"2026-04-21T19:14:25.590Z"},{"id":"tx_1776798887977","date":"2025-12-23","type":"expense","cat":"Business Insurance","amt":202.66,"desc":"INS PREM PROG AMERICAN","addedAt":"2026-04-21T19:14:47.977Z"},{"id":"tx_1776798905161","date":"2025-12-22","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T19:15:05.161Z"},{"id":"tx_1776799092327","date":"2025-12-29","type":"expense","cat":"Other Expenses","amt":257.64,"desc":"COMCAST","addedAt":"2026-04-21T19:18:12.327Z"},{"id":"tx_1776799188393","date":"2025-11-01","type":"expense","cat":"Other Expenses","amt":400,"desc":"Landscaping Check# 4844","addedAt":"2026-04-21T19:19:48.393Z"},{"id":"tx_1776799300393","date":"2025-11-25","type":"expense","cat":"Other Expenses","amt":225,"desc":"Linda M. Check# 4848","addedAt":"2026-04-21T19:21:40.393Z"},{"id":"tx_1776799362676","date":"2025-11-29","type":"expense","cat":"Other Expenses","amt":305,"desc":"Landscaping Check# 4849","addedAt":"2026-04-21T19:22:42.676Z"},{"id":"tx_1776799415677","date":"2025-12-02","type":"expense","cat":"Other Expenses","amt":1420,"desc":"Mike Hundley Check# 4850","addedAt":"2026-04-21T19:23:35.677Z"},{"id":"tx_1776799627707","date":"2025-12-08","type":"expense","cat":"Other Expenses","amt":900,"desc":"Dilma McDonald Check# 4851","addedAt":"2026-04-21T19:27:07.707Z"},{"id":"tx_1776799665757","date":"2025-12-15","type":"expense","cat":"Other Expenses","amt":500,"desc":"A-All Insurance Check# 4852","addedAt":"2026-04-21T19:27:45.757Z"},{"id":"tx_1776799687590","date":"2025-12-20","type":"expense","cat":"Other Expenses","amt":500,"desc":"Landscaping Check# 4854","addedAt":"2026-04-21T19:28:07.590Z"},{"id":"tx_1776799755373","date":"2025-12-29","type":"expense","cat":"Other Expenses","amt":200,"desc":"Mike Hundley Check# 4855","addedAt":"2026-04-21T19:29:15.373Z"},{"id":"tx_1776799770590","date":"2025-12-21","type":"expense","cat":"Other Expenses","amt":29,"desc":"Best Buy Check# 5475","addedAt":"2026-04-21T19:29:30.590Z"},{"id":"tx_1776801156478","date":"2025-01-01","type":"income","cat":"Sales / Revenue","amt":22348.64,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:52:36.478Z"},{"id":"tx_1776801193745","date":"2025-02-01","type":"income","cat":"Sales / Revenue","amt":14764.53,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:53:13.745Z"},{"id":"tx_1776801216311","date":"2025-03-01","type":"income","cat":"Sales / Revenue","amt":18694.98,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:53:36.311Z"},{"id":"tx_1776801255411","date":"2025-04-01","type":"income","cat":"Sales / Revenue","amt":24022.51,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:54:15.411Z"},{"id":"tx_1776801273644","date":"2025-05-01","type":"income","cat":"Sales / Revenue","amt":20933.79,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:54:33.644Z"},{"id":"tx_1776801291394","date":"2025-06-01","type":"income","cat":"Sales / Revenue","amt":38063.23,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:54:51.394Z"},{"id":"tx_1776801308760","date":"2025-07-01","type":"income","cat":"Sales / Revenue","amt":9272.86,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:55:08.760Z"},{"id":"tx_1776801569625","date":"2025-08-01","type":"income","cat":"Sales / Revenue","amt":20776.43,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:59:29.625Z"},{"id":"tx_1776801584859","date":"2025-09-01","type":"income","cat":"Sales / Revenue","amt":16772.65,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T19:59:44.859Z"},{"id":"tx_1776801600742","date":"2025-10-01","type":"income","cat":"Sales / Revenue","amt":20184,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T20:00:00.742Z"},{"id":"tx_1776801648625","date":"2025-11-01","type":"income","cat":"Sales / Revenue","amt":41036.68,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T20:00:48.625Z"},{"id":"tx_1776801665825","date":"2025-12-01","type":"income","cat":"Sales / Revenue","amt":20615.81,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T20:01:05.825Z"}],"createdAt":"2026-04-20T18:25:07.667Z"},"c_1776709795615":{"name":"Green Pro Environmental Health LLC","biz":"Limited Liability Company","txs":[{"id":"tx_1776803103335","date":"2025-01-02","type":"expense","cat":"Professional Services (CPA / Legal)","amt":75,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:25:03.335Z"},{"id":"tx_1776803125084","date":"2025-01-02","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:25:25.084Z"},{"id":"tx_1776803196767","date":"2025-01-02","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:26:36.767Z"},{"id":"tx_1776803245617","date":"2025-01-22","type":"expense","cat":"Other Expenses","amt":51.25,"desc":"B2P Palm B Constitutional","addedAt":"2026-04-21T20:27:25.617Z"},{"id":"tx_1776803855947","date":"2025-01-23","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:37:35.947Z"},{"id":"tx_1776803883830","date":"2025-01-23","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:38:03.830Z"},{"id":"tx_1776803917947","date":"2025-01-23","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:38:37.947Z"},{"id":"tx_1776804182795","date":"2025-02-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T20:43:02.795Z"},{"id":"tx_1776804258112","date":"2025-03-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T20:44:18.112Z"},{"id":"tx_1776804377311","date":"2025-04-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T20:46:17.311Z"},{"id":"tx_1776804466211","date":"2025-05-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T20:47:46.211Z"},{"id":"tx_1776804485027","date":"2025-05-27","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:48:05.027Z"},{"id":"tx_1776804504476","date":"2025-05-27","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:48:24.476Z"},{"id":"tx_1776804538427","date":"2025-06-16","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:48:58.427Z"},{"id":"tx_1776804546977","date":"2025-06-16","type":"expense","cat":"Professional Services (CPA / Legal)","amt":475,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:49:06.977Z"},{"id":"tx_1776804558926","date":"2025-06-20","type":"expense","cat":"Professional Services (CPA / Legal)","amt":175,"desc":"Accounting & Tax","addedAt":"2026-04-21T20:49:18.926Z"},{"id":"tx_1776804577143","date":"2025-06-23","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T20:49:37.143Z"},{"id":"tx_1776805569881","date":"2025-07-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T21:06:09.881Z"},{"id":"tx_1776805794264","date":"2025-08-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T21:09:54.264Z"},{"id":"tx_1776805907845","date":"2025-09-22","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T21:11:47.845Z"},{"id":"tx_1776805943744","date":"2025-10-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T21:12:23.744Z"},{"id":"tx_1776805987745","date":"2025-11-21","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T21:13:07.745Z"},{"id":"tx_1776806019894","date":"2025-12-22","type":"expense","cat":"Bank Fees & Charges","amt":5,"desc":"Service Charges","addedAt":"2026-04-21T21:13:39.894Z"},{"id":"tx_1776806954963","date":"2025-01-01","type":"income","cat":"Sales / Revenue","amt":500,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T21:29:14.963Z"},{"id":"tx_1776806994596","date":"2025-05-01","type":"income","cat":"Sales / Revenue","amt":300,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T21:29:54.596Z"},{"id":"tx_1776807008563","date":"2025-06-01","type":"income","cat":"Sales / Revenue","amt":1275,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T21:30:08.563Z"},{"id":"tx_1776807055129","date":"2025-07-01","type":"income","cat":"Sales / Revenue","amt":220,"desc":"Deposits, Credits, Interest","addedAt":"2026-04-21T21:30:55.129Z"}],"createdAt":"2026-04-20T18:29:55.615Z"}},"currentClient":"c_1776698566304","lastSaved":"2026-04-23T02:36:34.051Z"};
+    seedData.lastSaved = new Date().toISOString();
+    try {
+      localStorage.setItem(SEED_KEY, JSON.stringify(seedData));
+      // Reload the app state from what we just wrote
+      loadData();
+      refreshAll();
+      showToast('Client data loaded successfully!', 's');
+    } catch(e) {
+      console.warn('Auto-seed failed:', e);
+    }
+  }
+})();
+// ── END AUTO-SEED ─────────────────────────────────────────────
 </script>
 </body>
 </html>
