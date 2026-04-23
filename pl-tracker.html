@@ -1001,19 +1001,21 @@ function renderCustomCatList() {
   }
   var h = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">';
   for (var i = 0; i < iCats.length; i++) {
+    var safeNameI = encodeURIComponent(iCats[i]);
     h += '<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.35);' +
          'border-radius:20px;padding:3px 10px;font-size:12px;color:var(--green)">' +
-         '⬆ ' + iCats[i] +
-         '<button onclick="deleteCustomCat('income','' + iCats[i].replace(/\/g,'\\').replace(/'/g,"\'") + '')" ' +
-         'style="background:transparent;border:none;color:var(--green);cursor:pointer;font-size:13px;padding:0 0 0 3px;line-height:1;opacity:.7">✕</button>' +
+         '&#11014; ' + iCats[i] +
+         '<button onclick="deleteCustomCat(&quot;income&quot;,decodeURIComponent(&quot;' + safeNameI + '&quot;))" ' +
+         'style="background:transparent;border:none;color:var(--green);cursor:pointer;font-size:13px;padding:0 0 0 3px;line-height:1;opacity:.7">&#10005;</button>' +
          '</span>';
   }
   for (var j = 0; j < eCats.length; j++) {
+    var safeNameE = encodeURIComponent(eCats[j]);
     h += '<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(224,90,90,.1);border:1px solid rgba(224,90,90,.35);' +
          'border-radius:20px;padding:3px 10px;font-size:12px;color:var(--red)">' +
-         '⬇ ' + eCats[j] +
-         '<button onclick="deleteCustomCat('expense','' + eCats[j].replace(/\/g,'\\').replace(/'/g,"\'") + '')" ' +
-         'style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:13px;padding:0 0 0 3px;line-height:1;opacity:.7">✕</button>' +
+         '&#11015; ' + eCats[j] +
+         '<button onclick="deleteCustomCat(&quot;expense&quot;,decodeURIComponent(&quot;' + safeNameE + '&quot;))" ' +
+         'style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:13px;padding:0 0 0 3px;line-height:1;opacity:.7">&#10005;</button>' +
          '</span>';
   }
   h += '</div>';
@@ -1746,7 +1748,7 @@ function printLedger() {
     '<div style="font-size:11px;color:#999;margin-bottom:8px">' + txs.length + ' transaction' + (txs.length !== 1 ? 's' : '') + '</div>' +
 
     // ── Table ────────────────────────────────────────────────
-    '<table style="width:100%;border-collapse:collapse;font-family:'DM Sans',Arial,sans-serif">' +
+    '<table style="width:100%;border-collapse:collapse;font-family:\'DM Sans\',Arial,sans-serif">' +
     '<thead><tr style="background:#f5f0e8">' +
       '<th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7a5c1e;border-bottom:2px solid #c8963c;white-space:nowrap">Date</th>' +
       '<th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7a5c1e;border-bottom:2px solid #c8963c">Type</th>' +
