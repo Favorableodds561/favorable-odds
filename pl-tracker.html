@@ -315,6 +315,12 @@ tfoot td{padding:10px 14px;}
             <span class="fl">Amount Column</span>
             <select id="csvAmtCol" onchange="reParseImport()" style="margin-top:4px"></select>
           </div>
+          <div class="fg" style="min-width:140px;flex:1">
+            <span class="fl">Type Column <span style="font-weight:400;text-transform:none;color:var(--muted)">(Income/Expense)</span></span>
+            <select id="csvTypeCol" onchange="reParseImport()" style="margin-top:4px">
+              <option value="-1">— None (set manually) —</option>
+            </select>
+          </div>
           <div class="fg" style="min-width:120px">
             <span class="fl">Skip Header Rows</span>
             <select id="csvSkipRows" onchange="reParseImport()" style="margin-top:4px">
@@ -336,7 +342,7 @@ tfoot td{padding:10px 14px;}
         </div>
         <div id="csvRows"></div>
         <div class="brow" style="margin-top:1.5rem">
-          <button class="bp" onclick="importAllPending()">✓ Add All Remaining Pending as Expenses</button>
+          <button class="bp" onclick="importAllPending()">✓ Add All Remaining Pending (auto-type)</button>
           <button class="bo" onclick="clearCSVImport()">Clear &amp; Reset</button>
         </div>
       </div>
@@ -1172,6 +1178,15 @@ function buildColumnUI(){
       sel.innerHTML+='<option value="'+c+'">['+c+'] '+label+'</option>';
     }
   });
+  // Build Type column selector
+  var typeSel=$('csvTypeCol'); if(typeSel){
+    typeSel.innerHTML='<option value="-1">— None (set manually) —</option>';
+    for(var c=0;c<firstRow.length;c++){
+      var tlabel=String(firstRow[c]||'').trim();
+      tlabel=tlabel?tlabel.substring(0,24):'Col '+(c+1);
+      typeSel.innerHTML+='<option value="'+c+'">['+c+'] '+tlabel+'</option>';
+    }
+  }
   autoDetectColumns(firstRow);
   $('importColInfo').style.display='block';
   showPreviewFirstRows();
@@ -1179,17 +1194,19 @@ function buildColumnUI(){
 
 // ── Heuristic column auto-detection ──────────────────────────
 function autoDetectColumns(headerRow){
-  var dateIdx=-1,descIdx=-1,amtIdx=-1;
+  var dateIdx=-1,descIdx=-1,amtIdx=-1,typeIdx=-1;
   var dateKW=['date','dt','trans','posted','post','when'];
   var descKW=['desc','narr','memo','name','detail','merchant','payee','note','ref','particular'];
   var amtKW=['amount','amt','debit','credit','sum','value','total','payment','withdraw','deposit','charge'];
+  var typeKW=['type','kind','category','txtype','transtype','incometype','expensetype','transaction type'];
 
   // 1 — scan header row text
   for(var c=0;c<headerRow.length;c++){
-    var h=String(headerRow[c]||'').toLowerCase().replace(/[^a-z]/g,'');
+    var h=String(headerRow[c]||'').toLowerCase().replace(/[^a-z ]/g,'').trim();
     if(dateIdx<0&&dateKW.some(function(k){ return h.indexOf(k)>=0; })) dateIdx=c;
     if(descIdx<0&&descKW.some(function(k){ return h.indexOf(k)>=0; })) descIdx=c;
     if(amtIdx <0&&amtKW.some(function(k) { return h.indexOf(k)>=0; })) amtIdx=c;
+    if(typeIdx<0&&typeKW.some(function(k){ return h===k||h.indexOf(k)>=0; })) typeIdx=c;
   }
 
   // 2 — scan data rows if still unresolved
@@ -1202,33 +1219,54 @@ function autoDetectColumns(headerRow){
         if(dateIdx<0&&looksLikeDate(val)) dateSc[col]=(dateSc[col]||0)+1;
         if(amtIdx <0&&looksLikeAmount(val)) amtSc[col]=(amtSc[col]||0)+1;
         if(descIdx<0&&looksLikeDesc(val))  descSc[col]=(descSc[col]||0)+1;
+        // Detect type column by looking for income/expense keywords in data
+        if(typeIdx<0&&looksLikeType(val)) { /* counted below */ }
       }
+    }
+    // Check each column for type-like values
+    if(typeIdx<0){
+      var typeSc=[];
+      for(var r2=0;r2<sample.length;r2++){
+        for(var col2=0;col2<sample[r2].length;col2++){
+          var v2=String(sample[r2][col2]||'').trim().toLowerCase();
+          if(v2==='income'||v2==='expense'||v2==='revenue'||v2==='debit'||v2==='credit'||v2==='in'||v2==='out'){
+            typeSc[col2]=(typeSc[col2]||0)+1;
+          }
+        }
+      }
+      typeIdx=bestCol(typeSc);
     }
     if(dateIdx<0) dateIdx=bestCol(dateSc);
     if(amtIdx <0) amtIdx =bestCol(amtSc);
     if(descIdx<0){
-      // pick longest-text column not already taken
       var best=-1,bestLen=0;
-      for(var r2=0;r2<sample.length;r2++){
-        for(var col2=0;col2<sample[r2].length;col2++){
-          if(col2===dateIdx||col2===amtIdx) continue;
-          var len=String(sample[r2][col2]||'').length;
-          if(len>bestLen){ bestLen=len; best=col2; }
+      for(var r3=0;r3<sample.length;r3++){
+        for(var col3=0;col3<sample[r3].length;col3++){
+          if(col3===dateIdx||col3===amtIdx||col3===typeIdx) continue;
+          var len=String(sample[r3][col3]||'').length;
+          if(len>bestLen){ bestLen=len; best=col3; }
         }
       }
       descIdx=best>=0?best:0;
     }
   }
 
-  // Safe defaults
+  // Safe defaults — for the standard 4-col format: Date, Description, Amount, Type
   if(dateIdx<0) dateIdx=0;
   if(descIdx<0) descIdx=Math.min(1,headerRow.length-1);
   if(amtIdx <0) amtIdx =Math.min(2,headerRow.length-1);
+  // typeIdx stays -1 (None) if not found
 
   var setVal=function(id,v){ var el=$(id); if(el) el.value=v; };
   setVal('csvDateCol',dateIdx);
   setVal('csvDescCol',descIdx);
   setVal('csvAmtCol', amtIdx);
+  setVal('csvTypeCol', typeIdx>=0?typeIdx:'-1');
+}
+
+function looksLikeType(v){
+  var l=v.trim().toLowerCase();
+  return l==='income'||l==='expense'||l==='revenue'||l==='debit'||l==='credit'||l==='in'||l==='out';
 }
 
 function bestCol(arr){
@@ -1269,6 +1307,7 @@ function reParseImport(){
   var dCol =parseInt(($('csvDateCol') ||{}).value)||0;
   var nCol =parseInt(($('csvDescCol') ||{}).value)||1;
   var aCol =parseInt(($('csvAmtCol')  ||{}).value)||2;
+  var tCol =parseInt(($('csvTypeCol') ||{}).value); // -1 means no type column
 
   csvRows=[]; selectedRows={}; csvPage=0; csvFilter='all'; csvSearchTerm='';
 
@@ -1280,6 +1319,7 @@ function reParseImport(){
     var dateRaw=cleanCell(row[dCol]);
     var desc   =cleanCell(row[nCol]);
     var amtRaw =cleanCell(row[aCol]);
+    var typeRaw=tCol>=0?cleanCell(row[tCol]):'';
     if(!dateRaw&&!desc) continue;
 
     // Parse amount — handle negatives, parentheses notation, currency symbols
@@ -1287,7 +1327,19 @@ function reParseImport(){
     if(/^\([\d.]+\)$/.test(amtStr)) amtStr='-'+amtStr.slice(1,-1);
     var amt=Math.abs(parseFloat(amtStr)||0);
 
-    csvRows.push({ dateRaw:dateRaw, desc:desc, amt:amt, status:'pending', type:'expense', cat:'Other Expenses' });
+    // Determine type from type column if available
+    var detectedType='expense';
+    var typeSource='manual'; // 'auto' = from column, 'manual' = user must choose
+    if(typeRaw){
+      var tl=typeRaw.toLowerCase().trim();
+      if(tl==='income'||tl==='revenue'||tl==='credit'||tl==='in'||tl==='deposit'){
+        detectedType='income'; typeSource='auto';
+      } else if(tl==='expense'||tl==='debit'||tl==='out'||tl==='withdrawal'||tl==='charge'||tl==='payment'){
+        detectedType='expense'; typeSource='auto';
+      }
+    }
+
+    csvRows.push({ dateRaw:dateRaw, desc:desc, amt:amt, status:'pending', type:detectedType, cat: detectedType==='income'?'Sales / Revenue':'Other Expenses', typeSource:typeSource });
   }
 
   if(!csvRows.length){
@@ -1422,9 +1474,17 @@ function renderCSVRows(){
       h+='<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
       h+='<div style="font-size:15px;font-weight:700;color:var(--gold);min-width:70px;text-align:right">$'+(row.amt||0).toFixed(2)+'</div>';
       if(!done){
-        h+='<select id="csvCat_'+idx+'" style="width:160px;font-size:11px;padding:5px 8px">'+catOpts+'</select>';
-        h+='<button class="hbtn new" onclick="csvAction('+idx+',&quot;income&quot;)" style="font-size:11px;padding:4px 9px">⬆</button>';
-        h+='<button class="hbtn r" onclick="csvAction('+idx+',&quot;expense&quot;)" style="font-size:11px;padding:4px 9px">⬇</button>';
+        // Show auto-type badge if detected from column
+        if(row.typeSource==='auto'){
+          var tbadge=row.type==='income'
+            ?'<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--gbg);color:var(--green);border:1px solid rgba(46,204,113,.3)">AUTO: Income</span>'
+            :'<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--rbg);color:var(--red);border:1px solid rgba(224,90,90,.3)">AUTO: Expense</span>';
+          h+=tbadge;
+        }
+        var catOptsForRow=row.type==='income'?buildCatOptions(INCOME_GROUPS):catOpts;
+        h+='<select id="csvCat_'+idx+'" style="width:160px;font-size:11px;padding:5px 8px">'+catOptsForRow+'</select>';
+        h+='<button class="hbtn new" onclick="csvAction('+idx+',&quot;income&quot;)" style="font-size:11px;padding:4px 9px">⬆ Inc</button>';
+        h+='<button class="hbtn r" onclick="csvAction('+idx+',&quot;expense&quot;)" style="font-size:11px;padding:4px 9px">⬇ Exp</button>';
         h+='<button class="hbtn" onclick="csvAction('+idx+',&quot;skip&quot;)" style="font-size:11px;padding:4px 9px">✕</button>';
       } else {
         h+='<button class="hbtn" onclick="csvUndo('+idx+')" style="font-size:11px;padding:4px 9px;color:var(--muted)">Undo</button>';
@@ -1525,7 +1585,8 @@ function csvAction(idx,action){
   var row=csvRows[idx];
   if(action==='skip'){ row.status='skipped'; }
   else {
-    var catSel=$('csvCat_'+idx); var cat=catSel?catSel.value:'Other Expenses';
+    var catSel=$('csvCat_'+idx);
+    var cat=catSel?catSel.value:(action==='income'?'Sales / Revenue':'Other Expenses');
     var txs=getClientTxs();
     txs.push({id:'tx_'+Date.now()+'_'+idx,date:normalizeDate(row.dateRaw),type:action,cat:cat,amt:row.amt,desc:row.desc,addedAt:new Date().toISOString()});
     setClientTxs(txs); saveData();
@@ -1546,13 +1607,15 @@ function csvUndo(idx){
 
 function importAllPending(){
   if(!appState.currentClient){ showToast('Select a client first.','e'); return; }
-  var cat=$('csvBatchCat')?$('csvBatchCat').value:'Other Expenses';
   var added=0; var txs=getClientTxs();
   for(var i=0;i<csvRows.length;i++){
     if(csvRows[i].status!=='pending') continue;
-    var rowCatSel=$('csvCat_'+i); var rowCat=rowCatSel?rowCatSel.value:cat;
-    txs.push({id:'tx_'+Date.now()+'_'+i,date:normalizeDate(csvRows[i].dateRaw),type:'expense',cat:rowCat,amt:csvRows[i].amt,desc:csvRows[i].desc,addedAt:new Date().toISOString()});
-    csvRows[i].status='added'; csvRows[i].type='expense'; csvRows[i].cat=rowCat;
+    var rowCatSel=$('csvCat_'+i);
+    var rowType=csvRows[i].type||'expense';
+    var defaultCat=rowType==='income'?'Sales / Revenue':'Other Expenses';
+    var rowCat=rowCatSel?rowCatSel.value:defaultCat;
+    txs.push({id:'tx_'+Date.now()+'_'+i,date:normalizeDate(csvRows[i].dateRaw),type:rowType,cat:rowCat,amt:csvRows[i].amt,desc:csvRows[i].desc,addedAt:new Date().toISOString()});
+    csvRows[i].status='added'; csvRows[i].cat=rowCat;
     added++;
   }
   setClientTxs(txs); saveData(); renderCSVRows();
