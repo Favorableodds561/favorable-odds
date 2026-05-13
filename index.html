@@ -7,8 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init('YVFMPQh2ifuDyFMUq');</script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -496,16 +494,30 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
 
 .audit-field textarea { resize:vertical; min-height:90px; }
 
-.audit-submit {
-  width:100%; padding:16px 24px;
-  background:var(--gold); color:var(--ink);
-  border:none; border-radius:var(--radius-pill);
-  font-family:'Syne',sans-serif; font-size:15px; font-weight:800;
-  cursor:pointer; letter-spacing:0.01em;
-  transition:background 0.2s, transform 0.15s;
-  margin-top:4px;
+.audit-submit-row {
+  display:flex; gap:12px; margin-top:4px; flex-wrap:wrap;
 }
-.audit-submit:hover { background:#e6a832; transform:translateY(-2px); }
+.audit-submit {
+  flex:1; min-width:140px; padding:15px 18px;
+  border:none; border-radius:var(--radius-pill);
+  font-family:'Syne',sans-serif; font-size:14px; font-weight:800;
+  cursor:pointer; letter-spacing:0.01em;
+  transition:background 0.2s, transform 0.15s, box-shadow 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.audit-submit-text {
+  background:var(--green); color:var(--white);
+}
+.audit-submit-text:hover { background:#15803d; transform:translateY(-2px); box-shadow:0 10px 28px rgba(22,163,74,0.3); }
+.audit-submit-email {
+  background:var(--gold); color:var(--ink);
+}
+.audit-submit-email:hover { background:#e6a832; transform:translateY(-2px); box-shadow:0 10px 28px rgba(200,150,60,0.3); }
+.audit-submit:disabled { opacity:0.5; pointer-events:none; }
+@media(max-width:480px) {
+  .audit-submit-row { flex-direction:column; }
+  .audit-submit { width:100%; }
+}
 
 .audit-success {
   display:none;
@@ -1052,9 +1064,14 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
           <textarea id="auditPain" placeholder="e.g. We manually enter data from one system to another every day. It takes 3 hours and someone always makes mistakes..."></textarea>
         </div>
 
-        <button class="audit-submit" onclick="submitAudit()">
-          Send My Free Audit Request →
-        </button>
+        <div class="audit-submit-row">
+          <button class="audit-submit audit-submit-text" onclick="textAudit()">
+            💬 Text for a Quote
+          </button>
+          <button class="audit-submit audit-submit-email" onclick="emailAudit()">
+            ✉️ Email for a Quote
+          </button>
+        </div>
       </div>
 
       <div class="audit-success" id="auditSuccess">
@@ -1391,44 +1408,76 @@ document.getElementById('navOverlay').addEventListener('click', function(e) {
 });
 
 // ══════════════════════════════
-// FREE AUDIT FORM — EmailJS
+// FREE AUDIT FORM — Text & Email
 // ══════════════════════════════
-function submitAudit() {
-  var name  = document.getElementById('auditName').value.trim();
-  var email = document.getElementById('auditEmail').value.trim();
-  var biz   = document.getElementById('auditBiz').value.trim();
-  var tools = document.getElementById('auditTools').value.trim();
-  var pain  = document.getElementById('auditPain').value.trim();
 
-  if (!name || !email || !biz || !pain) {
-    alert('Please fill in your name, email, business, and biggest headache.');
-    return;
-  }
+var JOSH_PHONE  = '16892439704';   // your number (digits only, no +)
+var JOSH_EMAIL  = 'hello@favorableodds.io';
 
-  var btn = document.querySelector('.audit-submit');
-  btn.textContent = 'Sending...';
-  btn.disabled = true;
-
-  var templateParams = {
-    from_name: name,
-    name:      name,
-    email:     email,
-    business:  biz,
-    tools:     tools || 'Not specified',
-    pain:      pain
+function getAuditFields() {
+  return {
+    name:  document.getElementById('auditName').value.trim(),
+    email: document.getElementById('auditEmail').value.trim(),
+    biz:   document.getElementById('auditBiz').value.trim(),
+    tools: document.getElementById('auditTools').value.trim(),
+    pain:  document.getElementById('auditPain').value.trim()
   };
+}
 
-  emailjs.send('service_blx7dqd', 'template_mk4t2nm', templateParams)
-  .then(function(response) {
-    console.log('EmailJS success:', response.status, response.text);
-    document.getElementById('auditForm').style.display    = 'none';
-    document.getElementById('auditSuccess').style.display = 'block';
-  }, function(error) {
-    console.error('EmailJS error:', JSON.stringify(error));
-    btn.textContent = 'Send My Free Audit Request →';
-    btn.disabled = false;
-    alert('Error ' + (error.status || '') + ': ' + (error.text || 'Send failed') + '\n\nPlease email us directly at hello@favorableodds.io');
-  });
+function validateAudit(f) {
+  if (!f.name || !f.biz || !f.pain) {
+    alert('Please fill in your name, business/industry, and biggest tech headache.');
+    return false;
+  }
+  return true;
+}
+
+function showSuccess() {
+  document.getElementById('auditForm').style.display    = 'none';
+  document.getElementById('auditSuccess').style.display = 'block';
+}
+
+// ── TEXT / SMS ──
+function textAudit() {
+  var f = getAuditFields();
+  if (!validateAudit(f)) return;
+
+  var body =
+    'Hi Josh! Free Audit Request from favorableodds.io\n\n' +
+    'Name: ' + f.name + '\n' +
+    (f.email ? 'Email: ' + f.email + '\n' : '') +
+    'Business: ' + f.biz + '\n' +
+    'Tools: ' + (f.tools || 'Not specified') + '\n' +
+    'Biggest Headache: ' + f.pain;
+
+  // sms: URI — opens Messages on iOS & Android; mailto fallback on desktop
+  var smsLink = 'sms:+' + JOSH_PHONE + '?body=' + encodeURIComponent(body);
+  window.location.href = smsLink;
+  showSuccess();
+}
+
+// ── EMAIL ──
+function emailAudit() {
+  var f = getAuditFields();
+  if (!validateAudit(f)) return;
+
+  var subject = 'Free Tech Audit Request — ' + f.name;
+  var body =
+    'Hi Josh,\n\n' +
+    'I'd like to request a free 15-minute tech audit.\n\n' +
+    'Name: ' + f.name + '\n' +
+    'Email: ' + f.email + '\n' +
+    'Business / Industry: ' + f.biz + '\n' +
+    'Tools Currently Using: ' + (f.tools || 'Not specified') + '\n' +
+    'Biggest Tech Headache: ' + f.pain + '\n\n' +
+    'Looking forward to hearing from you!';
+
+  window.location.href =
+    'mailto:' + JOSH_EMAIL +
+    '?subject=' + encodeURIComponent(subject) +
+    '&body='    + encodeURIComponent(body);
+
+  showSuccess();
 }
 
 </script>
