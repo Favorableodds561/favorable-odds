@@ -1450,9 +1450,13 @@ function textAudit() {
     'Tools: ' + (f.tools || 'Not specified') + '\n' +
     'Biggest Headache: ' + f.pain;
 
-  // sms: URI — opens Messages on iOS & Android; mailto fallback on desktop
-  var smsLink = 'sms:+' + JOSH_PHONE + '?body=' + encodeURIComponent(body);
-  window.location.href = smsLink;
+  // Use a temp anchor so the browser treats it as a link click,
+  // not a page navigation — keeps the page alive and opens Messages.
+  var a = document.createElement('a');
+  a.href = 'sms:+' + JOSH_PHONE + '?body=' + encodeURIComponent(body);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   showSuccess();
 }
 
@@ -1461,10 +1465,10 @@ function emailAudit() {
   var f = getAuditFields();
   if (!validateAudit(f)) return;
 
-  var subject = 'Free Tech Audit Request — ' + f.name;
+  var subject = 'Free Tech Audit Request - ' + f.name;
   var body =
     'Hi Josh,\n\n' +
-    'I'd like to request a free 15-minute tech audit.\n\n' +
+    'I would like to request a free 15-minute tech audit.\n\n' +
     'Name: ' + f.name + '\n' +
     'Email: ' + f.email + '\n' +
     'Business / Industry: ' + f.biz + '\n' +
@@ -1472,11 +1476,13 @@ function emailAudit() {
     'Biggest Tech Headache: ' + f.pain + '\n\n' +
     'Looking forward to hearing from you!';
 
-  window.location.href =
-    'mailto:' + JOSH_EMAIL +
+  var a = document.createElement('a');
+  a.href = 'mailto:' + JOSH_EMAIL +
     '?subject=' + encodeURIComponent(subject) +
     '&body='    + encodeURIComponent(body);
-
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   showSuccess();
 }
 
