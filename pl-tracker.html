@@ -157,6 +157,8 @@ tfoot td{padding:10px 14px;}
 .import-drop-zone{border:2px dashed var(--bgold);border-radius:var(--rl);padding:2.5rem;text-align:center;cursor:pointer;background:rgba(232,185,74,.04);transition:all .2s;margin-bottom:1.25rem;}
 .import-drop-zone:hover{background:rgba(232,185,74,.08);border-color:var(--gold);}
 @media(max-width:700px){.form-grid{grid-template-columns:1fr;}.mr{grid-template-columns:1fr 1fr;}.bg{grid-template-columns:1fr;}.fw{grid-column:1;}main{padding:1.25rem 1rem 3rem;}.tab-bar{gap:2px;}.tab-btn{padding:7px 12px;font-size:12px;}}
+.batch-row-sel{background:rgba(232,185,74,.10)!important;outline:1px solid rgba(232,185,74,.35);}
+input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -351,19 +353,57 @@ tfoot td{padding:10px 14px;}
 
   <!-- LEDGER -->
   <div id="view-ledger" style="display:none">
-    <div class="fb">
-      <div class="fg"><span class="fl">Filter by Month</span>
+    <!-- Filter Bar -->
+    <div class="fb" style="flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:10px">
+      <div class="fg" style="min-width:130px"><span class="fl">Filter by Month</span>
         <select id="ledgerMonth" onchange="renderLedger()"><option value="">All months</option></select>
       </div>
-      <div class="fg"><span class="fl">Filter by Type</span>
+      <div class="fg" style="min-width:130px"><span class="fl">Filter by Type</span>
         <select id="ledgerType" onchange="renderLedger()">
           <option value="">All</option>
           <option value="income">Income only</option>
           <option value="expense">Expenses only</option>
         </select>
       </div>
-      <button class="bo" onclick="exportLedgerCSV()" style="white-space:nowrap">↓ Export Ledger CSV</button>
+      <div class="fg" style="min-width:130px"><span class="fl">Filter by Category</span>
+        <select id="ledgerCat" onchange="renderLedger()">
+          <option value="">All categories</option>
+        </select>
+      </div>
+      <div class="fg" style="min-width:160px"><span class="fl">Search Description</span>
+        <input type="text" id="ledgerDescSearch" placeholder="Type to search…" oninput="renderLedger()" style="height:42px">
+      </div>
+      <div class="fg" style="min-width:130px"><span class="fl">Date From</span>
+        <input type="date" id="ledgerDateFrom" onchange="renderLedger()" style="height:42px">
+      </div>
+      <div class="fg" style="min-width:130px"><span class="fl">Date To</span>
+        <input type="date" id="ledgerDateTo" onchange="renderLedger()" style="height:42px">
+      </div>
+      <button class="bo" onclick="clearLedgerFilters()" style="white-space:nowrap;height:42px;align-self:flex-end">✕ Clear Filters</button>
+    </div>
+    <!-- Action Bar -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem">
+      <button class="bo" onclick="exportLedgerCSV()" style="white-space:nowrap">↓ Export CSV</button>
       <button class="bo" onclick="printLedger()" style="white-space:nowrap;border-color:var(--gold3);color:var(--gold)">🖨 Print Ledger</button>
+      <div style="flex:1"></div>
+      <!-- Batch Edit Toolbar (hidden until rows selected) -->
+      <div id="batchToolbar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap">
+        <span id="batchCount" style="font-size:12px;font-weight:700;color:var(--gold)">0 selected</span>
+        <select id="batchField" onchange="onBatchFieldChange()" style="font-size:12px;padding:6px 10px;height:36px;min-width:140px">
+          <option value="">— Change field… —</option>
+          <option value="type">Type</option>
+          <option value="cat">Category</option>
+          <option value="date">Date</option>
+          <option value="desc">Description</option>
+          <option value="amt">Amount</option>
+        </select>
+        <div id="batchValueWrap" style="display:none"></div>
+        <button class="bp" id="batchApplyBtn" onclick="applyBatchEdit()" style="padding:7px 16px;font-size:13px;display:none">✓ Apply</button>
+        <button class="bd" onclick="batchDeleteSelected()" style="padding:5px 12px;font-size:12px">🗑 Delete Selected</button>
+        <button class="bo" onclick="clearBatchSelection()" style="padding:5px 12px;font-size:12px">✕ Deselect All</button>
+      </div>
+      <button class="hbtn" id="batchModeBtn" onclick="toggleBatchMode()" style="border-color:var(--gold3);color:var(--gold);height:36px;padding:0 14px">☑ Batch Edit</button>
+      <button class="bp" id="ledgerSaveBtn" onclick="ledgerSaveCurrentPage()" style="display:none;padding:7px 18px;font-size:13px">💾 Save Page</button>
     </div>
     <div id="ledgerTable"></div>
     <div id="ledgerPrintArea" style="display:none"></div>
@@ -922,8 +962,12 @@ function renderRecent(){
 }
 
 // ════════════════════════════════════════════════════════════════
-// LEDGER
+// LEDGER — Enhanced (batch edit, save, advanced filters)
 // ════════════════════════════════════════════════════════════════
+var _batchMode = false;
+var _batchSelected = {};   // id → true
+var _ledgerUnsaved = false; // tracks unsaved inline edits on current view
+
 function populateLedgerMonths(){
   var sel=$('ledgerMonth'); if(!sel) return;
   var cur=sel.value; var txs=getClientTxs(); var seen={},months=[];
@@ -934,28 +978,192 @@ function populateLedgerMonths(){
   sel.innerHTML=h; if(cur) sel.value=cur;
 }
 
-function renderLedger(){
-  var month=$('ledgerMonth').value; var type=$('ledgerType').value;
-  var txs=getClientTxs().slice();
-  if(month) txs=txs.filter(function(t){ return t.date.indexOf(month)===0; });
-  if(type)  txs=txs.filter(function(t){ return t.type===type; });
-  txs.sort(function(a,b){ return a.date>b.date?-1:a.date<b.date?1:0; });
-  var div=$('ledgerTable'); if(!div) return;
-  if(!txs.length){ div.innerHTML='<div class="es"><div class="ei">🔍</div><p>No transactions match this filter.</p></div>'; return; }
-  var tI=0,tE=0,rows='';
-  for(var i=0;i<txs.length;i++){
-    rows+=txRow(txs[i],true);
-    if(txs[i].type==='income') tI+=txs[i].amt; else tE+=txs[i].amt;
-  }
-  div.innerHTML='<div class="tw"><table><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th style="text-align:right">Amount</th><th></th></tr></thead><tbody>'+rows+'</tbody><tfoot style="background:rgba(6,10,18,.98)"><tr><td colspan="4" style="padding:10px 14px;font-weight:700;font-size:12px;color:var(--gold)">Totals</td><td style="text-align:right;padding:10px 14px"><div class="ap">+'+fmt(tI)+'</div><div class="an" style="font-size:12px">−'+fmt(tE)+'</div></td><td></td></tr></tfoot></table></div>';
+function populateLedgerCats(){
+  var sel=$('ledgerCat'); if(!sel) return;
+  var cur=sel.value; var txs=getClientTxs(); var seen={},cats=[];
+  for(var i=0;i<txs.length;i++){ var c=txs[i].cat; if(c&&!seen[c]){ seen[c]=true; cats.push(c); } }
+  cats.sort();
+  var h='<option value="">All categories</option>';
+  for(var j=0;j<cats.length;j++) h+='<option value="'+cats[j]+'"'+(cats[j]===cur?' selected':'')+'>'+cats[j]+'</option>';
+  sel.innerHTML=h;
 }
 
-function exportLedgerCSV(){
-  var month=$('ledgerMonth').value; var type=$('ledgerType').value;
+function getLedgerFiltered(){
+  var month=($('ledgerMonth')||{}).value||'';
+  var type=($('ledgerType')||{}).value||'';
+  var cat=($('ledgerCat')||{}).value||'';
+  var desc=(($('ledgerDescSearch')||{}).value||'').toLowerCase().trim();
+  var dateFrom=($('ledgerDateFrom')||{}).value||'';
+  var dateTo=($('ledgerDateTo')||{}).value||'';
   var txs=getClientTxs().slice();
-  if(month) txs=txs.filter(function(t){ return t.date.indexOf(month)===0; });
-  if(type)  txs=txs.filter(function(t){ return t.type===type; });
-  txs.sort(function(a,b){ return a.date>b.date?-1:1; });
+  if(month)    txs=txs.filter(function(t){ return t.date.indexOf(month)===0; });
+  if(type)     txs=txs.filter(function(t){ return t.type===type; });
+  if(cat)      txs=txs.filter(function(t){ return t.cat===cat; });
+  if(desc)     txs=txs.filter(function(t){ return (t.desc||'').toLowerCase().indexOf(desc)>=0; });
+  if(dateFrom) txs=txs.filter(function(t){ return t.date>=dateFrom; });
+  if(dateTo)   txs=txs.filter(function(t){ return t.date<=dateTo; });
+  txs.sort(function(a,b){ return a.date>b.date?-1:a.date<b.date?1:0; });
+  return txs;
+}
+
+function clearLedgerFilters(){
+  var ids=['ledgerMonth','ledgerType','ledgerCat'];
+  for(var i=0;i<ids.length;i++){ var el=$(ids[i]); if(el) el.value=''; }
+  var df=$('ledgerDateFrom'); if(df) df.value='';
+  var dt=$('ledgerDateTo'); if(dt) dt.value='';
+  var ds=$('ledgerDescSearch'); if(ds) ds.value='';
+  renderLedger();
+}
+
+function renderLedger(){
+  populateLedgerCats();
+  var txs=getLedgerFiltered();
+  var div=$('ledgerTable'); if(!div) return;
+  // Show/hide save button
+  var sb=$('ledgerSaveBtn'); if(sb) sb.style.display=_ledgerUnsaved?'inline-flex':'none';
+  if(!txs.length){ div.innerHTML='<div class="es"><div class="ei">🔍</div><p>No transactions match this filter.</p></div>'; return; }
+  var tI=0,tE=0,rows='';
+  var chkHdr=_batchMode?'<th style="width:36px"><input type="checkbox" id="batchSelectAll" onclick="batchToggleAll(this.checked)" title="Select all"></th>':'';
+  for(var i=0;i<txs.length;i++){
+    rows+=txRowLedger(txs[i]);
+    if(txs[i].type==='income') tI+=txs[i].amt; else tE+=txs[i].amt;
+  }
+  var chkFtr=_batchMode?'<td></td>':'';
+  div.innerHTML='<div class="tw"><table><thead><tr>'+chkHdr+'<th>Date</th><th>Type</th><th>Category</th><th>Description</th><th style="text-align:right">Amount</th><th></th></tr></thead><tbody>'+rows+'</tbody><tfoot style="background:rgba(6,10,18,.98)"><tr>'+chkFtr+'<td colspan="4" style="padding:10px 14px;font-weight:700;font-size:12px;color:var(--gold)">Totals (filtered: '+txs.length+' rows)</td><td style="text-align:right;padding:10px 14px"><div class="ap">+'+fmt(tI)+'</div><div class="an" style="font-size:12px">−'+fmt(tE)+'</div></td><td></td></tr></tfoot></table></div>';
+  updateBatchToolbar();
+}
+
+// ── Ledger row with optional batch checkbox ──
+function txRowLedger(t){
+  var isInc=t.type==='income';
+  var chkCell=_batchMode?'<td style="text-align:center;padding:8px 6px"><input type="checkbox" class="batch-chk" data-id="'+t.id+'" '+((_batchSelected[t.id])?'checked':'')+' onchange="batchCheckChange(this)"></td>':'';
+  var actionBtns='<td style="white-space:nowrap;padding-right:6px"><button class="bd" style="margin-right:4px;background:rgba(232,185,74,.12);border-color:var(--gold3);color:var(--gold)" onclick="editTx(\''+t.id+'\')">✏ Edit</button><button class="bd" onclick="deleteTx(\''+t.id+'\')">Delete</button></td>';
+  return '<tr class="'+((_batchSelected[t.id])?'batch-row-sel':'')+'">'+chkCell+'<td>'+t.date+'</td><td><span class="tag '+(isInc?'ti':'te')+'">'+t.type+'</span></td><td>'+t.cat+'</td><td style="color:var(--muted)">'+(t.desc||'—')+'</td><td class="'+(isInc?'ap':'an')+'" style="text-align:right">'+(isInc?'+':'−')+fmt(t.amt)+'</td>'+actionBtns+'</tr>';
+}
+
+// ─────────────────────────────────────────────
+// BATCH EDIT
+// ─────────────────────────────────────────────
+function toggleBatchMode(){
+  _batchMode=!_batchMode;
+  _batchSelected={};
+  var btn=$('batchModeBtn');
+  if(btn){ btn.textContent=_batchMode?'✕ Exit Batch':'☑ Batch Edit'; btn.style.background=_batchMode?'rgba(232,185,74,.15)':''; }
+  var tb=$('batchToolbar'); if(tb) tb.style.display=_batchMode?'flex':'none';
+  renderLedger();
+}
+
+function batchCheckChange(cb){
+  var id=cb.getAttribute('data-id');
+  if(cb.checked) _batchSelected[id]=true;
+  else delete _batchSelected[id];
+  updateBatchToolbar();
+  // Highlight row
+  var tr=cb.closest('tr');
+  if(tr){ if(cb.checked) tr.classList.add('batch-row-sel'); else tr.classList.remove('batch-row-sel'); }
+}
+
+function batchToggleAll(checked){
+  var txs=getLedgerFiltered();
+  for(var i=0;i<txs.length;i++){ if(checked) _batchSelected[txs[i].id]=true; else delete _batchSelected[txs[i].id]; }
+  renderLedger();
+}
+
+function clearBatchSelection(){
+  _batchSelected={};
+  var all=$('batchSelectAll'); if(all) all.checked=false;
+  renderLedger();
+}
+
+function updateBatchToolbar(){
+  var count=Object.keys(_batchSelected).length;
+  var bc=$('batchCount'); if(bc) bc.textContent=count+' row'+(count===1?'':'s')+' selected';
+  onBatchFieldChange(); // re-evaluate show/hide of value input
+}
+
+function onBatchFieldChange(){
+  var field=($('batchField')||{}).value||'';
+  var wrap=$('batchValueWrap'); if(!wrap) return;
+  var btn=$('batchApplyBtn');
+  if(!field){ wrap.style.display='none'; if(btn) btn.style.display='none'; return; }
+  var h='';
+  if(field==='type'){
+    h='<select id="batchVal" style="font-size:12px;padding:6px 10px;height:36px"><option value="income">Income</option><option value="expense">Expense</option></select>';
+  } else if(field==='cat'){
+    var groups=INCOME_GROUPS.concat(EXPENSE_GROUPS);
+    var customs=(appState.customCats.income||[]).concat(appState.customCats.expense||[]);
+    h='<select id="batchVal" style="font-size:12px;padding:6px 10px;height:36px">'+buildCatOptions(groups,customs)+'</select>';
+  } else if(field==='date'){
+    h='<input type="date" id="batchVal" style="font-size:12px;padding:5px 10px;height:36px;width:150px">';
+  } else if(field==='desc'){
+    h='<input type="text" id="batchVal" placeholder="New description…" style="font-size:12px;padding:5px 10px;height:36px;width:200px">';
+  } else if(field==='amt'){
+    h='<input type="number" id="batchVal" placeholder="New amount…" step="0.01" min="0" style="font-size:12px;padding:5px 10px;height:36px;width:130px">';
+  }
+  wrap.innerHTML=h;
+  wrap.style.display='inline-flex';
+  if(btn) btn.style.display='inline-flex';
+}
+
+function applyBatchEdit(){
+  var ids=Object.keys(_batchSelected);
+  if(!ids.length){ showToast('No rows selected.','e'); return; }
+  var field=($('batchField')||{}).value||'';
+  var valEl=$('batchVal');
+  if(!field||!valEl){ showToast('Choose a field to change.','e'); return; }
+  var val=valEl.value;
+  if(field==='amt'){
+    val=parseFloat(val);
+    if(isNaN(val)||val<=0){ showToast('Enter a valid amount.','e'); return; }
+    val=Math.round(val*100)/100;
+  }
+  if(!val&&field!=='desc'){ showToast('Enter a value to apply.','e'); return; }
+  var txs=getClientTxs();
+  var changed=0;
+  for(var i=0;i<txs.length;i++){
+    if(_batchSelected[txs[i].id]){
+      txs[i][field]=val;
+      txs[i].editedAt=new Date().toISOString();
+      changed++;
+    }
+  }
+  setClientTxs(txs); saveData();
+  _batchSelected={};
+  showToast(changed+' transaction'+(changed===1?'':'s')+' updated!','s');
+  renderLedger(); renderRecent();
+}
+
+function batchDeleteSelected(){
+  var ids=Object.keys(_batchSelected);
+  if(!ids.length){ showToast('No rows selected.','e'); return; }
+  if(!confirm('Delete '+ids.length+' selected transaction(s)? This cannot be undone.')) return;
+  var idSet={}; for(var i=0;i<ids.length;i++) idSet[ids[i]]=true;
+  setClientTxs(getClientTxs().filter(function(t){ return !idSet[t.id]; }));
+  _batchSelected={};
+  saveData(); renderLedger(); renderRecent();
+  showToast(ids.length+' transaction(s) deleted.','i');
+}
+
+// ─────────────────────────────────────────────
+// LEDGER PAGE SAVE
+// ─────────────────────────────────────────────
+function ledgerMarkUnsaved(){
+  _ledgerUnsaved=true;
+  var sb=$('ledgerSaveBtn'); if(sb){ sb.style.display='inline-flex'; sb.style.background='var(--gold3)'; }
+}
+
+function ledgerSaveCurrentPage(){
+  saveData();
+  _ledgerUnsaved=false;
+  var sb=$('ledgerSaveBtn'); if(sb){ sb.style.display='none'; }
+  showToast('Ledger saved!','s');
+}
+
+// ─────────────────────────────────────────────
+// EXPORT / PRINT (use getLedgerFiltered)
+// ─────────────────────────────────────────────
+function exportLedgerCSV(){
+  var txs=getLedgerFiltered();
   var n=appState.clients[appState.currentClient]?appState.clients[appState.currentClient].name:'Client';
   var tI=0,tE=0,dataRows=[];
   for(var i=0;i<txs.length;i++){
@@ -969,13 +1177,18 @@ function exportLedgerCSV(){
 }
 
 function printLedger(){
-  var month=$('ledgerMonth').value; var type=$('ledgerType').value;
-  var txs=getClientTxs().slice();
-  if(month) txs=txs.filter(function(t){ return t.date.indexOf(month)===0; });
-  if(type)  txs=txs.filter(function(t){ return t.type===type; });
-  txs.sort(function(a,b){ return a.date>b.date?-1:1; });
+  var txs=getLedgerFiltered();
   var client=appState.clients[appState.currentClient]||{};
-  var cName=client.name||'Client'; var period=month?monthLabel(month):'All Periods';
+  var cName=client.name||'Client';
+  // Build a descriptive period label from active filters
+  var filterParts=[];
+  var lm=($('ledgerMonth')||{}).value||''; if(lm) filterParts.push(monthLabel(lm));
+  var ldf=($('ledgerDateFrom')||{}).value||''; if(ldf) filterParts.push('From '+ldf);
+  var ldt=($('ledgerDateTo')||{}).value||''; if(ldt) filterParts.push('To '+ldt);
+  var lt=($('ledgerType')||{}).value||''; if(lt) filterParts.push(lt.charAt(0).toUpperCase()+lt.slice(1)+' only');
+  var lc=($('ledgerCat')||{}).value||''; if(lc) filterParts.push(lc);
+  var ld=(($('ledgerDescSearch')||{}).value||'').trim(); if(ld) filterParts.push('Desc: "'+ld+'"');
+  var period=filterParts.length?filterParts.join(' · '):'All Periods';
   var tI=0,tE=0,rows='';
   for(var i=0;i<txs.length;i++){
     var t=txs[i]; var isInc=t.type==='income';
