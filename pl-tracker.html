@@ -159,9 +159,50 @@ tfoot td{padding:10px 14px;}
 @media(max-width:700px){.form-grid{grid-template-columns:1fr;}.mr{grid-template-columns:1fr 1fr;}.bg{grid-template-columns:1fr;}.fw{grid-column:1;}main{padding:1.25rem 1rem 3rem;}.tab-bar{gap:2px;}.tab-btn{padding:7px 12px;font-size:12px;}}
 .batch-row-sel{background:rgba(232,185,74,.10)!important;outline:1px solid rgba(232,185,74,.35);}
 input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px;cursor:pointer;}
+
+/* ── Login Overlay ── */
+#loginOverlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 60% 40%,rgba(22,32,48,.98) 0%,rgba(8,13,22,1) 100%);}
+#loginOverlay::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(232,185,74,.04) 0%,transparent 60%);pointer-events:none;}
+.login-box{position:relative;background:rgba(16,26,40,.96);border:1px solid var(--bgold);border-radius:20px;padding:2.5rem 2.25rem;width:100%;max-width:380px;box-shadow:0 24px 80px rgba(0,0,0,.7),0 0 0 1px rgba(232,185,74,.10);animation:loginIn .35s cubic-bezier(.22,1,.36,1);}
+@keyframes loginIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.login-logo{text-align:center;margin-bottom:2rem;}
+.login-logo-name{font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold2);margin-bottom:2px;}
+.login-logo-sub{font-size:10px;color:var(--slate);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+.login-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--white);margin-bottom:1.5rem;text-align:center;opacity:.85;}
+.login-field{margin-bottom:1rem;}
+.login-field label{display:block;font-size:11px;font-weight:700;color:var(--gold3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.login-field input{width:100%;background:rgba(8,14,22,.80);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;font-size:14px;color:var(--white);font-family:'DM Sans',sans-serif;transition:border-color .15s,box-shadow .15s;}
+.login-field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--glow);}
+.login-btn{width:100%;margin-top:1.5rem;background:var(--gold);color:#0e1620;border:none;border-radius:var(--r);padding:13px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:all .18s;box-shadow:0 4px 20px rgba(232,185,74,.30);letter-spacing:.02em;}
+.login-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 28px rgba(232,185,74,.40);}
+.login-err{margin-top:.85rem;text-align:center;font-size:12px;color:var(--red);font-weight:600;min-height:18px;animation:errShake .25s ease;}
+@keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.login-lock{text-align:center;font-size:28px;margin-bottom:.75rem;opacity:.7;}
 </style>
 </head>
 <body>
+
+<!-- ── Login Overlay ── -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-lock">🔐</div>
+      <div class="login-logo-name">A-All Insurance</div>
+      <div class="login-logo-sub">Group Inc &mdash; P&amp;L Tracker</div>
+    </div>
+    <div class="login-title">Admin Sign In</div>
+    <div class="login-field">
+      <label for="loginUser">Username</label>
+      <input type="text" id="loginUser" placeholder="Enter username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
 
 <header>
   <a class="logo" href="#">
@@ -2118,6 +2159,35 @@ function invExportCSV(){
 }
 
 function invInit(){ invLoad(); invNew(); invRenderList(); invUpdateMetrics(); }
+
+// ════════════════════════════════════════════════════════════════
+// ADMIN LOGIN
+// ════════════════════════════════════════════════════════════════
+(function(){
+  var AUTH_USER='Admin777', AUTH_PASS='wow777', SK='fo_admin_auth';
+  function show(){ document.getElementById('loginOverlay').style.display='flex'; }
+  function hide(){ document.getElementById('loginOverlay').style.display='none'; }
+  // Check existing session
+  if(sessionStorage.getItem(SK)==='1'){ hide(); } else { show(); }
+  window.doLogin=function(){
+    var u=document.getElementById('loginUser').value.trim();
+    var p=document.getElementById('loginPass').value;
+    var err=document.getElementById('loginErr');
+    if(u===AUTH_USER && p===AUTH_PASS){
+      sessionStorage.setItem(SK,'1');
+      hide();
+      err.textContent='';
+    } else {
+      err.textContent='Incorrect username or password.';
+      document.getElementById('loginPass').value='';
+      document.getElementById('loginPass').focus();
+      // re-trigger shake animation
+      err.style.animation='none';
+      err.offsetHeight;
+      err.style.animation='errShake .25s ease';
+    }
+  };
+})();
 
 // ════════════════════════════════════════════════════════════════
 // BOOT
