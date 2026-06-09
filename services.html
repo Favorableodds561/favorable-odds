@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instant Services ⚡ — Favorable Odds Tech Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #0d0d0f; --ink-soft: #3a3a40; --ink-muted: #7a7a84;
+  --surface: #f5f4f0; --white: #ffffff;
+  --accent: #1a6bff; --accent-soft: #e8f0ff;
+  --gold: #c8963c; --gold-soft: #fdf4e7;
+  --green: #16a34a; --green-soft: #dcfce7;
+  --border: rgba(13,13,15,0.10); --border-strong: rgba(13,13,15,0.20);
+  --radius: 16px; --radius-pill: 100px;
+}
+html { scroll-behavior: smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--ink); font-size:16px; line-height:1.6; overflow-x:hidden; }
+h1,h2,h3,h4 { font-family:'Syne',sans-serif; line-height:1.1; letter-spacing:-0.02em; }
+
+/* ── NAV ── */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:10px 48px; background:rgba(245,244,240,0.93); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:10px; }
+.nav-logo-img { height:48px; width:auto; display:block; mix-blend-mode:multiply; }
+.nav-links { display:flex; gap:28px; list-style:none; align-items:center; }
+.nav-links a { font-size:14px; font-weight:500; color:var(--ink-soft); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover { color:var(--ink); }
+.nav-cta { background:var(--ink) !important; color:var(--white) !important; padding:10px 20px; border-radius:var(--radius-pill); font-size:14px; font-weight:500; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--accent) !important; }
+
+/* ── HAMBURGER ── */
+.nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px; z-index:201; }
+.nav-hamburger span { display:block; width:24px; height:2px; background:var(--ink); border-radius:2px; transition:transform 0.3s ease,opacity 0.2s ease; transform-origin:center; }
+.nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity:0; }
+.nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE OVERLAY ── */
+.nav-overlay { display:none; position:fixed; inset:0; z-index:200; background:var(--ink); flex-direction:column; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s ease; }
+.nav-overlay.open { display:flex; opacity:1; }
+.nav-overlay-logo { position:absolute; top:20px; left:24px; display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-overlay-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:0.8; }
+.nav-overlay-logo span { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:rgba(255,255,255,0.8); }
+.nav-overlay-close { position:absolute; top:20px; right:24px; background:none; border:none; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+.nav-overlay-close::before,.nav-overlay-close::after { content:''; position:absolute; width:22px; height:2px; background:rgba(255,255,255,0.7); border-radius:2px; }
+.nav-overlay-close::before { transform:rotate(45deg); }
+.nav-overlay-close::after { transform:rotate(-45deg); }
+.nav-overlay-links { list-style:none; display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; padding:0 32px; }
+.nav-overlay-links li a { display:block; font-family:'Syne',sans-serif; font-size:clamp(22px,6vw,38px); font-weight:800; color:rgba(255,255,255,0.85); text-decoration:none; text-align:center; padding:8px 0; letter-spacing:-0.02em; transition:color 0.2s; border-bottom:1px solid rgba(255,255,255,0.07); width:100%; }
+.nav-overlay-links li:last-child a { border-bottom:none; }
+.nav-overlay-links li a:hover { color:var(--accent); }
+.nav-overlay-contact { position:absolute; bottom:32px; left:0; right:0; text-align:center; }
+
+/* ── PAGE HERO ── */
+.page-hero {
+  padding: 140px 48px 72px;
+  background: var(--ink);
+  position: relative; overflow: hidden;
+}
+.page-hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(26,107,255,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.page-hero-back {
+  display:inline-flex; align-items:center; gap:8px;
+  color:rgba(255,255,255,0.45); font-size:13px; font-weight:500;
+  text-decoration:none; margin-bottom:28px;
+  transition:color 0.2s;
+  position:relative; z-index:1;
+}
+.page-hero-back:hover { color:rgba(255,255,255,0.8); }
+.page-hero-tag {
+  font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:16px;
+  position:relative; z-index:1;
+}
+.page-hero h1 {
+  font-size:clamp(36px,5.5vw,64px); font-weight:800;
+  color:var(--white); max-width:760px; margin-bottom:20px;
+  position:relative; z-index:1;
+}
+.page-hero h1 em { font-style:normal; color:var(--accent); }
+.page-hero p {
+  font-size:18px; color:rgba(255,255,255,0.5); max-width:560px;
+  font-weight:300; line-height:1.65;
+  position:relative; z-index:1;
+}
+.page-hero-badges {
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:28px;
+  position:relative; z-index:1;
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius-pill); padding:7px 16px;
+  font-size:13px; font-weight:500; color:rgba(255,255,255,0.6);
+}
+
+/* ── SERVICES GRID ── */
+.services-page { padding:72px 48px 96px; }
+.is-delivery-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--green-soft); border:1px solid rgba(22,163,74,0.25);
+  border-radius:var(--radius-pill); padding:8px 18px;
+  font-size:13px; font-weight:600; color:var(--green);
+  white-space:nowrap; margin-bottom:48px;
+}
+.is-delivery-badge::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.is-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+
+/* ── SERVICE CARD ── */
+.is-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:var(--radius); padding:28px;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
+  display:flex; flex-direction:column;
+}
+.is-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.3s ease; }
+.is-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.08); border-color:var(--border-strong); }
+.is-card:hover::before { transform:scaleX(1); }
+.is-card-icon { width:44px; height:44px; border-radius:11px; background:var(--ink); display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0; }
+.is-card-icon svg { width:20px; height:20px; stroke:white; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.is-card-price { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.is-card-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; margin-bottom:10px; }
+.is-card-tagline { font-size:13px; color:var(--ink-soft); line-height:1.6; margin-bottom:20px; flex:1; }
+.is-card-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--border); padding-top:16px; margin-top:auto; }
+.is-card-turnaround { font-size:12px; font-weight:600; color:var(--green); display:flex; align-items:center; gap:5px; }
+.is-card-turnaround::before { content:'⚡'; font-size:11px; }
+.is-card-cta { font-size:13px; font-weight:600; color:var(--accent); display:flex; align-items:center; gap:4px; transition:gap 0.2s; }
+.is-card:hover .is-card-cta { gap:8px; }
+
+/* ── MODAL ── */
+.is-modal-overlay {
+  position:fixed; inset:0; z-index:999;
+  background:rgba(13,13,15,0.6);
+  backdrop-filter:blur(6px);
+  display:none; align-items:flex-start; justify-content:center;
+  padding:40px 16px; overflow-y:auto;
+}
+.is-modal-overlay.open { display:flex; }
+.is-modal {
+  background:var(--white); border-radius:24px;
+  width:100%; max-width:600px;
+  position:relative;
+  animation:isModalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  margin:auto;
+}
+@keyframes isModalIn { from{transform:scale(0.88) translateY(24px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+.is-modal-close { position:absolute; top:20px; right:20px; width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--ink-soft); transition:background 0.2s,color 0.2s; z-index:2; }
+.is-modal-close:hover { background:var(--ink); color:var(--white); }
+
+/* Modal sections */
+.is-modal-header { padding:36px 36px 24px; border-bottom:1px solid var(--border); }
+.is-modal-icon { width:52px; height:52px; border-radius:14px; background:var(--ink); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+.is-modal-icon svg { width:24px; height:24px; stroke:white; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.is-modal-price { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.is-modal-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; margin-bottom:10px; }
+.is-modal-tagline { font-size:15px; color:var(--ink-soft); line-height:1.7; }
+.is-modal-meta { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+.is-modal-meta-pill { display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-pill); padding:6px 14px; font-size:12px; font-weight:600; color:var(--ink-soft); }
+
+/* Includes */
+.is-modal-body { padding:28px 36px; }
+.is-modal-body h4 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:14px; }
+.is-modal-includes { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+.is-modal-includes li { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--ink-soft); line-height:1.6; }
+.is-modal-includes li::before { content:'✓'; width:20px; height:20px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px; }
+
+/* ── INTAKE FORM ── */
+.intake-section { padding:0 36px; }
+.intake-divider { border:none; border-top:1px solid var(--border); margin:0 0 28px; }
+.intake-heading { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:6px; }
+.intake-subhead { font-size:13px; color:var(--ink-muted); margin-bottom:24px; line-height:1.5; }
+
+/* Step indicator */
+.intake-steps { display:flex; align-items:center; gap:8px; margin-bottom:24px; }
+.step-pill { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--ink-muted); }
+.step-pill.active { color:var(--accent); }
+.step-num { width:22px; height:22px; border-radius:50%; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--ink-muted); flex-shrink:0; }
+.step-pill.active .step-num { background:var(--accent); border-color:var(--accent); color:var(--white); }
+.step-connector { flex:1; height:1px; background:var(--border); }
+
+.intake-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.intake-field { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.intake-field label { font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); }
+.intake-field input,
+.intake-field textarea,
+.intake-field select {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:11px 14px;
+  font-family:'DM Sans',sans-serif; font-size:14px; color:var(--ink);
+  outline:none; transition:border-color 0.2s,background 0.2s; width:100%;
+}
+.intake-field input::placeholder,
+.intake-field textarea::placeholder { color:var(--ink-muted); }
+.intake-field input:focus,
+.intake-field textarea:focus,
+.intake-field select:focus { border-color:var(--accent); background:var(--white); }
+.intake-field textarea { resize:vertical; min-height:80px; }
+
+/* Pay button states */
+.is-pay-btn {
+  width:100%; padding:16px 32px;
+  background:var(--border-strong); color:var(--ink-muted);
+  border:none; border-radius:var(--radius-pill);
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:800;
+  cursor:not-allowed; transition:all 0.25s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  text-decoration:none;
+}
+.is-pay-btn.ready {
+  background:#0070BA; color:var(--white);
+  cursor:pointer;
+}
+.is-pay-btn.ready:hover { background:#005ea6; transform:translateY(-2px); }
+.pay-lock-msg { text-align:center; font-size:12px; color:var(--ink-muted); margin-top:10px; }
+.pay-secure-note { text-align:center; font-size:11px; color:var(--ink-muted); margin-top:8px; display:flex; align-items:center; justify-content:center; gap:5px; }
+
+/* Ask btn */
+.is-ask-btn { display:block; width:100%; text-align:center; background:var(--surface); color:var(--ink-soft); border:1px solid var(--border); border-radius:var(--radius-pill); padding:13px 32px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; transition:border-color 0.2s,color 0.2s; font-family:'DM Sans',sans-serif; margin-top:10px; }
+.is-ask-btn:hover { border-color:var(--border-strong); color:var(--ink); }
+
+.is-modal-footer { padding:20px 36px 36px; display:flex; flex-direction:column; gap:10px; }
+
+/* Sending state */
+.is-sending { display:none; text-align:center; padding:32px; }
+.is-sending-icon { font-size:40px; margin-bottom:14px; }
+.is-sending h4 { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; margin-bottom:8px; }
+.is-sending p { font-size:14px; color:var(--ink-soft); }
+
+/* ── MOBILE ── */
+@media(max-width:900px) {
+  nav { padding:10px 20px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .page-hero { padding:110px 20px 56px; }
+  .page-hero h1 { font-size:clamp(30px,8vw,44px); }
+  .page-hero p { font-size:16px; }
+  .services-page { padding:48px 20px 72px; }
+  .is-grid { grid-template-columns:1fr; }
+  .is-modal { border-radius:20px; }
+  .is-modal-header { padding:28px 20px 20px; }
+  .is-modal-body { padding:20px 20px; }
+  .intake-section { padding:0 20px; }
+  .is-modal-footer { padding:16px 20px 28px; }
+  .intake-row { grid-template-columns:1fr; }
+  .is-modal-price { font-size:28px; }
+  .is-modal-title { font-size:19px; }
+}
+
+/* ── FOOTER ── */
+footer { background:#080809; padding:44px 48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+.footer-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.footer-logo-img { height:40px; width:auto; mix-blend-mode:screen; opacity:0.75; }
+.footer-wordmark { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--white); }
+.footer-links { display:flex; gap:32px; list-style:none; }
+.footer-links a { font-size:13px; color:rgba(255,255,255,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:rgba(255,255,255,0.8); }
+.footer-copy { font-size:12px; color:rgba(255,255,255,0.25); }
+@media(max-width:640px) {
+  footer { padding:40px 20px; flex-direction:column; align-items:flex-start; }
+  .footer-links { flex-wrap:wrap; gap:16px; }
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img">
+    Favorable Odds Tech Solutions
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#audit" style="color:var(--green);font-weight:600;">Free Audit ✦</a></li>
+    <li><a href="/services" style="color:var(--accent);font-weight:600;">Instant Services ⚡</a></li>
+    <li><a href="/work" style="color:var(--gold);font-weight:600;">The Work ↗</a></li>
+    <li><a href="/#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE OVERLAY -->
+<div class="nav-overlay" id="navOverlay">
+  <a href="/" class="nav-overlay-logo" onclick="closeMenu()">
+    <img src="business_logo.jpg" alt="Favorable Odds">
+    <span>Favorable Odds</span>
+  </a>
+  <button class="nav-overlay-close" id="navOverlayClose" aria-label="Close menu"></button>
+  <ul class="nav-overlay-links">
+    <li><a href="/#about"    onclick="closeMenu()">About</a></li>
+    <li><a href="/#services" onclick="closeMenu()">Services</a></li>
+    <li><a href="/#audit"    onclick="closeMenu()" style="color:#4ade80;">Free Audit ✦</a></li>
+    <li><a href="/services"  onclick="closeMenu()" style="color:var(--accent);">Instant Services ⚡</a></li>
+    <li><a href="/work"      onclick="closeMenu()" style="color:var(--gold);">The Work ↗</a></li>
+  </ul>
+  <div class="nav-overlay-contact">
+    <a href="#" onclick="window.location.href='mai'+'lto:hello@favorableodds.io';return false;" style="display:inline-block;background:var(--white);color:var(--ink);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:10px 22px;border-radius:100px;text-decoration:none;">✉&nbsp; Request a Free Quote</a>
+    <br>
+    <a href="tel:+16892439704" style="color:rgba(255,255,255,0.3);font-size:12px;text-decoration:none;margin-top:6px;display:inline-block;">689-243-9704</a>
+  </div>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <a href="/" class="page-hero-back">← Back to main site</a>
+  <div class="page-hero-tag">Fixed Price · No Surprise Invoices</div>
+  <h1>Get it done.<br><em>Fast.</em></h1>
+  <p>Fixed scope. Fixed price. Fill out the details, pay via PayPal, and we get to work — no back-and-forth, no discovery calls required.</p>
+  <div class="page-hero-badges">
+    <span class="hero-badge">⚡ 24–48 hr delivery</span>
+    <span class="hero-badge">📦 One fixed deliverable</span>
+    <span class="hero-badge">💳 PayPal secure checkout</span>
+    <span class="hero-badge">📧 Intake form before payment</span>
+  </div>
+</section>
+
+<!-- SERVICE CARDS -->
+<section class="services-page">
+  <div class="is-delivery-badge">All services delivered within 24–48 hours</div>
+  <div class="is-grid">
+
+    <!-- 1. AI Snapshot -->
+    <div class="is-card" onclick="openISModal('ai-snapshot')">
+      <div class="is-card-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="19" cy="5" r="3"/></svg></div>
+      <div class="is-card-price">$27</div>
+      <div class="is-card-title">AI-Readiness Snapshot</div>
+      <div class="is-card-tagline">3 specific AI tools your business should be using right now — and what each one replaces. Delivered as a 1-page PDF.</div>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">24 hr delivery</span>
+        <span class="is-card-cta">Order now →</span>
+      </div>
+    </div>
+
+    <!-- 2. Data Rescue -->
+    <div class="is-card" onclick="openISModal('data-rescue')">
+      <div class="is-card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      <div class="is-card-price">$37</div>
+      <div class="is-card-title">Data Rescue</div>
+      <div class="is-card-tagline">Upload 1 messy file (CSV, XLSX, or bank export — max 500 rows). We return it clean, structured, and labeled.</div>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">24 hr delivery</span>
+        <span class="is-card-cta">Order now →</span>
+      </div>
+    </div>
+
+    <!-- 3. 1-Pager Website -->
+    <div class="is-card" onclick="openISModal('one-pager')">
+      <div class="is-card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+      <div class="is-card-price">$197</div>
+      <div class="is-card-title">Instant 1-Pager Website</div>
+      <div class="is-card-tagline">Mobile-ready, single-page site with your logo, colors, copy, and contact form. Delivered as a live link or HTML file.</div>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">48 hr delivery</span>
+        <span class="is-card-cta">Order now →</span>
+      </div>
+    </div>
+
+    <!-- 4. Custom AI Assistant -->
+    <div class="is-card" onclick="openISModal('ai-assistant')">
+      <div class="is-card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></div>
+      <div class="is-card-price">$57</div>
+      <div class="is-card-title">Custom AI Assistant Setup</div>
+      <div class="is-card-tagline">A custom GPT tuned to your business — answers your FAQs, speaks your brand's tone. Delivered as a shareable link + usage guide.</div>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">48 hr delivery</span>
+        <span class="is-card-cta">Order now →</span>
+      </div>
+    </div>
+
+    <!-- 5. Automation Blueprint -->
+    <div class="is-card" onclick="openISModal('automation-blueprint')">
+      <div class="is-card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="is-card-price">$37</div>
+      <div class="is-card-title">Automation Blueprint</div>
+      <div class="is-card-tagline">Describe 1 repetitive task. We return a step-by-step plan using free tools (Zapier, Make, etc.) to automate it — forever.</div>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">24 hr delivery</span>
+        <span class="is-card-cta">Order now →</span>
+      </div>
+    </div>
+
+    <!-- 6. Copy Punch-Up -->
+    <div class="is-card" onclick="openISModal('copy-punchup')">
+      <div class="is-card-icon"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div class="is-card-price">$47</div>
+      <div class="is-card-title">Page Copy Punch-Up</div>
+      <div class="is-card-tagline">Paste 1 existing web page. We rewrite it with a stronger headline, subheadline, bullets, and CTA. One page, one round.</div>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">24 hr delivery</span>
+        <span class="is-card-cta">Order now →</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     ORDER MODAL
+     Flow: Details → Intake Form → Pay Button unlocks → PayPal + Email fires
+═══════════════════════════════ -->
+<div class="is-modal-overlay" id="isModalOverlay" onclick="closeISModal(event)">
+  <div class="is-modal" id="isModal">
+    <button class="is-modal-close" onclick="closeISModal(null)">✕</button>
+
+    <!-- 1. Header: service details -->
+    <div class="is-modal-header">
+      <div class="is-modal-icon" id="isModalIcon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+      </div>
+      <div class="is-modal-price" id="isModalPrice">$00</div>
+      <div class="is-modal-title" id="isModalTitle">Service</div>
+      <div class="is-modal-tagline" id="isModalTagline"></div>
+      <div class="is-modal-meta">
+        <span class="is-modal-meta-pill" id="isModalDelivery">⚡ 24 hr delivery</span>
+        <span class="is-modal-meta-pill">📦 One fixed deliverable</span>
+        <span class="is-modal-meta-pill">💳 PayPal secure checkout</span>
+      </div>
+    </div>
+
+    <!-- 2. Includes list -->
+    <div class="is-modal-body">
+      <h4>What's Included</h4>
+      <ul class="is-modal-includes" id="isModalIncludes"></ul>
+    </div>
+
+    <!-- 3. Intake Form -->
+    <div class="intake-section" id="intakeFormSection">
+      <hr class="intake-divider">
+
+      <!-- Step indicator -->
+      <div class="intake-steps">
+        <div class="step-pill active" id="step1pill">
+          <div class="step-num">1</div>
+          Tell us about your project
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-pill" id="step2pill">
+          <div class="step-num" id="step2num">2</div>
+          Pay with PayPal
+        </div>
+      </div>
+
+      <div class="intake-heading">Project Details</div>
+      <p class="intake-subhead">Fill this out so we can start immediately after payment. All fields marked * are required.</p>
+
+      <div class="intake-row">
+        <div class="intake-field">
+          <label>Your Name *</label>
+          <input type="text" id="intakeName" placeholder="Full name" oninput="checkIntakeReady()">
+        </div>
+        <div class="intake-field">
+          <label>Email Address *</label>
+          <input type="email" id="intakeEmail" placeholder="you@company.com" oninput="checkIntakeReady()">
+        </div>
+      </div>
+
+      <div class="intake-field">
+        <label>Business Name &amp; Industry *</label>
+        <input type="text" id="intakeBusiness" placeholder="e.g. Acme Corp — Insurance" oninput="checkIntakeReady()">
+      </div>
+
+      <!-- Dynamic fields injected per service -->
+      <div id="intakeDynamic"></div>
+
+      <div class="intake-field">
+        <label>Anything else we should know?</label>
+        <textarea id="intakeNotes" placeholder="Special requirements, deadlines, file links..."></textarea>
+      </div>
+    </div>
+
+    <!-- 4. Sending state (hidden until submit) -->
+    <div class="is-sending" id="isSending">
+      <div class="is-sending-icon">⚙️</div>
+      <h4>Sending your details...</h4>
+      <p>Redirecting you to PayPal to complete payment.</p>
+    </div>
+
+    <!-- 5. Footer: pay button -->
+    <div class="is-modal-footer">
+      <button class="is-pay-btn" id="isPayBtn" onclick="submitAndPay()" disabled>
+        🔒 Fill out the form above to unlock payment
+      </button>
+      <p class="pay-lock-msg" id="payLockMsg">Complete all required fields to enable PayPal checkout.</p>
+      <p class="pay-secure-note">🔒 Secure checkout via PayPal · Your intake details are emailed to us before payment</p>
+      <a class="is-ask-btn" id="isAskBtn" href="sms:+16892439704">💬 Have a question first? Text Josh</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-brand">
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img">
+    <span class="footer-wordmark">Favorable Odds LLC</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/services" style="color:var(--accent);">Instant Services</a></li>
+    <li><a href="/work" style="color:var(--gold);">The Work ↗</a></li>
+    <li><a href="/#contact">Get Started</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Favorable Odds LLC &nbsp;·&nbsp; hello&#64;favorableodds.io &nbsp;·&nbsp; 689-243-9704</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// ── EmailJS init — uses your existing keys ──
+emailjs.init('YVFMPQh2ifuDyFMUq'); // your public key
+
+var PAYPAL_EMAIL = 'hello@favorableodds.io';
+var _currentServiceKey = null;
+
+// ── Service definitions ──
+var IS_SERVICES = {
+  'ai-snapshot': {
+    title: 'AI-Readiness Snapshot',
+    price: '$27', amount: '27.00',
+    delivery: '⚡ 24 hr delivery',
+    tagline: '3 specific AI tools your business should be using right now — and what each one replaces. Delivered as a 1-page PDF.',
+    icon: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="19" cy="5" r="3"/></svg>',
+    includes: ['3 AI tool recommendations tailored to your industry','Explanation of what each tool replaces (labor/time)','Setup complexity rating for each tool','Delivered as a polished 1-page PDF','Response within 24 hours'],
+    dynamicFields: [
+      { id:'d_industry', label:'Your Industry / Business Type *', placeholder:'e.g. Insurance agency, Real estate, Medical office...', required:true },
+      { id:'d_teamsize', label:'Team Size *', placeholder:'e.g. Solo, 2–5, 10–20...', required:true },
+      { id:'d_manual', label:'What tasks take the most manual time right now? *', placeholder:'e.g. data entry, follow-up emails, scheduling, reporting...', required:true, type:'textarea' }
+    ]
+  },
+  'data-rescue': {
+    title: 'Data Rescue',
+    price: '$37', amount: '37.00',
+    delivery: '⚡ 24 hr delivery',
+    tagline: 'Upload 1 messy file (CSV, XLSX, or bank export — max 500 rows). We return it clean, structured, and labeled.',
+    icon: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+    includes: ['1 file cleaned and restructured (max 500 rows)','Consistent column headers and formatting','Duplicate removal and blank row cleanup','Delivered back as a clean XLSX or CSV','Turnaround within 24 hours of file receipt'],
+    dynamicFields: [
+      { id:'d_filetype', label:'File Type *', placeholder:'CSV, XLSX, Google Sheet export, bank statement...', required:true },
+      { id:'d_rows', label:'Approximate Row Count *', placeholder:'e.g. 200 rows, 500 rows...', required:true },
+      { id:'d_problem', label:'What\'s wrong with the data? *', placeholder:'e.g. Mixed date formats, duplicate entries, merged cells, wrong columns...', required:true, type:'textarea' },
+      { id:'d_filelink', label:'File Link (Google Drive, Dropbox, etc.)', placeholder:'Paste a shareable link — or email after payment to hello@favorableodds.io', required:false }
+    ]
+  },
+  'one-pager': {
+    title: 'Instant 1-Pager Website',
+    price: '$197', amount: '197.00',
+    delivery: '⚡ 48 hr delivery',
+    tagline: 'Mobile-ready, single-page site with your logo, colors, copy, and contact form. Delivered as a live link or HTML file.',
+    icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+    includes: ['Mobile-responsive single-page design','Your logo, brand colors, and custom copy','Hero section, services/about section, contact form','Deployed live or delivered as a clean HTML file','One round of revisions included'],
+    dynamicFields: [
+      { id:'d_bizname', label:'Business Name *', placeholder:'Your official business name', required:true },
+      { id:'d_tagline', label:'Your Tagline or Main Message *', placeholder:'e.g. "West Palm\'s #1 HVAC repair — same day service"', required:true },
+      { id:'d_services', label:'Services or Products to Feature *', placeholder:'List 3–5 services or offerings you want highlighted', required:true, type:'textarea' },
+      { id:'d_colors', label:'Brand Colors (if any)', placeholder:'e.g. Navy blue and gold, or "match my logo"', required:false },
+      { id:'d_logolink', label:'Logo Link', placeholder:'Google Drive / Dropbox link to your logo, or email after payment', required:false }
+    ]
+  },
+  'ai-assistant': {
+    title: 'Custom AI Assistant Setup',
+    price: '$57', amount: '57.00',
+    delivery: '⚡ 48 hr delivery',
+    tagline: 'A custom GPT tuned to your business — answers your FAQs, speaks your brand\'s tone. Delivered as a shareable link + usage guide.',
+    icon: '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>',
+    includes: ['Custom GPT configured with your business context','Trained on your FAQs, tone, and services','Shareable link your team or customers can use','Usage guide included','Delivered within 48 hours'],
+    dynamicFields: [
+      { id:'d_purpose', label:'What should this AI assistant do? *', placeholder:'e.g. Answer customer FAQs, help staff with scripts, quote calculator...', required:true, type:'textarea' },
+      { id:'d_tone', label:'Brand Tone *', placeholder:'e.g. Professional and concise, friendly and casual, formal...', required:true },
+      { id:'d_faqs', label:'Top 5–10 FAQs or Common Questions *', placeholder:'List the questions your customers or staff ask most often', required:true, type:'textarea' }
+    ]
+  },
+  'automation-blueprint': {
+    title: 'Automation Blueprint',
+    price: '$37', amount: '37.00',
+    delivery: '⚡ 24 hr delivery',
+    tagline: 'Describe 1 repetitive task. We return a step-by-step plan to automate it using free tools — forever.',
+    icon: '<svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    includes: ['Analysis of 1 repetitive manual task','Step-by-step automation plan using Zapier, Make, or n8n','Tool recommendations (free tier options highlighted)','Estimated time savings per week/month','Delivered as a 1-page PDF blueprint'],
+    dynamicFields: [
+      { id:'d_task', label:'Describe the repetitive task *', placeholder:'e.g. Every new form submission, I manually copy it into a spreadsheet and send a follow-up email...', required:true, type:'textarea' },
+      { id:'d_tools', label:'Tools Currently Involved *', placeholder:'e.g. Gmail, Google Forms, Sheets, HubSpot, Slack...', required:true },
+      { id:'d_freq', label:'How often does this task happen? *', placeholder:'e.g. 20 times per day, 50 times per week...', required:true }
+    ]
+  },
+  'copy-punchup': {
+    title: 'Page Copy Punch-Up',
+    price: '$47', amount: '47.00',
+    delivery: '⚡ 24 hr delivery',
+    tagline: 'Paste 1 web page. We rewrite it with a stronger headline, subheadline, bullets, and CTA. One page, one round.',
+    icon: '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    includes: ['Rewritten headline and subheadline','Improved bullet points (benefits-focused)','Stronger call-to-action copy','Delivered as a Google Doc or plain text file','One page, one revision round included'],
+    dynamicFields: [
+      { id:'d_pageurl', label:'Page URL or paste your current copy *', placeholder:'https://yoursite.com/page — or paste copy below', required:true },
+      { id:'d_audience', label:'Who is this page for? *', placeholder:'e.g. Small business owners in Florida, homeowners aged 35–60...', required:true },
+      { id:'d_goal', label:'What should the page make people do? *', placeholder:'e.g. Book a call, request a quote, sign up for a free trial...', required:true }
+    ]
+  }
+};
+
+function openISModal(key) {
+  var s = IS_SERVICES[key];
+  if (!s) return;
+  _currentServiceKey = key;
+
+  // Populate header
+  document.getElementById('isModalIcon').innerHTML = s.icon;
+  document.getElementById('isModalPrice').textContent = s.price;
+  document.getElementById('isModalTitle').textContent = s.title;
+  document.getElementById('isModalTagline').textContent = s.tagline;
+  document.getElementById('isModalDelivery').textContent = s.delivery;
+
+  // Populate includes
+  var ul = document.getElementById('isModalIncludes');
+  ul.innerHTML = s.includes.map(function(i){ return '<li>' + i + '</li>'; }).join('');
+
+  // Inject dynamic fields
+  var dyn = document.getElementById('intakeDynamic');
+  dyn.innerHTML = '';
+  s.dynamicFields.forEach(function(f) {
+    var wrap = document.createElement('div');
+    wrap.className = 'intake-field';
+    var labelStr = '<label>' + f.label + '</label>';
+    var inputStyle = '';
+    var input;
+    if (f.type === 'textarea') {
+      input = '<textarea id="' + f.id + '" placeholder="' + f.placeholder + '" ' + (f.required ? 'required' : '') + ' oninput="checkIntakeReady()"></textarea>';
+    } else {
+      input = '<input type="text" id="' + f.id + '" placeholder="' + f.placeholder + '" ' + (f.required ? 'required' : '') + ' oninput="checkIntakeReady()">';
+    }
+    wrap.innerHTML = labelStr + input;
+    dyn.appendChild(wrap);
+  });
+
+  // Reset state
+  document.getElementById('intakeName').value = '';
+  document.getElementById('intakeEmail').value = '';
+  document.getElementById('intakeBusiness').value = '';
+  document.getElementById('intakeNotes').value = '';
+  document.getElementById('intakeFormSection').style.display = 'block';
+  document.getElementById('isSending').style.display = 'none';
+  checkIntakeReady();
+
+  // Update text button
+  var sms = 'Hi Josh, I have a question about the ' + s.title + ' (' + s.price + ') on favorableodds.io/services';
+  document.getElementById('isAskBtn').href = 'sms:+16892439704?body=' + encodeURIComponent(sms);
+
+  document.getElementById('isModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeISModal(e) {
+  if (e && e.target !== document.getElementById('isModalOverlay')) return;
+  document.getElementById('isModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  _currentServiceKey = null;
+}
+
+function checkIntakeReady() {
+  var s = IS_SERVICES[_currentServiceKey];
+  if (!s) return;
+
+  var name     = (document.getElementById('intakeName').value || '').trim();
+  var email    = (document.getElementById('intakeEmail').value || '').trim();
+  var business = (document.getElementById('intakeBusiness').value || '').trim();
+  var emailOk  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  var dynOk = true;
+  s.dynamicFields.forEach(function(f) {
+    if (f.required) {
+      var el = document.getElementById(f.id);
+      if (!el || !el.value.trim()) dynOk = false;
+    }
+  });
+
+  var ready = name && emailOk && business && dynOk;
+  var btn   = document.getElementById('isPayBtn');
+  var msg   = document.getElementById('payLockMsg');
+  var s2pill = document.getElementById('step2pill');
+  var s2num  = document.getElementById('step2num');
+
+  if (ready) {
+    btn.disabled = false;
+    btn.classList.add('ready');
+    btn.textContent = '💳 Pay with PayPal — ' + IS_SERVICES[_currentServiceKey].price;
+    msg.style.display = 'none';
+    s2pill.classList.add('active');
+    s2num.style.background = 'var(--accent)';
+    s2num.style.color = 'var(--white)';
+    s2num.style.borderColor = 'var(--accent)';
+  } else {
+    btn.disabled = true;
+    btn.classList.remove('ready');
+    btn.textContent = '🔒 Fill out the form above to unlock payment';
+    msg.style.display = 'block';
+    s2pill.classList.remove('active');
+    s2num.style.background = '';
+    s2num.style.color = '';
+    s2num.style.borderColor = '';
+  }
+}
+
+function submitAndPay() {
+  var s = IS_SERVICES[_currentServiceKey];
+  if (!s) return;
+
+  var name     = document.getElementById('intakeName').value.trim();
+  var email    = document.getElementById('intakeEmail').value.trim();
+  var business = document.getElementById('intakeBusiness').value.trim();
+  var notes    = (document.getElementById('intakeNotes').value || '').trim();
+
+  // Collect dynamic field values
+  var details = '';
+  s.dynamicFields.forEach(function(f) {
+    var el = document.getElementById(f.id);
+    if (el && el.value.trim()) {
+      details += f.label.replace(' *','') + ':\n' + el.value.trim() + '\n\n';
+    }
+  });
+
+  // Show sending state
+  document.getElementById('intakeFormSection').style.display = 'none';
+  document.getElementById('isModalIcon').parentElement.style.display = 'none';
+  document.querySelector('.is-modal-body').style.display = 'none';
+  document.getElementById('isSending').style.display = 'block';
+  document.getElementById('isModalIcon').parentElement.style.display = '';
+
+  // Fire EmailJS
+  emailjs.send('service_blx7dqd', 'template_lbtqhem', {
+    from_name:  name,
+    email:      email,
+    reply_to:   email,
+    business:   business,
+    service:    s.title,
+    price:      s.price,
+    details:    details,
+    notes:      notes || 'None'
+  }).then(function() {
+    goToPayPal(s, name, email);
+  }).catch(function(err) {
+    console.warn('EmailJS error, redirecting anyway:', err);
+    goToPayPal(s, name, email);
+  });
+}
+
+function goToPayPal(s, name, email) {
+  var params = new URLSearchParams({
+    cmd:           '_xclick',
+    business:      PAYPAL_EMAIL,
+    item_name:     s.title + ' — ' + name,
+    amount:        s.amount,
+    currency_code: 'USD',
+    no_shipping:   '1',
+    custom:        email,
+    return:        'https://favorableodds.io/services?order=complete',
+    cancel_return: 'https://favorableodds.io/services'
+  });
+  window.location.href = 'https://www.paypal.com/cgi-bin/webscr?' + params.toString();
+}
+
+// Order complete banner
+(function() {
+  var p = new URLSearchParams(window.location.search);
+  if (p.get('order') === 'complete') {
+    var banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:72px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:14px 28px;border-radius:100px;font-family:Syne,sans-serif;font-weight:700;font-size:14px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
+    banner.textContent = '✅ Payment received! Josh will be in touch within 24 hours.';
+    document.body.appendChild(banner);
+    setTimeout(function(){ banner.remove(); }, 6000);
+  }
+})();
+
+// ── Escape to close ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeISModal(null);
+});
+
+// ── Mobile nav ──
+function openMenu() {
+  document.getElementById('navOverlay').classList.add('open');
+  document.getElementById('navHamburger').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  document.getElementById('navOverlay').classList.remove('open');
+  document.getElementById('navHamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('navHamburger').addEventListener('click', openMenu);
+document.getElementById('navOverlayClose').addEventListener('click', closeMenu);
+document.getElementById('navOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeMenu();
+});
+</script>
+
+<!--
+=======================================================
+EMAILJS TEMPLATE — create this in your EmailJS dashboard
+Name: instant_order
+Template ID: template_instant_order
+To: hello@favorableodds.io
+Reply To: {{email}}
+Subject: 🛒 New Order: {{service}} — {{from_name}}
+
+Body:
+NEW INSTANT SERVICE ORDER
+==========================
+SERVICE: {{service}}
+PRICE: {{price}}
+
+CUSTOMER
+---------
+Name: {{from_name}}
+Email: {{email}}
+Business: {{business}}
+
+PROJECT DETAILS
+---------------
+{{details}}
+
+NOTES
+-----
+{{notes}}
+
+==========================
+Reply to this email to contact the customer directly.
+=======================================================
+-->
+</body>
+</html>
