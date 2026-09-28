@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookkeeping — Favorable Odds Tech Solutions</title>
+<meta name="description" content="Monthly bookkeeping for small businesses: categorized transactions, reconciled accounts, a monthly P&amp;L and tax-ready books for your CPA. Catch-up cleanup and a New LLC Starter bundle.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bookkeeping — Favorable Odds Tech Solutions">
+<meta property="og:description" content="Clean books. Clear odds. Monthly bookkeeping for small businesses.">
+<meta property="og:image" content="https://favorableodds.io/business_logo.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #0d0d0f; --ink-soft: #3a3a40; --ink-muted: #7a7a84;
+  --surface: #f5f4f0; --white: #ffffff;
+  --accent: #1a6bff; --accent-soft: #e8f0ff;
+  --gold: #c8963c; --gold-soft: #fdf4e7;
+  --green: #16a34a; --green-soft: #dcfce7;
+  --border: rgba(13,13,15,0.10); --border-strong: rgba(13,13,15,0.20);
+  --radius: 16px; --radius-pill: 100px;
+}
+html { scroll-behavior: smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--ink); font-size:16px; line-height:1.6; overflow-x:hidden; }
+h1,h2,h3,h4 { font-family:'Syne',sans-serif; line-height:1.1; letter-spacing:-0.02em; }
+
+/* ── NAV ── */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:10px 48px; background:rgba(245,244,240,0.93); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:10px; }
+.nav-logo-img { height:48px; width:auto; display:block; mix-blend-mode:multiply; }
+.nav-links { display:flex; gap:28px; list-style:none; align-items:center; }
+.nav-links a { font-size:14px; font-weight:500; color:var(--ink-soft); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover { color:var(--ink); }
+.nav-cta { background:var(--ink) !important; color:var(--white) !important; padding:10px 20px; border-radius:var(--radius-pill); font-size:14px; font-weight:500; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--accent) !important; }
+
+/* ── HAMBURGER ── */
+.nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px; z-index:201; }
+.nav-hamburger span { display:block; width:24px; height:2px; background:var(--ink); border-radius:2px; transition:transform 0.3s ease,opacity 0.2s ease; transform-origin:center; }
+.nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity:0; }
+.nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE OVERLAY ── */
+.nav-overlay { display:none; position:fixed; inset:0; z-index:200; background:var(--ink); flex-direction:column; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s ease; }
+.nav-overlay.open { display:flex; opacity:1; }
+.nav-overlay-logo { position:absolute; top:20px; left:24px; display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-overlay-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:0.8; }
+.nav-overlay-logo span { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:rgba(255,255,255,0.8); }
+.nav-overlay-close { position:absolute; top:20px; right:24px; background:none; border:none; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+.nav-overlay-close::before,.nav-overlay-close::after { content:''; position:absolute; width:22px; height:2px; background:rgba(255,255,255,0.7); border-radius:2px; }
+.nav-overlay-close::before { transform:rotate(45deg); }
+.nav-overlay-close::after { transform:rotate(-45deg); }
+.nav-overlay-links { list-style:none; display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; padding:0 32px; }
+.nav-overlay-links li a { display:block; font-family:'Syne',sans-serif; font-size:clamp(22px,6vw,38px); font-weight:800; color:rgba(255,255,255,0.85); text-decoration:none; text-align:center; padding:8px 0; letter-spacing:-0.02em; transition:color 0.2s; border-bottom:1px solid rgba(255,255,255,0.07); width:100%; }
+.nav-overlay-links li:last-child a { border-bottom:none; }
+.nav-overlay-links li a:hover { color:var(--accent); }
+.nav-overlay-contact { position:absolute; bottom:32px; left:0; right:0; text-align:center; }
+
+/* ── PAGE HERO ── */
+.page-hero {
+  padding: 140px 48px 72px;
+  background: var(--ink);
+  position: relative; overflow: hidden;
+}
+.page-hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(26,107,255,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.page-hero-back {
+  display:inline-flex; align-items:center; gap:8px;
+  color:rgba(255,255,255,0.45); font-size:13px; font-weight:500;
+  text-decoration:none; margin-bottom:28px;
+  transition:color 0.2s;
+  position:relative; z-index:1;
+}
+.page-hero-back:hover { color:rgba(255,255,255,0.8); }
+.page-hero-tag {
+  font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:16px;
+  position:relative; z-index:1;
+}
+.page-hero h1 {
+  font-size:clamp(36px,5.5vw,64px); font-weight:800;
+  color:var(--white); max-width:760px; margin-bottom:20px;
+  position:relative; z-index:1;
+}
+.page-hero h1 em { font-style:normal; color:var(--accent); }
+.page-hero p {
+  font-size:18px; color:rgba(255,255,255,0.5); max-width:560px;
+  font-weight:300; line-height:1.65;
+  position:relative; z-index:1;
+}
+.page-hero-badges {
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:28px;
+  position:relative; z-index:1;
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius-pill); padding:7px 16px;
+  font-size:13px; font-weight:500; color:rgba(255,255,255,0.6);
+}
+
+/* ── SERVICES GRID ── */
+.services-page { padding:72px 48px 96px; }
+.is-delivery-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--green-soft); border:1px solid rgba(22,163,74,0.25);
+  border-radius:var(--radius-pill); padding:8px 18px;
+  font-size:13px; font-weight:600; color:var(--green);
+  white-space:nowrap; margin-bottom:48px;
+}
+.is-delivery-badge::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.is-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+
+/* ── SERVICE CARD ── */
+.is-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:var(--radius); padding:28px;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
+  display:flex; flex-direction:column;
+}
+.is-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.3s ease; }
+.is-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.08); border-color:var(--border-strong); }
+.is-card:hover::before { transform:scaleX(1); }
+.is-card-icon { width:44px; height:44px; border-radius:11px; background:var(--ink); display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0; }
+.is-card-icon svg { width:20px; height:20px; stroke:white; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.is-card-price { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.is-card-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; margin-bottom:10px; }
+.is-card-tagline { font-size:13px; color:var(--ink-soft); line-height:1.6; margin-bottom:20px; flex:1; }
+.is-card-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--border); padding-top:16px; margin-top:auto; }
+.is-card-turnaround { font-size:12px; font-weight:600; color:var(--green); display:flex; align-items:center; gap:5px; }
+.is-card-turnaround::before { content:'⚡'; font-size:11px; }
+.is-card-cta { font-size:13px; font-weight:600; color:var(--accent); display:flex; align-items:center; gap:4px; transition:gap 0.2s; }
+.is-card:hover .is-card-cta { gap:8px; }
+
+/* ── MODAL ── */
+.is-modal-overlay {
+  position:fixed; inset:0; z-index:999;
+  background:rgba(13,13,15,0.6);
+  backdrop-filter:blur(6px);
+  display:none; align-items:flex-start; justify-content:center;
+  padding:40px 16px; overflow-y:auto;
+}
+.is-modal-overlay.open { display:flex; }
+.is-modal {
+  background:var(--white); border-radius:24px;
+  width:100%; max-width:600px;
+  position:relative;
+  animation:isModalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  margin:auto;
+}
+@keyframes isModalIn { from{transform:scale(0.88) translateY(24px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+.is-modal-close { position:absolute; top:20px; right:20px; width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--ink-soft); transition:background 0.2s,color 0.2s; z-index:2; }
+.is-modal-close:hover { background:var(--ink); color:var(--white); }
+
+/* Modal sections */
+.is-modal-header { padding:36px 36px 24px; border-bottom:1px solid var(--border); }
+.is-modal-icon { width:52px; height:52px; border-radius:14px; background:var(--ink); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+.is-modal-icon svg { width:24px; height:24px; stroke:white; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.is-modal-price { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.is-modal-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; margin-bottom:10px; }
+.is-modal-tagline { font-size:15px; color:var(--ink-soft); line-height:1.7; }
+.is-modal-meta { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+.is-modal-meta-pill { display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-pill); padding:6px 14px; font-size:12px; font-weight:600; color:var(--ink-soft); }
+
+/* Includes */
+.is-modal-body { padding:28px 36px; }
+.is-modal-body h4 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:14px; }
+.is-modal-includes { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+.is-modal-includes li { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--ink-soft); line-height:1.6; }
+.is-modal-includes li::before { content:'✓'; width:20px; height:20px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px; }
+
+/* ── INTAKE FORM ── */
+.intake-section { padding:0 36px; }
+.intake-divider { border:none; border-top:1px solid var(--border); margin:0 0 28px; }
+.intake-heading { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:6px; }
+.intake-subhead { font-size:13px; color:var(--ink-muted); margin-bottom:24px; line-height:1.5; }
+
+/* Step indicator */
+.intake-steps { display:flex; align-items:center; gap:8px; margin-bottom:24px; }
+.step-pill { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--ink-muted); }
+.step-pill.active { color:var(--accent); }
+.step-num { width:22px; height:22px; border-radius:50%; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--ink-muted); flex-shrink:0; }
+.step-pill.active .step-num { background:var(--accent); border-color:var(--accent); color:var(--white); }
+.step-connector { flex:1; height:1px; background:var(--border); }
+
+.intake-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.intake-field { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.intake-field label { font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); }
+.intake-field input,
+.intake-field textarea,
+.intake-field select {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:11px 14px;
+  font-family:'DM Sans',sans-serif; font-size:14px; color:var(--ink);
+  outline:none; transition:border-color 0.2s,background 0.2s; width:100%;
+}
+.intake-field input::placeholder,
+.intake-field textarea::placeholder { color:var(--ink-muted); }
+.intake-field input:focus,
+.intake-field textarea:focus,
+.intake-field select:focus { border-color:var(--accent); background:var(--white); }
+.intake-field textarea { resize:vertical; min-height:80px; }
+
+/* Pay button states */
+.is-pay-btn {
+  width:100%; padding:16px 32px;
+  background:var(--border-strong); color:var(--ink-muted);
+  border:none; border-radius:var(--radius-pill);
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:800;
+  cursor:not-allowed; transition:all 0.25s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  text-decoration:none;
+}
+.is-pay-btn.ready {
+  background:#0070BA; color:var(--white);
+  cursor:pointer;
+}
+.is-pay-btn.ready:hover { background:#005ea6; transform:translateY(-2px); }
+.pay-lock-msg { text-align:center; font-size:12px; color:var(--ink-muted); margin-top:10px; }
+.pay-secure-note { text-align:center; font-size:11px; color:var(--ink-muted); margin-top:8px; display:flex; align-items:center; justify-content:center; gap:5px; }
+
+/* Ask btn */
+.is-ask-btn { display:block; width:100%; text-align:center; background:var(--surface); color:var(--ink-soft); border:1px solid var(--border); border-radius:var(--radius-pill); padding:13px 32px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; transition:border-color 0.2s,color 0.2s; font-family:'DM Sans',sans-serif; margin-top:10px; }
+.is-ask-btn:hover { border-color:var(--border-strong); color:var(--ink); }
+
+.is-modal-footer { padding:20px 36px 36px; display:flex; flex-direction:column; gap:10px; }
+
+/* Sending state */
+.is-sending { display:none; text-align:center; padding:32px; }
+.is-sending-icon { font-size:40px; margin-bottom:14px; }
+.is-sending h4 { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; margin-bottom:8px; }
+.is-sending p { font-size:14px; color:var(--ink-soft); }
+
+/* ── CARE PLANS ── */
+.care-plans { padding:0 48px 96px; scroll-margin-top:90px; }
+.care-head { max-width:640px; margin-bottom:36px; }
+.care-tag { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+.care-head h2 { font-size:clamp(28px,3.6vw,40px); font-weight:800; margin-bottom:12px; }
+.care-head p { font-size:16px; color:var(--ink-soft); font-weight:300; }
+.care-card.is-card::before { background:var(--gold); }
+.care-card .is-card-price span { font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; color:var(--ink-muted); }
+.care-card ul { list-style:none; margin:0 0 20px; display:flex; flex-direction:column; gap:7px; flex:1; }
+.care-card li { font-size:13px; color:var(--ink-soft); line-height:1.5; display:flex; gap:8px; }
+.care-card li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
+.care-card.popular { border-color:var(--gold); box-shadow:0 12px 40px rgba(200,150,60,0.14); }
+.care-ribbon { position:absolute; top:16px; right:16px; background:var(--gold-soft); color:var(--gold); border:1px solid rgba(200,150,60,0.35); border-radius:var(--radius-pill); padding:3px 10px; font-size:11px; font-weight:700; }
+.care-card .is-card-turnaround::before { content:'🔁'; }
+.care-card .is-card-turnaround.once::before { content:'📦'; }
+.care-card .is-card-cta { color:var(--gold); }
+.care-note { margin-top:20px; font-size:13px; color:var(--ink-muted); }
+
+/* ── BOOKKEEPING: steps + FAQ ── */
+.bk-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; counter-reset:bk; }
+.bk-step { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:26px; }
+.bk-step::before { counter-increment:bk; content:counter(bk); display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:var(--ink); color:var(--white); font-family:'Syne',sans-serif; font-weight:800; margin-bottom:14px; }
+.bk-step h3 { font-size:17px; margin-bottom:6px; }
+.bk-step p { font-size:14px; color:var(--ink-soft); }
+.bk-faq { max-width:760px; }
+.bk-faq details { border-bottom:1px solid var(--border); padding:18px 0; }
+.bk-faq summary { cursor:pointer; list-style:none; font-family:'Syne',sans-serif; font-weight:700; font-size:17px; display:flex; justify-content:space-between; gap:16px; }
+.bk-faq summary::-webkit-details-marker { display:none; }
+.bk-faq summary::after { content:'+'; color:var(--accent); font-size:22px; line-height:1; transition:transform .2s; }
+.bk-faq details[open] summary::after { transform:rotate(45deg); }
+.bk-faq details p { margin-top:8px; font-size:15px; color:var(--ink-soft); }
+
+/* ── MOBILE ── */
+@media(max-width:900px) {
+  nav { padding:10px 20px; }
+  .bk-steps { grid-template-columns:1fr; }
+  .care-plans { padding:0 20px 72px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .page-hero { padding:110px 20px 56px; }
+  .page-hero h1 { font-size:clamp(30px,8vw,44px); }
+  .page-hero p { font-size:16px; }
+  .services-page { padding:48px 20px 72px; }
+  .is-grid { grid-template-columns:1fr; }
+  .is-modal { border-radius:20px; }
+  .is-modal-header { padding:28px 20px 20px; }
+  .is-modal-body { padding:20px 20px; }
+  .intake-section { padding:0 20px; }
+  .is-modal-footer { padding:16px 20px 28px; }
+  .intake-row { grid-template-columns:1fr; }
+  .is-modal-price { font-size:28px; }
+  .is-modal-title { font-size:19px; }
+}
+
+/* ── FOOTER ── */
+footer { background:#080809; padding:44px 48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+.footer-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.footer-logo-img { height:40px; width:auto; mix-blend-mode:screen; opacity:0.75; }
+.footer-wordmark { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--white); }
+.footer-links { display:flex; gap:32px; list-style:none; }
+.footer-links a { font-size:13px; color:rgba(255,255,255,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:rgba(255,255,255,0.8); }
+.footer-copy { font-size:12px; color:rgba(255,255,255,0.25); }
+@media(max-width:640px) {
+  footer { padding:40px 20px; flex-direction:column; align-items:flex-start; }
+  .footer-links { flex-wrap:wrap; gap:16px; }
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+/* ── NAV FIT: the full menu wraps into 2–3 rows on laptop widths, so hide the
+   wordmark (logo stays) where space is tight, and use the hamburger below that ── */
+@media (min-width:961px) and (max-width:1359px) { .nav-wordmark { display:none; } }
+@media (max-width:960px) { .nav-links { display:none; } .nav-hamburger { display:flex; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img">
+    <span class="nav-wordmark">Favorable Odds Tech Solutions</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#audit" style="color:var(--green);font-weight:600;">Free Audit ✦</a></li>
+    <li><a href="/services" style="color:var(--accent);font-weight:600;">Instant Services ⚡</a></li>
+    <li><a href="/work" style="color:var(--gold);font-weight:600;">The Work ↗</a></li>
+    <li><a href="/bookkeeping" style="color:var(--ink);font-weight:600;">Bookkeeping</a></li>
+    <li><a href="/#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE OVERLAY -->
+<div class="nav-overlay" id="navOverlay">
+  <a href="/" class="nav-overlay-logo" onclick="closeMenu()">
+    <img src="business_logo.jpg" alt="Favorable Odds">
+    <span>Favorable Odds</span>
+  </a>
+  <button class="nav-overlay-close" id="navOverlayClose" aria-label="Close menu"></button>
+  <ul class="nav-overlay-links">
+    <li><a href="/#about"    onclick="closeMenu()">About</a></li>
+    <li><a href="/#services" onclick="closeMenu()">Services</a></li>
+    <li><a href="/#audit"    onclick="closeMenu()" style="color:#4ade80;">Free Audit ✦</a></li>
+    <li><a href="/services"  onclick="closeMenu()" style="color:var(--accent);">Instant Services ⚡</a></li>
+    <li><a href="/work"      onclick="closeMenu()" style="color:var(--gold);">The Work ↗</a></li>
+    <li><a href="/bookkeeping" onclick="closeMenu()">Bookkeeping</a></li>
+  </ul>
+  <div class="nav-overlay-contact">
+    <a href="#" onclick="window.location.href='mai'+'lto:hello@favorableodds.io';return false;" style="display:inline-block;background:var(--white);color:var(--ink);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:10px 22px;border-radius:100px;text-decoration:none;">✉&nbsp; Request a Free Quote</a>
+    <br>
+    <a href="tel:+16892439704" style="color:rgba(255,255,255,0.3);font-size:12px;text-decoration:none;margin-top:6px;display:inline-block;">689-243-9704</a>
+  </div>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <a href="/" class="page-hero-back">← Back to main site</a>
+  <div class="page-hero-tag">Bookkeeping · Owner-Operated</div>
+  <h1>Clean books.<br><em>Clear odds.</em></h1>
+  <p>Every transaction categorized, every account reconciled, and a clean P&amp;L in your inbox each month. At year end, your CPA gets tax-ready books instead of a shoebox.</p>
+  <div class="page-hero-badges">
+    <span class="hero-badge">📊 Monthly P&amp;L</span>
+    <span class="hero-badge">🏦 Reconciled accounts</span>
+    <span class="hero-badge">🧾 Tax-ready for your CPA</span>
+    <span class="hero-badge">📅 Cancel anytime</span>
+  </div>
+</section>
+
+<!-- BOOKKEEPING PLANS -->
+<section class="services-page">
+  <div class="is-delivery-badge">Free 15-minute fit call before you commit</div>
+  <div class="is-grid">
+
+    <div class="is-card care-card" onclick="openISModal('books-starter')">
+      <div class="is-card-price">$199<span>/mo</span></div>
+      <div class="is-card-title">Monthly Bookkeeping: Starter</div>
+      <ul>
+        <li>Up to 50 transactions a month</li>
+        <li>1 bank and 1 card account</li>
+        <li>Monthly categorization and reconciliation</li>
+        <li>Monthly P&amp;L and balance sheet</li>
+      </ul>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">Billed monthly</span>
+        <span class="is-card-cta">Get started →</span>
+      </div>
+    </div>
+
+    <div class="is-card care-card popular" onclick="openISModal('books-standard')">
+      <span class="care-ribbon">Most popular</span>
+      <div class="is-card-price">$349<span>/mo</span></div>
+      <div class="is-card-title">Monthly Bookkeeping: Standard</div>
+      <ul>
+        <li>Up to 150 transactions a month</li>
+        <li>Up to 4 bank and card accounts</li>
+        <li>Receipt and bill tracking</li>
+        <li>Monthly reports plus a review call</li>
+      </ul>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround">Billed monthly</span>
+        <span class="is-card-cta">Get started →</span>
+      </div>
+    </div>
+
+    <div class="is-card care-card" onclick="openISModal('books-cleanup')">
+      <div class="is-card-price">From $150</div>
+      <div class="is-card-title">Catch-Up Cleanup</div>
+      <ul>
+        <li>Priced per month behind, flat quote up front</li>
+        <li>Every month categorized and reconciled</li>
+        <li>Clean reports for each month caught up</li>
+        <li>Quoted after a free review of your accounts</li>
+      </ul>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround once">One-time project</span>
+        <span class="is-card-cta">Get a quote →</span>
+      </div>
+    </div>
+
+    <div class="is-card care-card" onclick="openISModal('books-newllc')">
+      <div class="is-card-price">$497</div>
+      <div class="is-card-title">New LLC Starter</div>
+      <ul>
+        <li>Bookkeeping system and chart of accounts set up</li>
+        <li>Bank and card accounts connected</li>
+        <li>Simple receipt workflow</li>
+        <li>1-page website for your new business</li>
+        <li>First month of Starter bookkeeping included</li>
+      </ul>
+      <div class="is-card-footer">
+        <span class="is-card-turnaround once">One-time setup</span>
+        <span class="is-card-cta">Get started →</span>
+      </div>
+    </div>
+
+  </div>
+  <p class="care-note">Not sure which plan fits? Pick the closest one and we'll confirm the right fit before anything is billed.</p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="care-plans">
+  <div class="care-head">
+    <div class="care-tag">How it works</div>
+    <h2>Three steps to books you can trust.</h2>
+  </div>
+  <div class="bk-steps">
+    <div class="bk-step"><h3>Free fit call</h3><p>15 minutes on your business, accounts and where your books stand today.</p></div>
+    <div class="bk-step"><h3>Setup or catch-up</h3><p>We connect your accounts, set up your categories, and bring any past months current.</p></div>
+    <div class="bk-step"><h3>Clean reports monthly</h3><p>Every month is closed out and your P&amp;L lands in your inbox, ready for decisions and tax time.</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="care-plans">
+  <div class="care-head">
+    <div class="care-tag">Questions</div>
+    <h2>Before you sign up</h2>
+  </div>
+  <div class="bk-faq">
+    <details><summary>Are you a CPA?</summary><p>No. We're bookkeepers. We keep your books clean all year and hand your CPA tax-ready reports. Tax filing stays with your CPA or tax preparer.</p></details>
+    <details><summary>What software do you use?</summary><p>QuickBooks Online, Xero or Wave, whichever you already use. If you don't have one yet, we'll set one up with you.</p></details>
+    <details><summary>How do you get access to my accounts?</summary><p>Through read-only access you grant in your bookkeeping software, or statements you send us. We never need your online banking password.</p></details>
+    <details><summary>What if I'm months behind?</summary><p>That's what Catch-Up Cleanup is for. We review your accounts, quote a flat price, and bring every month current before monthly bookkeeping starts.</p></details>
+    <details><summary>Can I cancel?</summary><p>Yes. Monthly plans are month to month with no long-term contract.</p></details>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     ORDER MODAL
+     Flow: Details → Intake Form → Submit unlocks → Email fires → confirmation (no online payment)
+═══════════════════════════════ -->
+<div class="is-modal-overlay" id="isModalOverlay" onclick="closeISModal(event)">
+  <div class="is-modal" id="isModal">
+    <button class="is-modal-close" onclick="closeISModal(null)">✕</button>
+
+    <!-- 1. Header: service details -->
+    <div class="is-modal-header">
+      <div class="is-modal-icon" id="isModalIcon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+      </div>
+      <div class="is-modal-price" id="isModalPrice">$00</div>
+      <div class="is-modal-title" id="isModalTitle">Service</div>
+      <div class="is-modal-tagline" id="isModalTagline"></div>
+      <div class="is-modal-meta">
+        <span class="is-modal-meta-pill" id="isModalDelivery">⚡ 24 hr delivery</span>
+        <span class="is-modal-meta-pill" id="isModalScope">📦 One fixed deliverable</span>
+        <span class="is-modal-meta-pill">✅ Confirmed by email</span>
+      </div>
+    </div>
+
+    <!-- 2. Includes list -->
+    <div class="is-modal-body">
+      <h4>What's Included</h4>
+      <ul class="is-modal-includes" id="isModalIncludes"></ul>
+    </div>
+
+    <!-- 3. Intake Form -->
+    <div class="intake-section" id="intakeFormSection">
+      <hr class="intake-divider">
+
+      <!-- Step indicator -->
+      <div class="intake-steps">
+        <div class="step-pill active" id="step1pill">
+          <div class="step-num">1</div>
+          Tell us about your project
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-pill" id="step2pill">
+          <div class="step-num" id="step2num">2</div>
+          We confirm your order
+        </div>
+      </div>
+
+      <div class="intake-heading">Project Details</div>
+      <p class="intake-subhead">Fill this out so we can start as soon as your order is confirmed. All fields marked * are required.</p>
+
+      <div class="intake-row">
+        <div class="intake-field">
+          <label>Your Name *</label>
+          <input type="text" id="intakeName" placeholder="Full name" oninput="checkIntakeReady()">
+        </div>
+        <div class="intake-field">
+          <label>Email Address *</label>
+          <input type="email" id="intakeEmail" placeholder="you@company.com" oninput="checkIntakeReady()">
+        </div>
+      </div>
+
+      <div class="intake-field">
+        <label>Business Name &amp; Industry *</label>
+        <input type="text" id="intakeBusiness" placeholder="e.g. Acme Corp — Insurance" oninput="checkIntakeReady()">
+      </div>
+
+      <!-- Dynamic fields injected per service -->
+      <div id="intakeDynamic"></div>
+
+      <div class="intake-field">
+        <label>Anything else we should know?</label>
+        <textarea id="intakeNotes" placeholder="Special requirements, deadlines, file links..."></textarea>
+      </div>
+    </div>
+
+    <!-- 4. Sending state (hidden until submit) -->
+    <div class="is-sending" id="isSending">
+      <div class="is-sending-icon" id="isSendingIcon">⚙️</div>
+      <h4 id="isSendingTitle">Sending your details...</h4>
+      <p id="isSendingText">This only takes a moment.</p>
+    </div>
+
+    <!-- 5. Footer: pay button -->
+    <div class="is-modal-footer">
+      <button class="is-pay-btn" id="isPayBtn" onclick="submitRequest()" disabled>
+        🔒 Fill out the form above to continue
+      </button>
+      <p class="pay-lock-msg" id="payLockMsg">Complete all required fields to submit your request.</p>
+      <p class="pay-secure-note" id="paySecureNote">Nothing is charged online · We confirm every order by email</p>
+      <a class="is-ask-btn" id="isAskBtn" href="sms:+16892439704">💬 Have a question first? Text us</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-brand">
+    <img src="business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img">
+    <span class="footer-wordmark">Favorable Odds LLC</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/services" style="color:var(--accent);">Instant Services</a></li>
+    <li><a href="/work" style="color:var(--gold);">The Work ↗</a></li>
+    <li><a href="/services#care-plans">Care Plans</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/#contact">Get Started</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Favorable Odds LLC &nbsp;·&nbsp; hello&#64;favorableodds.io &nbsp;·&nbsp; 689-243-9704</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// ── EmailJS init — uses your existing keys ──
+emailjs.init('YVFMPQh2ifuDyFMUq'); // your public key
+
+var _currentServiceKey = null;
+var _modalSession = 0;   // bumps on every open so a late email result can't touch a newer modal
+
+// ── Service definitions ──
+var IS_SERVICES = {
+  'books-starter': {
+    title: 'Bookkeeping: Starter',
+    price: '$199/mo', amount: '199.00',
+    delivery: '🔁 Billed monthly',
+    scope: '📅 Cancel anytime',
+    tagline: 'Monthly bookkeeping for smaller businesses: every transaction categorized and reconciled, with clean reports each month.',
+    icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15l3-3 3 3 4-5"/></svg>',
+    includes: ['Up to 50 transactions a month','1 bank and 1 card account','Monthly categorization and reconciliation','Monthly P&L and balance sheet','Year-end reports ready for your CPA'],
+    dynamicFields: [
+      { id:'d_entity', label:'Business Type *', placeholder:'e.g. LLC, S-Corp, sole proprietor...', required:true },
+      { id:'d_volume', label:'About How Many Transactions a Month? *', placeholder:'e.g. 30, 100, not sure...', required:true },
+      { id:'d_accounts', label:'Bank and Card Accounts *', placeholder:'e.g. 1 checking and 1 credit card', required:true },
+      { id:'d_software', label:'Current Software', placeholder:'e.g. QuickBooks Online, Xero, Wave, spreadsheet, none', required:false }
+    ]
+  },
+  'books-standard': {
+    title: 'Bookkeeping: Standard',
+    price: '$349/mo', amount: '349.00',
+    delivery: '🔁 Billed monthly',
+    scope: '📅 Cancel anytime',
+    tagline: 'For busier businesses: more volume, more accounts, bill tracking and a monthly review call.',
+    icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15l3-3 3 3 4-5"/></svg>',
+    includes: ['Up to 150 transactions a month','Up to 4 bank and card accounts','Receipt and bill tracking','Monthly P&L, balance sheet and review call','Year-end reports ready for your CPA'],
+    dynamicFields: [
+      { id:'d_entity', label:'Business Type *', placeholder:'e.g. LLC, S-Corp, sole proprietor...', required:true },
+      { id:'d_volume', label:'About How Many Transactions a Month? *', placeholder:'e.g. 30, 100, not sure...', required:true },
+      { id:'d_accounts', label:'Bank and Card Accounts *', placeholder:'e.g. 1 checking and 1 credit card', required:true },
+      { id:'d_software', label:'Current Software', placeholder:'e.g. QuickBooks Online, Xero, Wave, spreadsheet, none', required:false }
+    ]
+  },
+  'books-cleanup': {
+    title: 'Catch-Up Cleanup',
+    price: 'From $150', amount: '150.00',
+    delivery: '🔍 Quoted after a free review',
+    scope: '📦 One-time project',
+    tagline: 'Behind on your books? We bring every month current, reconciled and ready for your CPA.',
+    icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15l3-3 3 3 4-5"/></svg>',
+    includes: ['Priced per month behind, from $150 a month','Free review of your accounts and a flat quote','Every missed month categorized and reconciled','Clean monthly reports for the caught-up period','A smooth hand-off into monthly bookkeeping'],
+    dynamicFields: [
+      { id:'d_behind', label:'How Many Months Behind? *', placeholder:'e.g. 3 months, since January, all of last year...', required:true },
+      { id:'d_accounts', label:'Bank and Card Accounts *', placeholder:'e.g. 2 checking and 1 credit card', required:true },
+      { id:'d_software', label:'Current Software', placeholder:'e.g. QuickBooks Online, Xero, Wave, spreadsheet, none', required:false }
+    ]
+  },
+  'books-newllc': {
+    title: 'New LLC Starter',
+    price: '$497', amount: '497.00',
+    delivery: '🚀 Set up for your first month',
+    scope: '📦 One-time setup',
+    tagline: 'Start clean: bookkeeping system, connected accounts and a 1-page website for your new business.',
+    icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15l3-3 3 3 4-5"/></svg>',
+    includes: ['Bookkeeping system and chart of accounts set up','Bank and card accounts connected','Simple receipt workflow','1-page website for your new business','First month of Starter bookkeeping included'],
+    dynamicFields: [
+      { id:'d_formed', label:'When Was Your LLC Formed? *', placeholder:'e.g. last week, August 2026, not yet filed...', required:true },
+      { id:'d_industry', label:'What Does Your Business Do? *', placeholder:'e.g. landscaping, cleaning, consulting...', required:true },
+      { id:'d_bank', label:'Business Bank Account Opened?', placeholder:'e.g. yes with Chase, not yet...', required:false }
+    ]
+  }
+};
+
+function openISModal(key) {
+  var s = IS_SERVICES[key];
+  if (!s) return;
+  _currentServiceKey = key;
+  _modalSession++;
+
+  // Populate header
+  document.getElementById('isModalIcon').innerHTML = s.icon;
+  document.getElementById('isModalPrice').textContent = s.price;
+  document.getElementById('isModalTitle').textContent = s.title;
+  document.getElementById('isModalTagline').textContent = s.tagline;
+  document.getElementById('isModalDelivery').textContent = s.delivery;
+  document.getElementById('isModalScope').textContent = s.scope || '📦 One fixed deliverable';
+
+  // Populate includes
+  var ul = document.getElementById('isModalIncludes');
+  ul.innerHTML = s.includes.map(function(i){ return '<li>' + i + '</li>'; }).join('');
+
+  // Inject dynamic fields
+  var dyn = document.getElementById('intakeDynamic');
+  dyn.innerHTML = '';
+  s.dynamicFields.forEach(function(f) {
+    var wrap = document.createElement('div');
+    wrap.className = 'intake-field';
+    var labelStr = '<label>' + f.label + '</label>';
+    var inputStyle = '';
+    var input;
+    if (f.type === 'textarea') {
+      input = '<textarea id="' + f.id + '" placeholder="' + f.placeholder + '" ' + (f.required ? 'required' : '') + ' oninput="checkIntakeReady()"></textarea>';
+    } else {
+      input = '<input type="text" id="' + f.id + '" placeholder="' + f.placeholder + '" ' + (f.required ? 'required' : '') + ' oninput="checkIntakeReady()">';
+    }
+    wrap.innerHTML = labelStr + input;
+    dyn.appendChild(wrap);
+  });
+
+  // Reset state
+  document.getElementById('intakeName').value = '';
+  document.getElementById('intakeEmail').value = '';
+  document.getElementById('intakeBusiness').value = '';
+  document.getElementById('intakeNotes').value = '';
+  document.getElementById('intakeFormSection').style.display = 'block';
+  document.getElementById('isSending').style.display = 'none';
+  document.querySelector('.is-modal-body').style.display = '';
+  document.getElementById('isPayBtn').style.display = '';
+  document.getElementById('paySecureNote').style.display = '';
+  document.getElementById('isSendingIcon').textContent = '⚙️';
+  document.getElementById('isSendingTitle').textContent = 'Sending your details...';
+  document.getElementById('isSendingText').textContent = 'This only takes a moment.';
+  checkIntakeReady();
+
+  // Update text button
+  var sms = 'Hi, I have a question about the ' + s.title + ' (' + s.price + ') on favorableodds.io/services';
+  document.getElementById('isAskBtn').href = 'sms:+16892439704?body=' + encodeURIComponent(sms);
+
+  document.getElementById('isModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeISModal(e) {
+  if (e && e.target !== document.getElementById('isModalOverlay')) return;
+  document.getElementById('isModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  _currentServiceKey = null;
+}
+
+function checkIntakeReady() {
+  var s = IS_SERVICES[_currentServiceKey];
+  if (!s) return;
+
+  var name     = (document.getElementById('intakeName').value || '').trim();
+  var email    = (document.getElementById('intakeEmail').value || '').trim();
+  var business = (document.getElementById('intakeBusiness').value || '').trim();
+  var emailOk  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  var dynOk = true;
+  s.dynamicFields.forEach(function(f) {
+    if (f.required) {
+      var el = document.getElementById(f.id);
+      if (!el || !el.value.trim()) dynOk = false;
+    }
+  });
+
+  var ready = name && emailOk && business && dynOk;
+  var btn   = document.getElementById('isPayBtn');
+  var msg   = document.getElementById('payLockMsg');
+  var s2pill = document.getElementById('step2pill');
+  var s2num  = document.getElementById('step2num');
+
+  if (ready) {
+    btn.disabled = false;
+    btn.classList.add('ready');
+    btn.textContent = '✅ Submit request — ' + IS_SERVICES[_currentServiceKey].price;
+    msg.style.display = 'none';
+    s2pill.classList.add('active');
+    s2num.style.background = 'var(--accent)';
+    s2num.style.color = 'var(--white)';
+    s2num.style.borderColor = 'var(--accent)';
+  } else {
+    btn.disabled = true;
+    btn.classList.remove('ready');
+    btn.textContent = '🔒 Fill out the form above to continue';
+    msg.style.display = 'block';
+    s2pill.classList.remove('active');
+    s2num.style.background = '';
+    s2num.style.color = '';
+    s2num.style.borderColor = '';
+  }
+}
+
+function submitRequest() {
+  var s = IS_SERVICES[_currentServiceKey];
+  if (!s) return;
+  var btn = document.getElementById('isPayBtn');
+  if (btn.disabled) return;          // guard against double-submit
+  btn.disabled = true;
+  var session = _modalSession;
+
+  var name     = document.getElementById('intakeName').value.trim();
+  var email    = document.getElementById('intakeEmail').value.trim();
+  var business = document.getElementById('intakeBusiness').value.trim();
+  var notes    = (document.getElementById('intakeNotes').value || '').trim();
+
+  // Collect dynamic field values
+  var details = '';
+  s.dynamicFields.forEach(function(f) {
+    var el = document.getElementById(f.id);
+    if (el && el.value.trim()) {
+      details += f.label.replace(' *','') + ':\n' + el.value.trim() + '\n\n';
+    }
+  });
+
+  // Show sending state
+  document.getElementById('intakeFormSection').style.display = 'none';
+  document.getElementById('isModalIcon').parentElement.style.display = 'none';
+  document.querySelector('.is-modal-body').style.display = 'none';
+  document.getElementById('isSending').style.display = 'block';
+  document.getElementById('isModalIcon').parentElement.style.display = '';
+
+  // Fire EmailJS
+  emailjs.send('service_blx7dqd', 'template_lbtqhem', {
+    from_name:  name,
+    email:      email,
+    reply_to:   email,
+    business:   business,
+    service:    s.title,
+    price:      s.price,
+    details:    details,
+    notes:      notes || 'None'
+  }).then(function() {
+    if (session === _modalSession) showRequestResult(true);
+  }).catch(function(err) {
+    console.warn('EmailJS error:', err);
+    if (session === _modalSession) showRequestResult(false, s, name, email, business, details, notes);
+  });
+}
+
+function showRequestResult(ok, s, name, email, business, details, notes) {
+  document.getElementById('isPayBtn').style.display = 'none';
+  document.getElementById('payLockMsg').style.display = 'none';
+  document.getElementById('paySecureNote').style.display = 'none';
+  var icon  = document.getElementById('isSendingIcon');
+  var title = document.getElementById('isSendingTitle');
+  var text  = document.getElementById('isSendingText');
+  if (ok) {
+    icon.textContent  = '✅';
+    title.textContent = 'Request received!';
+    text.textContent  = "We'll email you within 1 business day to confirm your order and next steps.";
+  } else {
+    var body = 'Service: ' + s.title + ' (' + s.price + ')\n' +
+      'Name: ' + name + '\nEmail: ' + email + '\nBusiness: ' + business + '\n\n' +
+      details + 'Notes: ' + (notes || 'None');
+    icon.textContent  = '⚠️';
+    title.textContent = "We couldn't send that";
+    text.innerHTML    = 'Nothing was charged. <a href="mailto:hello@favorableodds.io?subject=' +
+      encodeURIComponent('Service request — ' + s.title) + '&body=' + encodeURIComponent(body) +
+      '" style="color:var(--accent);font-weight:600">Email your request instead</a> or text us below.';
+  }
+}
+
+// ── Escape to close ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeISModal(null);
+});
+
+// ── Mobile nav ──
+function openMenu() {
+  document.getElementById('navOverlay').classList.add('open');
+  document.getElementById('navHamburger').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  document.getElementById('navOverlay').classList.remove('open');
+  document.getElementById('navHamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('navHamburger').addEventListener('click', openMenu);
+document.getElementById('navOverlayClose').addEventListener('click', closeMenu);
+document.getElementById('navOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeMenu();
+});
+</script>
+
+<!--
+=======================================================
+EMAILJS TEMPLATE — create this in your EmailJS dashboard
+Name: instant_order
+Template ID: template_instant_order
+To: hello@favorableodds.io
+Reply To: {{email}}
+Subject: 🛒 New Order: {{service}} — {{from_name}}
+
+Body:
+NEW INSTANT SERVICE ORDER
+==========================
+SERVICE: {{service}}
+PRICE: {{price}}
+
+CUSTOMER
+---------
+Name: {{from_name}}
+Email: {{email}}
+Business: {{business}}
+
+PROJECT DETAILS
+---------------
+{{details}}
+
+NOTES
+-----
+{{notes}}
+
+==========================
+Reply to this email to contact the customer directly.
+=======================================================
+-->
+</body>
+</html>
