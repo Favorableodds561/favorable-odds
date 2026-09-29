@@ -830,8 +830,8 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
 }
 /* ── NAV FIT: the full menu wraps into 2–3 rows on laptop widths, so hide the
    wordmark (logo stays) where space is tight, and use the hamburger below that ── */
-@media (min-width:1241px) and (max-width:1639px) { .nav-wordmark { display:none; } }
-@media (max-width:1240px) { .nav-links { display:none; } .nav-hamburger { display:flex; } }
+@media (min-width:1341px) and (max-width:1639px) { .nav-wordmark { display:none; } }
+@media (max-width:1340px) { .nav-links { display:none; } .nav-hamburger { display:flex; } }
 /* Menu overlay: shrink link text on short screens so all items fit above the contact line */
 .nav-overlay-links li a { font-size: min(clamp(22px, 6vw, 38px), 2.9vh); }
 @media (max-height:820px) { .nav-overlay-links { gap:4px; } .nav-overlay-links li a { padding:4px 0; } }
@@ -854,6 +854,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li><a href="/services" style="color:var(--accent);font-weight:600;">Instant Services ⚡</a></li>
     <li><a href="/work" style="color:var(--gold);font-weight:600;">The Work ↗</a></li>
     <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/tools/">Free Tools</a></li>
     <li><a href="/shop.html">Shop</a></li>
     <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
@@ -880,6 +881,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li><a href="#game"          onclick="closeMenu()">Flip the Odds</a></li>
     <li><a href="/work"          onclick="closeMenu()" style="color:var(--gold);">The Work ↗</a></li>
     <li><a href="/bookkeeping"   onclick="closeMenu()">Bookkeeping</a></li>
+    <li><a href="/tools/" onclick="closeMenu()">Free Tools</a></li>
     <li><a href="/shop.html"     onclick="closeMenu()">Shop</a></li>
   </ul>
   <div class="nav-overlay-contact">
@@ -1230,6 +1232,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <li><a href="/work" style="color:var(--gold);">The Work ↗</a></li>
     <li><a href="/services#care-plans">Care Plans</a></li>
     <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/tools/">Free Tools</a></li>
     <li><a href="#contact">Get Started</a></li>
   </ul>
   <div class="footer-copy">© 2026 Favorable Odds LLC &nbsp;·&nbsp; hello&#64;favorableodds.io &nbsp;·&nbsp; 689-243-9704</div>

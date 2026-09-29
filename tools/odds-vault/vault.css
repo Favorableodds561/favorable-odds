@@ -1,0 +1,130 @@
+/* Odd$ Vault tool styles. Ported from the original standalone file, scoped under .vault-app so nothing leaks into the site
+   (the original used bare selectors like section, h1, table, footer). Palette and layout of the tool are unchanged. */
+.vault-app {
+  --felt:#10261f; --panel:#173328; --panel2:#1e3f31; --line:#2c5342;
+  --ivory:#efe8d6; --muted:#9db6a8; --chip:#c8402f; --chip-ink:#fff4ee;
+  --ok:#8fd19e; --warn:#e8b64c;
+  --radius:10px;
+  background:var(--felt); color:var(--ivory); border:1px solid var(--line); border-radius:20px;
+  padding:28px; max-width:820px; margin:32px auto 0; color-scheme:dark; text-align:left;
+  font-family:'DM Sans',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; line-height:1.5;
+}
+.vault-app h2, .vault-app h3 { font-family:'Syne',sans-serif; color:var(--ivory); }
+.vault-app .v-brand { font-size:clamp(1.8rem,5vw,2.6rem); font-weight:800; letter-spacing:-.03em; line-height:1; margin:0 0 10px; }
+.vault-app .v-brand .d { color:var(--chip); }
+.vault-app .lede { color:var(--muted); max-width:60ch; margin:0 0 22px; font-size:1rem; }
+.vault-app .v-panel { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px; margin-bottom:16px; }
+.vault-app h3 { font-size:1.05rem; font-weight:700; margin:0 0 12px; letter-spacing:-.01em; }
+.vault-app #drop { border:2px dashed var(--line); border-radius:var(--radius); padding:36px 16px; text-align:center; cursor:pointer;
+  background:var(--felt); transition:border-color .15s,background .15s; }
+.vault-app #drop:hover, .vault-app #drop.over, .vault-app #drop:focus-visible { border-color:var(--chip); background:#132d24; outline:none; }
+.vault-app #drop:focus-visible { outline:2px solid var(--chip); outline-offset:2px; }
+.vault-app #drop strong { display:block; font-size:1.1rem; margin-bottom:4px; }
+.vault-app #drop span { color:var(--muted); font-size:.92rem; }
+.vault-app ul#files { list-style:none; margin:14px 0 0; padding:0; }
+.vault-app #files li { display:flex; align-items:center; gap:10px; padding:8px 0; border-top:1px solid var(--line); font-size:.95rem; }
+.vault-app #files li:first-child { border-top:0; }
+.vault-app #files .n { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vault-app #files .s { color:var(--muted); font-size:.85rem; white-space:nowrap; }
+.vault-app #files .t { font-size:.78rem; padding:2px 8px; border-radius:99px; background:var(--panel2); color:var(--ok); white-space:nowrap; }
+.vault-app #files .t.no { color:var(--warn); }
+.vault-app button.x { background:none; border:0; color:var(--muted); font-size:1.4rem; cursor:pointer; padding:0 8px; line-height:1; min-width:32px; min-height:32px; }
+.vault-app button.x:hover { color:var(--chip); }
+.vault-app label.f { display:block; font-size:.9rem; color:var(--muted); margin:0 0 6px; }
+.vault-app .row { display:flex; gap:8px; flex-wrap:wrap; }
+.vault-app input[type=password], .vault-app input[type=text] { flex:1; min-width:0; background:var(--felt); border:1px solid var(--line); color:var(--ivory);
+  border-radius:8px; padding:11px 12px; font:inherit; font-size:16px; }
+.vault-app input:focus-visible, .vault-app button:focus-visible { outline:2px solid var(--chip); outline-offset:2px; }
+.vault-app button.sec { background:var(--panel2); color:var(--ivory); border:1px solid var(--line); border-radius:8px; padding:10px 14px; font:inherit; cursor:pointer; }
+.vault-app button.sec:hover { border-color:var(--muted); }
+.vault-app .meter { height:6px; background:var(--felt); border-radius:9px; margin:10px 0 4px; overflow:hidden; }
+.vault-app .meter i { display:block; height:100%; width:0; background:var(--chip); transition:width .2s,background .2s; }
+.vault-app .hint { font-size:.85rem; color:var(--muted); min-height:1.3em; }
+.vault-app .chk { display:flex; gap:10px; align-items:flex-start; margin:10px 0; font-size:.95rem; }
+.vault-app .chk input { margin-top:5px; accent-color:var(--chip); }
+.vault-app .chk small { display:block; color:var(--muted); }
+.vault-app .warn { border-left:3px solid var(--warn); background:#2a2a1c; padding:10px 12px; border-radius:6px; font-size:.9rem; margin-top:14px; }
+.vault-app button.go { width:100%; background:var(--chip); color:var(--chip-ink); border:0; border-radius:var(--radius); padding:15px;
+  font:inherit; font-weight:800; font-size:1.05rem; cursor:pointer; margin-top:6px; }
+.vault-app button.go:disabled { opacity:.45; cursor:not-allowed; }
+.vault-app button.go:not(:disabled):hover { filter:brightness(1.08); }
+.vault-app #status { margin-top:10px; color:var(--muted); font-size:.92rem; min-height:1.4em; }
+.vault-app .tablewrap { overflow-x:auto; }
+.vault-app table { width:100%; border-collapse:collapse; font-size:.9rem; }
+.vault-app th, .vault-app td { text-align:left; padding:8px 10px; border-top:1px solid var(--line); vertical-align:top; }
+.vault-app th { color:var(--muted); font-weight:400; border-top:0; }
+.vault-app td.ok { color:var(--ok); }
+.vault-app td.bad { color:var(--warn); }
+.vault-app .found { color:var(--muted); font-size:.85rem; }
+.vault-app .v-foot { color:var(--muted); font-size:.85rem; margin-top:18px; }
+ .vault-app .hidden { display:none; }
+.vault-app [hidden] { display:none; }
+.vault-app #files + .chk { margin-top:14px; }
+.vault-app #strength + label.f { margin-top:12px; }
+.vault-app input.pw2 { width:100%; }
+.vault-app #report { margin-top:20px; }
+.vault-app #report .hint { margin-top:12px; }
+
+/* Trust statement directly around the tool */
+.vault-trust { max-width:820px; margin:0 auto; display:flex; gap:12px; align-items:flex-start; background:var(--green-soft); border:1px solid rgba(22,163,74,0.3); color:#14532d; border-radius:12px; padding:14px 18px; font-size:15px; font-weight:500; line-height:1.5; }
+.vault-trust::before { content:'🔒'; flex-shrink:0; }
+.vault-trust + .vault-app { margin-top:16px; }
+
+/* Post-success discovery (secondary, non-intrusive) */
+.vault-more { max-width:820px; margin:28px auto 0; padding-top:24px; border-top:1px solid var(--border); }
+.vault-more h3 { font-size:20px; font-weight:800; }
+.vault-more > p { font-size:14px; color:var(--ink-muted); margin-top:4px; }
+
+/* Reserve space so the tool doesn't jump while fonts/scripts load */
+.tool-noscript { max-width:820px; margin:16px auto 0; padding:14px 18px; background:var(--gold-soft); border:1px solid rgba(200,150,60,0.4); border-radius:12px; font-size:15px; }
+
+/* ── Education sections ── */
+.meta-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:28px; list-style:none; }
+.meta-grid li { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:14px 16px; font-size:14px; color:var(--ink-soft); line-height:1.5; }
+.meta-grid li strong { display:block; color:var(--ink); font-size:15px; margin-bottom:2px; }
+.why-list { list-style:none; margin-top:24px; display:grid; gap:12px; max-width:760px; }
+.why-list li { display:flex; gap:12px; font-size:16px; color:var(--ink-soft); line-height:1.6; }
+.why-list li::before { content:'✓'; width:22px; height:22px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; margin-top:3px; }
+.note-box { margin-top:28px; max-width:760px; background:var(--gold-soft); border:1px solid rgba(200,150,60,0.35); border-radius:12px; padding:16px 20px; font-size:15px; color:var(--ink-soft); line-height:1.65; }
+
+.format-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin-top:32px; }
+.format-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; }
+.format-card h3 { font-size:18px; font-weight:800; margin-bottom:10px; }
+.format-card h3 small { font-family:'DM Sans',sans-serif; font-weight:500; font-size:12px; color:var(--ink-muted); margin-left:6px; letter-spacing:0; }
+.format-card h4 { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; margin:12px 0 4px; }
+.format-card h4.rm { color:var(--green); }
+.format-card h4.kp { color:var(--ink-muted); }
+.format-card p, .format-card li { font-size:14px; color:var(--ink-soft); line-height:1.65; }
+.format-card ul { padding-left:18px; }
+
+.limits-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:28px; }
+.limit-card { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--gold); border-radius:12px; padding:18px 20px; }
+.limit-card h3 { font-size:16px; font-weight:800; margin-bottom:6px; }
+.limit-card p { font-size:14px; color:var(--ink-soft); line-height:1.65; }
+
+.steps { list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:28px; margin-top:36px; counter-reset:s; }
+.steps li { counter-increment:s; }
+.steps li::before { content:counter(s); display:block; font-family:'Syne',sans-serif; font-size:56px; font-weight:800; color:var(--border-strong); line-height:1; margin-bottom:6px; }
+.steps h3 { font-size:18px; font-weight:800; margin-bottom:6px; }
+.steps p { font-size:14px; color:var(--ink-soft); line-height:1.7; }
+
+.faq { margin-top:28px; max-width:820px; }
+.faq details { background:var(--white); border:1px solid var(--border); border-radius:12px; margin-bottom:10px; }
+.faq summary { cursor:pointer; list-style:none; padding:16px 20px; font-family:'Syne',sans-serif; font-weight:700; font-size:17px; letter-spacing:-0.01em; display:flex; justify-content:space-between; gap:16px; align-items:center; }
+.faq summary::-webkit-details-marker { display:none; }
+.faq summary::after { content:'+'; font-size:22px; font-weight:400; color:var(--ink-muted); flex-shrink:0; }
+.faq details[open] summary::after { content:'–'; }
+.faq details[open] summary { border-bottom:1px solid var(--border); }
+.faq .ans { padding:14px 20px 18px; font-size:15px; color:var(--ink-soft); line-height:1.75; }
+.faq .ans p + p { margin-top:10px; }
+
+.shop-cta { background:var(--ink); color:var(--white); border-radius:20px; padding:40px; display:flex; gap:32px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+.shop-cta h2 { font-size:clamp(24px,3.4vw,34px); font-weight:800; }
+.shop-cta p { color:rgba(255,255,255,0.7); margin-top:10px; max-width:520px; font-size:16px; }
+
+@media (max-width:640px) {
+  .vault-app { padding:16px 14px; border-radius:16px; }
+  .vault-app .v-panel { padding:16px 14px; }
+  .shop-cta { padding:28px 22px; }
+}
+@media (prefers-reduced-motion:reduce) { .vault-app * { transition:none !important; } }
