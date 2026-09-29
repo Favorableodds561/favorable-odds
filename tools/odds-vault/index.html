@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Privacy hardening: this page may only load its own scripts/styles (plus Google Fonts) and may NOT make any network request
+     (connect-src 'none'), so file contents and passwords cannot be sent anywhere even by a bug.
+     If analytics is added later, this policy must be loosened on purpose (see tools/odds-vault/README.md). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<title>Free Metadata Remover for Photos, PDFs &amp; Office Files | Odd$ Vault</title>
+<meta name="description" content="Free online metadata remover that runs in your browser. Remove EXIF, GPS and author data from photos, PDFs and Office files, then save an encrypted ZIP. Nothing is uploaded.">
+<link rel="canonical" href="https://favorableodds.io/tools/odds-vault/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Favorable Odds">
+<meta property="og:title" content="Odd$ Vault: Free Metadata Remover That Runs in Your Browser">
+<meta property="og:description" content="Remove hidden metadata from photos, PDFs, Word, Excel and PowerPoint files, then lock them in an encrypted ZIP. Free, no account, files never leave your browser.">
+<meta property="og:url" content="https://favorableodds.io/tools/odds-vault/">
+<meta property="og:image" content="https://favorableodds.io/business_logo.jpg">
+<meta property="og:image:alt" content="Favorable Odds logo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Odd$ Vault: Free Metadata Remover That Runs in Your Browser">
+<meta name="twitter:description" content="Remove hidden metadata from photos, PDFs and Office files, then lock them in an encrypted ZIP. Free, no account, no uploads.">
+<meta name="twitter:image" content="https://favorableodds.io/business_logo.jpg">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="icon" href="/business_logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="stylesheet" href="/tools/odds-vault/vault.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Odd$ Vault",
+      "url": "https://favorableodds.io/tools/odds-vault/",
+      "description": "Free browser-based metadata remover for JPEG, PNG, WebP, PDF, DOCX, XLSX and PPTX files, with optional AES-256 encrypted ZIP packaging. Files are processed locally in the browser.",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Any (runs in a modern web browser)",
+      "browserRequirements": "Requires JavaScript",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "Favorable Odds LLC", "url": "https://favorableodds.io/", "logo": "https://favorableodds.io/business_logo.jpg" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://favorableodds.io/" },
+        { "@type": "ListItem", "position": 2, "name": "Free Tools", "item": "https://favorableodds.io/tools/" },
+        { "@type": "ListItem", "position": 3, "name": "Odd$ Vault", "item": "https://favorableodds.io/tools/odds-vault/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is Odd$ Vault free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Odd$ Vault is free to use. There is no account, no email signup and no usage counter. The only limits come from your own browser and device, because files are processed in your device's memory." } },
+        { "@type": "Question", "name": "Are my files uploaded?", "acceptedAnswer": { "@type": "Answer", "text": "No. Your files are read and cleaned by JavaScript running in your browser, and the encrypted ZIP is created on your device and saved through your browser's normal download. Odd$ Vault contains no upload code, and the page is configured to block itself from making network requests. Favorable Odds does not receive or store your files or your password. Opening the page does load the page itself and its fonts over the web, like any website." } },
+        { "@type": "Question", "name": "What metadata can Odd$ Vault remove?", "acceptedAnswer": { "@type": "Answer", "text": "It removes common metadata from JPEG, PNG, WebP, PDF, DOCX, XLSX and PPTX files: EXIF (including GPS location and camera details), XMP and IPTC data and embedded comments in images; document information fields and XMP metadata in PDFs; and author, last modified by, company, manager, dates, application details and preview thumbnails in Word, Excel and PowerPoint files. See <a href=\"#what-it-cleans\">what Odd$ Vault can clean<\/a> for each format and for what it leaves alone." } },
+        { "@type": "Question", "name": "Can it remove GPS information from photos?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, for JPEG photos. Odd$ Vault removes the whole EXIF block, which is where GPS coordinates are stored, along with the camera model, timestamps and embedded thumbnail. It also removes XMP data. PNG and WebP images have their EXIF data removed the same way. HEIC photos, the default on many iPhones, are not supported, so convert them to JPEG first. After cleaning, the report shows whether GPS location was found and removed." } },
+        { "@type": "Question", "name": "Can it remove metadata from PDFs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It clears the PDF's document information fields (title, author, subject, keywords, creator, producer, creation date and modification date) and its document-level XMP metadata. It does not edit page content, annotations, attachments or form data, and it cannot open password-protected PDFs." } },
+        { "@type": "Question", "name": "Can it remove metadata from Word documents?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, for .docx files. Odd$ Vault clears the core properties (such as author, last modified by, title and dates) and extended properties (such as company, manager and application details), and removes the preview thumbnail. It does not remove comments, tracked changes, custom properties or hidden text, and it does not clean images embedded in the document. Older .doc files are not supported." } },
+        { "@type": "Question", "name": "Does removing metadata make a file anonymous?", "acceptedAnswer": { "@type": "Answer", "text": "No. Removing metadata only clears hidden fields in the file. Faces, names, visible text, screenshots, logos, writing style, file names and the contents of a document can still identify you or your organization. See <a href=\"#limits\">what Odd$ Vault does not do<\/a>." } },
+        { "@type": "Question", "name": "What file types are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Odd$ Vault cleans JPEG/JPG, PNG, WebP, PDF, DOCX, XLSX and PPTX files. Other types, such as HEIC, GIF, TIFF, video, or older .doc, .xls and .ppt files, cannot be cleaned. You can still add them to the ZIP by ticking “Also include files Vault can't clean”, but they keep whatever metadata they have." } },
+        { "@type": "Question", "name": "Why can't Windows open my encrypted ZIP?", "acceptedAnswer": { "@type": "Answer", "text": "Odd$ Vault encrypts the ZIP with AES-256, and the built-in Windows ZIP extractor does not support AES-encrypted ZIP files. Open it with a free tool such as 7-Zip or WinRAR on Windows, or Keka on a Mac. If you left “Hide file names inside the zip” on, extracting gives you a single file called contents.zip, which opens normally and holds your cleaned files." } },
+        { "@type": "Question", "name": "Can Favorable Odds recover my password?", "acceptedAnswer": { "@type": "Answer", "text": "No. Your password is used in your browser to encrypt the ZIP and is never sent to or stored by Favorable Odds, so there is nothing for us to recover. If you lose it, the files in the ZIP cannot be opened. Save it in a password manager before you download." } },
+        { "@type": "Question", "name": "Will cleaning change how my photo or document looks?", "acceptedAnswer": { "@type": "Answer", "text": "Your original files are never modified; only cleaned copies go into the ZIP. Images are not re-compressed, so quality is not reduced. One visible side effect: EXIF also stores photo orientation, so some phone photos may appear rotated after cleaning. PDFs and Office files are re-saved by the tool, so their file size can change slightly." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body data-fo-page-event="vault_page_view">
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- NAV -->
+<nav class="site-nav" aria-label="Primary">
+  <a href="/" class="nav-logo">
+    <img src="/business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img" width="48" height="48">
+    <span class="nav-wordmark">Favorable Odds Tech Solutions</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#audit">Free Audit ✦</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="nav">Instant Services ⚡</a></li>
+    <li><a href="/work">The Work ↗</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/tools/" aria-current="page" data-fo-event="free_tools_click" data-fo-location="nav">Free Tools</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="nav">Shop</a></li>
+    <li><a href="/#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" type="button" aria-label="Open menu" aria-controls="navOverlay" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-overlay" id="navOverlay">
+  <a href="/" class="nav-overlay-logo">
+    <img src="/business_logo.jpg" alt="Favorable Odds" width="40" height="40">
+    <span>Favorable Odds</span>
+  </a>
+  <button class="nav-overlay-close" id="navOverlayClose" type="button" aria-label="Close menu"></button>
+  <ul class="nav-overlay-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="mobile_nav">Free Tools</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="mobile_nav">Instant Services ⚡</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="mobile_nav">Shop</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/work">The Work ↗</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+<!-- HERO -->
+<header class="page-hero">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="breadcrumb">Free Tools</a></li>
+        <li aria-current="page">Odd$ Vault</li>
+      </ol>
+    </nav>
+    <p class="hero-tag">Odd$ Vault by Favorable Odd$</p>
+    <h1>Remove Hidden File <em>Metadata</em> Before You Share</h1>
+    <p class="hero-sub">Odd$ Vault is a free privacy tool that removes common hidden metadata from images, PDFs, Word documents, Excel files, and PowerPoint presentations before packaging them into an encrypted ZIP.</p>
+    <ul class="hero-pills" aria-label="Key facts">
+      <li>Free to use</li>
+      <li>No account required</li>
+      <li>Files stay in your browser</li>
+      <li>Files are not uploaded to Favorable Odds</li>
+      <li>Common image, PDF and Microsoft Office formats</li>
+    </ul>
+    <div class="hero-actions">
+      <a href="#vault-tool" class="btn-primary" data-fo-event="vault_cta_click" data-fo-location="hero">Clean My Files</a>
+      <a href="#how-it-works" class="btn-link">See how it works ↓</a>
+    </div>
+  </div>
+</header>
+
+<!-- TOOL -->
+<section class="t-section" id="vault-tool" aria-labelledby="tool-title">
+  <div class="wrap">
+    <p class="vault-trust" id="vault-trust"><span>Your files are processed locally in your browser. Favorable Odds does not receive or store them.</span></p>
+
+    <div class="vault-app">
+      <h2 class="v-brand" id="tool-title">Odd<span class="d">$</span> Vault</h2>
+      <p class="lede">Drop in your files. Vault removes the hidden metadata, locks everything with your password, and hands back one encrypted zip. Nothing is uploaded: it all runs in this browser tab.</p>
+
+      <div class="v-panel">
+        <h3>1. Add files</h3>
+        <div id="drop" tabindex="0" role="button" aria-label="Choose files to clean">
+          <strong>Drop files here or click to choose</strong>
+          <span>Cleans JPEG, PNG, WebP, PDF, DOCX, XLSX and PPTX</span>
+        </div>
+        <input id="picker" type="file" multiple class="hidden" aria-label="Choose files to clean" tabindex="-1">
+        <ul id="files" aria-label="Selected files"></ul>
+        <div class="chk">
+          <input type="checkbox" id="incUnsupported">
+          <label for="incUnsupported">Also include files Vault can't clean
+            <small>They go in the zip untouched and keep whatever metadata they have.</small></label>
+        </div>
+      </div>
+
+      <div class="v-panel">
+        <h3>2. Set a password</h3>
+        <label class="f" for="pw">Password (10+ characters)</label>
+        <div class="row">
+          <input id="pw" type="password" autocomplete="new-password" spellcheck="false" aria-describedby="strength">
+          <button class="sec" id="show" type="button">Show</button>
+          <button class="sec" id="gen" type="button">Generate</button>
+        </div>
+        <div class="meter" aria-hidden="true"><i id="bar"></i></div>
+        <div class="hint" id="strength">&nbsp;</div>
+        <label class="f" for="pw2">Confirm password</label>
+        <input id="pw2" type="password" autocomplete="new-password" spellcheck="false" class="pw2">
+        <div class="chk">
+          <input type="checkbox" id="hide" checked>
+          <label for="hide">Hide file names inside the zip
+            <small>Wraps your files in a second archive so the outer zip only shows one item.</small></label>
+        </div>
+        <div class="warn">Lose the password and the files are gone for good. Nobody, including us, can recover them.</div>
+      </div>
+
+      <button class="go" id="go" type="button" disabled>Strip metadata and lock</button>
+      <div id="status" role="status" aria-live="polite"></div>
+
+      <div id="report" class="v-panel hidden">
+        <h3>What Vault did</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th scope="col">File</th><th scope="col">Result</th><th scope="col">Size</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <p class="hint">Vault removes the common metadata listed on this page. It does not anonymize content: faces, text in images, writing style, and the file name itself can still identify you.</p>
+      </div>
+
+      <p class="v-foot">Odd$ Vault by Favorable Odd$. AES-256 zip encryption, processed locally in your browser.</p>
+    </div>
+    <noscript><p class="tool-noscript">Odd$ Vault cleans files inside your browser, so it needs JavaScript. Please enable JavaScript and reload this page.</p></noscript>
+
+    <!-- Shown only after a successful download. Secondary by design: no popup, no gate. -->
+    <aside class="vault-more" id="vault-more" aria-labelledby="more-title" hidden>
+      <h3 id="more-title">More from Favorable Odd$</h3>
+      <p>Your download is done. If Odd$ Vault was useful, here is what else we make.</p>
+      <div class="more-grid">
+        <a class="more-card" href="/tools/" data-fo-event="free_tools_click" data-fo-location="vault_more"><strong>Explore Free Tools</strong><span>More free utilities from Favorable Odd$ as we build them.</span><em>See all tools →</em></a>
+        <a class="more-card" href="/shop.html" data-fo-event="shop_click" data-fo-location="vault_more"><strong>Visit the Shop</strong><span>Limited-release tees for people who chase what's possible.</span><em>Browse the shop →</em></a>
+        <a class="more-card" href="/services" data-fo-event="services_click" data-fo-location="vault_more"><strong>Explore our services</strong><span>Fixed-price tech help: automation, data cleanup, one-page sites and more.</span><em>See services →</em></a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- WHAT IS METADATA -->
+<section class="t-section white" id="what-is-metadata">
+  <div class="wrap">
+    <p class="section-tag">The basics</p>
+    <h2 class="section-title">What is file metadata?</h2>
+    <div class="prose">
+      <p>Metadata is information stored inside a file in addition to what you see when you open it. A photo shows a picture, but the file may also record when and where it was taken and on which device. A document shows text, but its properties may record who wrote it, who saved it last, and which software produced it.</p>
+      <p>Most people never see this information, and most sharing apps and email clients pass it along unchanged. Common examples include:</p>
+    </div>
+    <ul class="meta-grid">
+      <li><strong>Author name</strong>The person or account that created the file.</li>
+      <li><strong>Creation and modification dates</strong>When the file was made and last saved.</li>
+      <li><strong>Software used</strong>The app and version that created or exported it.</li>
+      <li><strong>GPS coordinates</strong>Where a photo was taken, stored in its EXIF data.</li>
+      <li><strong>Camera information</strong>Device make and model, and capture settings.</li>
+      <li><strong>Document properties</strong>Title, subject and keywords fields.</li>
+      <li><strong>Company and manager fields</strong>Organization details stored in Office documents.</li>
+      <li><strong>Comments</strong>Text notes embedded in the file or attached to it.</li>
+      <li><strong>Preview thumbnails</strong>Small copies of the content saved inside the file.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- WHY REMOVE -->
+<section class="t-section" id="why-remove-metadata">
+  <div class="wrap">
+    <p class="section-tag">Good habits</p>
+    <h2 class="section-title">Why remove metadata?</h2>
+    <p class="section-sub">Checking a file before you send it is like checking who is on the email thread. A few everyday reasons to do it:</p>
+    <ul class="why-list">
+      <li><span><strong>Privacy before sharing photos.</strong> Photos can carry the time, the device and often the exact location where they were taken.</span></li>
+      <li><span><strong>Removing author information from documents.</strong> Word, Excel and PowerPoint files record who created and last modified them.</span></li>
+      <li><span><strong>Preventing accidental location sharing.</strong> A photo of something you are selling from home can reveal your address through its GPS data.</span></li>
+      <li><span><strong>Cleaning business files before sending them externally.</strong> Company and manager fields, software details and preview thumbnails rarely need to travel with a proposal or invoice.</span></li>
+      <li><span><strong>Reducing unnecessary identifying information.</strong> Sharing less by default is a simple, sensible privacy practice.</span></li>
+    </ul>
+    <p class="note-box">Metadata removal is a privacy habit for the files you own and share. It is not a way to avoid accountability, and it does not change what your files say.</p>
+  </div>
+</section>
+
+<!-- WHAT IT CAN CLEAN -->
+<section class="t-section white" id="what-it-cleans">
+  <div class="wrap">
+    <p class="section-tag">Supported formats</p>
+    <h2 class="section-title">What Odd$ Vault can clean</h2>
+    <p class="section-sub">Odd$ Vault edits a copy of each file inside your browser. Your originals are never changed. Here is what it looks for in each format, and what it leaves alone.</p>
+    <div class="format-grid">
+      <article class="format-card">
+        <h3>JPEG / JPG <small>photos</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul>
+          <li>EXIF data: camera and device details, date and time, embedded preview thumbnail, and GPS location</li>
+          <li>XMP and IPTC/Photoshop data, embedded comments and other application-specific data blocks</li>
+        </ul>
+        <h4 class="kp">Keeps</h4>
+        <p>The image itself (it is not re-compressed), the standard JPEG header and the color profile. Extra data attached after the end of the image, such as the video in some "motion photos", is not removed. EXIF also holds the orientation flag, so some phone photos may show rotated afterward.</p>
+      </article>
+      <article class="format-card">
+        <h3>PNG <small>images and screenshots</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul>
+          <li>Text chunks (including embedded XMP), the EXIF chunk, the last-modified timestamp and digital-signature chunks</li>
+        </ul>
+        <h4 class="kp">Keeps</h4>
+        <p>Image data, color information and other structural chunks.</p>
+      </article>
+      <article class="format-card">
+        <h3>WebP <small>web images</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul><li>EXIF and XMP metadata chunks</li></ul>
+        <h4 class="kp">Keeps</h4>
+        <p>Image data and color profile.</p>
+      </article>
+      <article class="format-card">
+        <h3>PDF <small>documents</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul><li>Document information fields: title, author, subject, keywords, creator, producer, creation date and modification date</li>
+        <li>The document-level XMP metadata</li></ul>
+        <h4 class="kp">Keeps</h4>
+        <p>Page content. It does not edit text, annotations, attachments or form data, and it cannot open password-protected PDFs.</p>
+      </article>
+      <article class="format-card">
+        <h3>DOCX <small>Word</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul><li>Core properties: author, last modified by, title, subject, keywords and dates</li>
+        <li>Extended properties: company, manager and application details</li>
+        <li>The preview thumbnail</li></ul>
+        <h4 class="kp">Keeps</h4>
+        <p>Document content, plus items stored elsewhere in the file: comments, tracked changes, custom properties, and images embedded in the document.</p>
+      </article>
+      <article class="format-card">
+        <h3>XLSX <small>Excel</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul><li>Core and extended properties (author, last modified by, company, manager, dates, application details)</li>
+        <li>The preview thumbnail</li></ul>
+        <h4 class="kp">Keeps</h4>
+        <p>Sheet content, including hidden sheets, comments and custom properties.</p>
+      </article>
+      <article class="format-card">
+        <h3>PPTX <small>PowerPoint</small></h3>
+        <h4 class="rm">Removes</h4>
+        <ul><li>Core and extended properties (author, last modified by, company, manager, dates, application details)</li>
+        <li>The preview thumbnail</li></ul>
+        <h4 class="kp">Keeps</h4>
+        <p>Slide content, speaker notes, comments and custom properties.</p>
+      </article>
+    </div>
+    <p class="note-box">Word, Excel and PowerPoint have their own built-in checker (File › Info › Check for Issues › Inspect Document) for comments, tracked changes and hidden content. Run it on important files in addition to Odd$ Vault.</p>
+  </div>
+</section>
+
+<!-- WHAT IT DOES NOT DO -->
+<section class="t-section" id="limits">
+  <div class="wrap">
+    <p class="section-tag">Be realistic</p>
+    <h2 class="section-title">What Odd$ Vault does not do</h2>
+    <p class="section-sub">Removing metadata does not make anyone anonymous. It only clears certain hidden fields. A file can still point to you in many other ways.</p>
+    <div class="limits-grid">
+      <div class="limit-card"><h3>It does not anonymize content</h3><p>Faces, names, visible text, screenshots, logos, writing style and the contents of a document can all identify a person or organization, and Odd$ Vault does not touch them.</p></div>
+      <div class="limit-card"><h3>It does not rename your files</h3><p>File names often contain names, dates or client details. The "hide file names" option keeps them out of the outer ZIP listing, but the names are still inside the archive. Rename files first if the name itself is sensitive.</p></div>
+      <div class="limit-card"><h3>Unsupported files keep their metadata</h3><p>If you choose to include file types Odd$ Vault can't clean, they go into the ZIP untouched and keep whatever metadata they have.</p></div>
+      <div class="limit-card"><h3>It does not clean everything inside a file</h3><p>Comments, tracked changes, custom properties, PDF annotations and attachments, images embedded inside documents, and extra data attached to the end of a JPEG (such as motion-photo video) are not cleaned.</p></div>
+      <div class="limit-card"><h3>It can't prove a file is fully clean</h3><p>The report lists what was found and removed. It cannot show that no other identifying information remains, so review important files yourself before sharing.</p></div>
+      <div class="limit-card"><h3>It can't recover your password</h3><p>The password is used in your browser and never sent to us. If you lose it, the ZIP cannot be opened. A short or guessable password also weakens the encryption, so consider using the built-in generator.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="t-section white" id="how-it-works">
+  <div class="wrap">
+    <p class="section-tag">Simple by design</p>
+    <h2 class="section-title">How Odd$ Vault works</h2>
+    <ol class="steps">
+      <li><h3>Select files</h3><p>Drag files onto the tool or choose them from your device. Supported types are marked "can clean".</p></li>
+      <li><h3>Odd$ Vault cleans supported metadata locally</h3><p>Each file is read and cleaned by code running in your browser tab. The cleaned copies are never sent anywhere.</p></li>
+      <li><h3>Set a password</h3><p>Choose your own or generate a strong one. It encrypts the ZIP with AES-256 and is never stored.</p></li>
+      <li><h3>Download the encrypted ZIP</h3><p>Your browser saves the ZIP straight from memory to your device. Open it with 7-Zip, WinRAR or Keka.</p></li>
+    </ol>
+    <p class="prose"><a href="#vault-tool" data-fo-event="vault_cta_click" data-fo-location="how_it_works">Ready? Go to the tool ↑</a></p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="t-section" id="faq">
+  <div class="wrap">
+    <p class="section-tag">Questions</p>
+    <h2 class="section-title">Odd$ Vault FAQ</h2>
+    <div class="faq">
+      <details>
+        <summary>Is Odd$ Vault free?</summary>
+        <div class="ans"><p>Yes. Odd$ Vault is free to use. There is no account, no email signup and no usage counter. The only limits come from your own browser and device, because files are processed in your device's memory.</p></div>
+      </details>
+      <details>
+        <summary>Are my files uploaded?</summary>
+        <div class="ans"><p>No. Your files are read and cleaned by JavaScript running in your browser, and the encrypted ZIP is created on your device and saved through your browser's normal download. Odd$ Vault contains no upload code, and the page is configured to block itself from making network requests. Favorable Odds does not receive or store your files or your password. Opening the page does load the page itself and its fonts over the web, like any website.</p></div>
+      </details>
+      <details>
+        <summary>What metadata can Odd$ Vault remove?</summary>
+        <div class="ans"><p>It removes common metadata from JPEG, PNG, WebP, PDF, DOCX, XLSX and PPTX files: EXIF (including GPS location and camera details), XMP and IPTC data and embedded comments in images; document information fields and XMP metadata in PDFs; and author, last modified by, company, manager, dates, application details and preview thumbnails in Word, Excel and PowerPoint files. See <a href="#what-it-cleans">what Odd$ Vault can clean</a> for each format and for what it leaves alone.</p></div>
+      </details>
+      <details>
+        <summary>Can it remove GPS information from photos?</summary>
+        <div class="ans"><p>Yes, for JPEG photos. Odd$ Vault removes the whole EXIF block, which is where GPS coordinates are stored, along with the camera model, timestamps and embedded thumbnail. It also removes XMP data. PNG and WebP images have their EXIF data removed the same way. HEIC photos, the default on many iPhones, are not supported, so convert them to JPEG first. After cleaning, the report shows whether GPS location was found and removed.</p></div>
+      </details>
+      <details>
+        <summary>Can it remove metadata from PDFs?</summary>
+        <div class="ans"><p>Yes. It clears the PDF's document information fields (title, author, subject, keywords, creator, producer, creation date and modification date) and its document-level XMP metadata. It does not edit page content, annotations, attachments or form data, and it cannot open password-protected PDFs.</p></div>
+      </details>
+      <details>
+        <summary>Can it remove metadata from Word documents?</summary>
+        <div class="ans"><p>Yes, for .docx files. Odd$ Vault clears the core properties (such as author, last modified by, title and dates) and extended properties (such as company, manager and application details), and removes the preview thumbnail. It does not remove comments, tracked changes, custom properties or hidden text, and it does not clean images embedded in the document. Older .doc files are not supported.</p></div>
+      </details>
+      <details>
+        <summary>Does removing metadata make a file anonymous?</summary>
+        <div class="ans"><p>No. Removing metadata only clears hidden fields in the file. Faces, names, visible text, screenshots, logos, writing style, file names and the contents of a document can still identify you or your organization. See <a href="#limits">what Odd$ Vault does not do</a>.</p></div>
+      </details>
+      <details>
+        <summary>What file types are supported?</summary>
+        <div class="ans"><p>Odd$ Vault cleans JPEG/JPG, PNG, WebP, PDF, DOCX, XLSX and PPTX files. Other types, such as HEIC, GIF, TIFF, video, or older .doc, .xls and .ppt files, cannot be cleaned. You can still add them to the ZIP by ticking “Also include files Vault can't clean”, but they keep whatever metadata they have.</p></div>
+      </details>
+      <details>
+        <summary>Why can't Windows open my encrypted ZIP?</summary>
+        <div class="ans"><p>Odd$ Vault encrypts the ZIP with AES-256, and the built-in Windows ZIP extractor does not support AES-encrypted ZIP files. Open it with a free tool such as 7-Zip or WinRAR on Windows, or Keka on a Mac. If you left “Hide file names inside the zip” on, extracting gives you a single file called contents.zip, which opens normally and holds your cleaned files.</p></div>
+      </details>
+      <details>
+        <summary>Can Favorable Odds recover my password?</summary>
+        <div class="ans"><p>No. Your password is used in your browser to encrypt the ZIP and is never sent to or stored by Favorable Odds, so there is nothing for us to recover. If you lose it, the files in the ZIP cannot be opened. Save it in a password manager before you download.</p></div>
+      </details>
+      <details>
+        <summary>Will cleaning change how my photo or document looks?</summary>
+        <div class="ans"><p>Your original files are never modified; only cleaned copies go into the ZIP. Images are not re-compressed, so quality is not reduced. One visible side effect: EXIF also stores photo orientation, so some phone photos may appear rotated after cleaning. PDFs and Office files are re-saved by the tool, so their file size can change slightly.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP / BRAND -->
+<section class="t-section tight">
+  <div class="wrap">
+    <div class="shop-cta">
+      <div>
+        <h2>Free tools, and a little style</h2>
+        <p>Odd$ Vault is one of the useful things we build at Favorable Odd$. The other side of the brand is the shop: limited-release tees for people who chase what's possible.</p>
+      </div>
+      <a href="/shop.html" class="btn-primary" data-fo-event="shop_click" data-fo-location="vault_footer_cta">Visit the Shop</a>
+    </div>
+    <p class="prose"><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="vault_footer">← Back to all Free Tools</a> &nbsp;·&nbsp; <a href="/services" data-fo-event="services_click" data-fo-location="vault_footer">Explore Favorable Odd$ services</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <a href="/" class="footer-brand">
+    <img src="/business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img" width="40" height="40">
+    <span class="footer-wordmark">Favorable Odds LLC</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="footer">Free Tools</a></li>
+    <li><a href="/tools/odds-vault/">Odd$ Vault</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="footer">Instant Services</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="footer">Shop</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Favorable Odds LLC &nbsp;·&nbsp; hello&#64;favorableodds.io &nbsp;·&nbsp; 689-243-9704</div>
+</footer>
+
+<script src="/tools/tools.js" defer></script>
+<script src="/tools/odds-vault/vendor/zip.min.js" defer></script>
+<script src="/tools/odds-vault/vault.js" defer></script>
+<script src="/tools/odds-vault/page.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+Third-party libraries used by Odd$ Vault. Both are self-hosted (not loaded from a CDN) so the page has no third-party script
+dependencies and its Content-Security-Policy can restrict scripts to this origin.
+
+zip.min.js    @zip.js/zip.js 2.7.52   BSD-3-Clause   https://github.com/gildas-lormeau/zip.js
+              sha256 783ee020a3a92e9b3be0eedb9286b2854688f6931f907134fc9acac99f7b633e
+              Taken unmodified from dist/zip.min.js in the npm package.
+pdf-lib.min.js pdf-lib 1.17.1          MIT            https://github.com/Hopding/pdf-lib
+              sha256 0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f
+              Taken unmodified from dist/pdf-lib.min.js in the npm package.
+
+To upgrade: `npm pack <pkg>@<version>`, copy the dist file, update the hashes above, and re-run the manual tests in ../README.md.

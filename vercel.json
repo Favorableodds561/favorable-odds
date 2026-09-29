@@ -2,6 +2,8 @@
   "rewrites": [
     { "source": "/services", "destination": "/services.html" },
     { "source": "/bookkeeping", "destination": "/bookkeeping.html" },
-    { "source": "/work", "destination": "/work/index.html" }
+    { "source": "/work", "destination": "/work/index.html" },
+    { "source": "/tools", "destination": "/tools/index.html" },
+    { "source": "/tools/odds-vault", "destination": "/tools/odds-vault/index.html" }
   ]
 }
