@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odd$ Guard report for vm</title>
+<style>:root {
+  --ink: #1A2233; --muted: #566074; --line: #D6DBE2; --page: #E9EDF2; --sheet: #FFFFFF;
+  --urgent: #B3261E; --urgent-tint: #FCEEEC;
+  --review: #8A5A00; --review-tint: #FFF4DC;
+  --clear: #1D6B4E; --focus: #2457C5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 18px/1.6 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
+.sheet { max-width: 860px; margin: 0 auto; background: var(--sheet); min-height: 100vh; padding: 44px 56px 56px; }
+h1, h2, h3, .brand { font-family: Bahnschrift, "DIN Alternate", "Segoe UI", sans-serif; }
+.brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin: 0 0 40px; }
+.brand b { font-size: 22px; font-weight: 700; }
+.brand span { color: var(--muted); font-size: 15px; font-family: "Segoe UI", system-ui, sans-serif; }
+.verdict { font-size: 46px; line-height: 1.08; font-weight: 600; letter-spacing: -0.01em; max-width: 19ch;
+  margin: 0 0 18px; padding-left: 22px; border-left: 12px solid var(--clear); }
+.verdict.urgent { border-left-color: var(--urgent); }
+.verdict.review { border-left-color: var(--review); }
+.meta { margin: 0 0 4px; color: var(--muted); }
+.banner { margin: 28px 0 0; padding: 14px 18px; background: var(--review-tint); border-left: 4px solid var(--review); }
+section { margin-top: 56px; }
+h2 { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px;
+  font-size: 26px; font-weight: 600; margin: 0 0 22px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+h2 small { font: 400 15px "Segoe UI", system-ui, sans-serif; color: var(--muted); }
+.finding { border-left: 6px solid var(--line); padding: 2px 0 2px 22px; margin: 0 0 34px; }
+.finding.urgent { border-left-color: var(--urgent); }
+.finding.review { border-left-color: var(--review); }
+.finding h3 { font-size: 22px; font-weight: 600; line-height: 1.25; margin: 0 0 8px; }
+.finding p { margin: 0 0 10px; max-width: 66ch; }
+.finding .todo { padding: 10px 14px; background: var(--urgent-tint); }
+.finding.review .todo { background: var(--review-tint); }
+summary { cursor: pointer; color: var(--muted); font-size: 15px; }
+summary:hover { color: var(--ink); }
+.wrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+th { font-weight: 600; }
+.kv th { width: 32%; color: var(--muted); font-weight: 400; }
+.checks { list-style: none; margin: 0; padding: 0; }
+.checks li { display: grid; grid-template-columns: 7em 1fr 1.3fr; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+.status { font-weight: 600; font-size: 14px; padding-top: 2px; }
+.s-clear .status { color: var(--clear); }
+.s-flagged .status { color: var(--urgent); }
+.s-skipped .status { color: var(--muted); }
+.result { color: var(--muted); }
+.inventory details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+.inventory summary { font-size: 17px; color: var(--ink); }
+.empty { color: var(--muted); margin: 8px 0 0; }
+footer { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 15px; color: var(--muted); }
+footer p { margin: 0 0 8px; max-width: 70ch; }
+a { color: var(--focus); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (max-width: 680px) {
+  .sheet { padding: 28px 20px 40px; }
+  .verdict { font-size: 34px; }
+  .checks li { grid-template-columns: 1fr; gap: 2px; }
+}
+@media print {
+  body { background: #fff; }
+  .sheet { max-width: none; padding: 0; }
+}</style></head><body><main class="sheet">
+<p class="brand"><b>Odd$ Guard</b><span>Who can get into this PC? A check by Favorable Odds Tech Solutions</span></p>
+<h1 class="verdict urgent">2 things could let someone into this computer right now.</h1>
+<p class="meta">vm, scanned Monday, September 28, 2026 at 1:39 PM.</p>
+<p class="meta">2 need attention now, 3 are worth a look, 12 checks came back clear.</p>
+<p class="banner">This is a sample report with example findings. No computer was scanned.</p>
+<section><h2>Needs attention now <small>2 items</small></h2>
+<article class="finding urgent">
+<h3>AnyDesk can accept connections at any time</h3>
+<p>It is set up for unattended access, so anyone with its password can take control, even while nobody is at the computer.</p>
+<p class="todo"><strong>What to do:</strong> If you do not use it on purpose, uninstall it from Settings &gt; Apps, then change your email and bank passwords from a different device.</p>
+<details><summary>Technical details</summary><div class="wrap"><table class="kv">
+<tr><th scope="row">Area</th><td>Remote access</td></tr>
+<tr><th scope="row">Type</th><td>Remote-control app</td></tr>
+<tr><th scope="row">Installed as</th><td>AnyDesk ad 9.0.4</td></tr>
+<tr><th scope="row">Install date</th><td>Sep 24, 2026</td></tr>
+<tr><th scope="row">Background service</th><td>AnyDesk Service (Running, starts Auto)</td></tr>
+<tr><th scope="row">Online right now</th><td>Yes, connected to the internet</td></tr>
+</table></div></details></article>
+
+<article class="finding urgent">
+<h3>Antivirus has been told to ignore parts of this PC</h3>
+<p>Exclusions tell Windows Security not to scan certain folders or files. Malware and scammers add them so their tools are never caught.</p>
+<p class="todo"><strong>What to do:</strong> Review the list in Windows Security &gt; Virus &amp; threat protection &gt; Manage settings &gt; Exclusions and remove anything you did not add.</p>
+<details><summary>Technical details</summary><div class="wrap"><table class="kv">
+<tr><th scope="row">Area</th><td>Security</td></tr>
+<tr><th scope="row">Excluded</th><td>C:\Users\Public\svc; C:\ProgramData\AnyDesk</td></tr>
+<tr><th scope="row">Very broad exclusions</th><td>C:\Users\Public\svc</td></tr>
+</table></div></details></article>
+
+</section>
+<section><h2>Worth a look <small>3 items</small></h2>
+<article class="finding review">
+<h3>UltraViewer is on this computer</h3>
+<p>This program lets someone see and control this PC once it is opened and a code is shared. It is safe when you use it on purpose, and it is also a favorite tool in tech-support scams.</p>
+<p class="todo"><strong>What to do:</strong> Keep it only if you use it. Otherwise uninstall it, or delete the copy in your Downloads folder.</p>
+<details><summary>Technical details</summary><div class="wrap"><table class="kv">
+<tr><th scope="row">Area</th><td>Remote access</td></tr>
+<tr><th scope="row">Type</th><td>Remote-control app</td></tr>
+<tr><th scope="row">Online right now</th><td>Not running</td></tr>
+<tr><th scope="row">Downloaded copies</th><td>C:\Users\Martha\Downloads\UltraViewer_setup_6.6_en.exe</td></tr>
+</table></div></details></article>
+
+<article class="finding review">
+<h3>&quot;support01&quot; is another administrator on this PC</h3>
+<p>Administrators can install software and change any setting, so every admin account is a full key to this computer.</p>
+<p class="todo"><strong>What to do:</strong> Make sure you know who uses this account. If you do not recognize it, have it disabled.</p>
+<details><summary>Technical details</summary><div class="wrap"><table class="kv">
+<tr><th scope="row">Area</th><td>Accounts</td></tr>
+<tr><th scope="row">Account</th><td>support01</td></tr>
+<tr><th scope="row">Administrator</th><td>Yes</td></tr>
+<tr><th scope="row">Password last set</th><td>Sep 24, 2026</td></tr>
+</table></div></details></article>
+
+<article class="finding review">
+<h3>Windows Remote Desktop is turned on</h3>
+<p>Anyone who knows a password for an account on this PC can sign in to it from another computer. Home computers rarely need this.</p>
+<p class="todo"><strong>What to do:</strong> If nobody connects to this PC remotely on purpose, turn it off in Settings &gt; System &gt; Remote Desktop.</p>
+<details><summary>Technical details</summary><div class="wrap"><table class="kv">
+<tr><th scope="row">Area</th><td>Remote access</td></tr>
+<tr><th scope="row">Network Level Authentication</th><td>On</td></tr>
+</table></div></details></article>
+
+</section>
+<section><h2>What was checked <small>16 checks</small></h2><ul class="checks">
+<li class="s-flagged"><span class="status">Flagged</span><span>Remote-control programs</span><span class="result">2 found (searched for 30 known tools)</span></li>
+<li class="s-flagged"><span class="status">Flagged</span><span>Windows Remote Desktop</span><span class="result">Turned on</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Remote Assistance invitations</span><span class="result">Off</span></li>
+<li class="s-flagged"><span class="status">Flagged</span><span>Administrator accounts</span><span class="result">2 active</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Hidden accounts</span><span class="result">None</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Programs that start with Windows</span><span class="result">6 found, 6 look normal</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Scheduled tasks (non-Microsoft)</span><span class="result">9 actions found, 9 look normal</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Antivirus</span><span class="result">On: Microsoft Defender</span></li>
+<li class="s-flagged"><span class="status">Flagged</span><span>Antivirus exclusions</span><span class="result">2 exclusions</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Firewall</span><span class="result">On for all networks</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Admin permission prompts</span><span class="result">On</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Forced extensions</span><span class="result">None</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Browser extensions</span><span class="result">7 listed, 0 flagged</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Website redirects (hosts file)</span><span class="result">None</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Proxy settings</span><span class="result">None</span></li>
+<li class="s-clear"><span class="status">Clear</span><span>Open remote-access ports</span><span class="result">None</span></li>
+</ul></section>
+<section class="inventory"><h2>Everything we found <small>For a technician</small></h2>
+<details><summary>User accounts (2)</summary>
+<div class="wrap"><table><thead><tr><th scope="col">Account</th><th scope="col">Enabled</th><th scope="col">Administrator</th><th scope="col">Hidden from sign-in</th><th scope="col">Password set</th></tr></thead><tbody>
+<tr><td>Martha</td><td>Yes</td><td>Yes</td><td>No</td><td>Mar 2, 2025</td></tr>
+<tr><td>support01</td><td>Yes</td><td>Yes</td><td>No</td><td>Sep 24, 2026</td></tr>
+</tbody></table></div>
+
+</details>
+<details><summary>Programs that start with Windows (2)</summary>
+<div class="wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Starts for</th><th scope="col">Command</th><th scope="col">Publisher</th></tr></thead><tbody>
+<tr><td>OneDrive</td><td>This user</td><td>&quot;C:\Users\Martha\AppData\Local\Microsoft\OneDrive\OneDrive.exe&quot; /background</td><td>Signed by Microsoft Corporation</td></tr>
+<tr><td>SecurityHealth</td><td>All users</td><td>%windir%\system32\SecurityHealthSystray.exe</td><td>Signed by Microsoft Windows</td></tr>
+</tbody></table></div>
+
+</details>
+<details><summary>Scheduled tasks (non-Microsoft) (1)</summary>
+<div class="wrap"><table><thead><tr><th scope="col">Task</th><th scope="col">Folder</th><th scope="col">Runs</th><th scope="col">Publisher</th><th scope="col">State</th></tr></thead><tbody>
+<tr><td>GoogleUpdaterTaskSystem</td><td>\GoogleSystem\</td><td>C:\Program Files (x86)\Google\GoogleUpdater\updater.exe --wake</td><td>Signed by Google LLC</td><td>Ready</td></tr>
+</tbody></table></div>
+
+</details>
+<details><summary>Browser extensions (1)</summary>
+<div class="wrap"><table><thead><tr><th scope="col">Browser</th><th scope="col">Windows user</th><th scope="col">Profile</th><th scope="col">Extension</th><th scope="col">ID</th></tr></thead><tbody>
+<tr><td>Chrome</td><td>Martha</td><td>Default</td><td>Google Docs Offline</td><td>ghbmnnjooekpmoecnnnilnnbdlolhkhi</td></tr>
+</tbody></table></div>
+
+</details>
+</section>
+<footer>
+<p>Nothing on this computer was changed. Odd$ Guard only reads settings and lists what it finds. It works alongside your antivirus and does not replace it.</p>
+<p>Want help cleaning something up? Favorable Odds Tech Solutions can walk you through it at <a href="https://favorableodds.io">favorableodds.io</a>.</p>
+<p>Odd$ Guard version 0.1.0</p>
+</footer></main></body></html>

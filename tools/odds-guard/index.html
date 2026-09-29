@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- This page may load only its own scripts and styles (plus Google Fonts) and may talk to exactly one outside host:
+     api.emailjs.com, used only to send the download-request email to Favorable Odds (see tools/odds-guard/README.md). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.emailjs.com; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<title>Free Windows Remote Access &amp; Security Audit | Odd$ Guard</title>
+<meta name="description" content="Free read-only Windows audit for remote-access software, administrator accounts, startup items and security settings. Runs locally and writes an HTML report.">
+<link rel="canonical" href="https://favorableodds.io/tools/odds-guard/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Favorable Odds">
+<meta property="og:title" content="Odd$ Guard: Who Can Get Into Your PC?">
+<meta property="og:description" content="A free, read-only Windows audit that runs locally and shows remote-access software, extra administrators and weakened security settings in a plain-English report.">
+<meta property="og:url" content="https://favorableodds.io/tools/odds-guard/">
+<meta property="og:image" content="https://favorableodds.io/business_logo.jpg">
+<meta property="og:image:alt" content="Favorable Odds logo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Odd$ Guard: Who Can Get Into Your PC?">
+<meta name="twitter:description" content="A free, read-only Windows audit that runs locally and writes a plain-English report. No uploads.">
+<meta name="twitter:image" content="https://favorableodds.io/business_logo.jpg">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="icon" href="/business_logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="stylesheet" href="/tools/odds-guard/guard.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Odd$ Guard",
+      "url": "https://favorableodds.io/tools/odds-guard/",
+      "description": "Free, read-only Windows audit that checks remote-access software, administrator accounts, startup items and scheduled tasks, antivirus and firewall settings, browser extensions, proxy and hosts-file settings. Runs locally and writes an HTML and JSON report.",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Windows 10, Windows 11",
+      "softwareVersion": "0.1.0",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "Favorable Odds LLC", "url": "https://favorableodds.io/", "logo": "https://favorableodds.io/business_logo.jpg" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://favorableodds.io/" },
+        { "@type": "ListItem", "position": 2, "name": "Free Tools", "item": "https://favorableodds.io/tools/" },
+        { "@type": "ListItem", "position": 3, "name": "Odd$ Guard", "item": "https://favorableodds.io/tools/odds-guard/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "What is Odd$ Guard?", "acceptedAnswer": { "@type": "Answer", "text": "Odd$ Guard is a free, read-only audit for Windows PCs. It checks for remote-access software, extra or hidden administrator accounts, suspicious startup items and scheduled tasks, weakened antivirus, firewall and User Account Control settings, browser extensions, hosts-file redirects, proxies and open remote-access ports, then writes a plain-English HTML report and a JSON file. See <a href=\"#what-it-checks\">what Odd$ Guard checks<\/a> for the full list." } },
+        { "@type": "Question", "name": "Is Odd$ Guard free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Odd$ Guard is a free download. You enter your email to unlock it, with no account, password or email confirmation. We may email you about Odd$ Guard updates and Favorable Odds services, and you can ask us to stop at any time." } },
+        { "@type": "Question", "name": "Does Odd$ Guard upload my scan results?", "acceptedAnswer": { "@type": "Answer", "text": "No. The script contains no commands that send data over the network, and it writes its results only to a Reports folder on your PC. You can read the script before you run it. Checking programs' publisher signatures is done by Windows itself, which may look up certificate information online, but Odd$ Guard sends nothing about your PC." } },
+        { "@type": "Question", "name": "Does Odd$ Guard change anything on my PC or fix problems?", "acceptedAnswer": { "@type": "Answer", "text": "No. It only reads settings and lists what it finds. It writes its report files (and briefly creates and deletes a small test file to confirm the report folder is writable). Each finding says what you could do, but you decide and you make the change." } },
+        { "@type": "Question", "name": "Is Odd$ Guard antivirus? Can it remove malware?", "acceptedAnswer": { "@type": "Answer", "text": "No. Odd$ Guard doesn't scan files for viruses and can't remove or quarantine anything. It works alongside your antivirus and does not replace it. Think of it as a checklist of the ways someone could get into your PC, not a shield." } },
+        { "@type": "Question", "name": "Why does Windows warn me about Odd$ Guard?", "acceptedAnswer": { "@type": "Answer", "text": "Version 0.1 of Odd$ Guard is not code-signed, so Windows SmartScreen or your antivirus may warn you that it can't confirm the publisher. The launcher also starts PowerShell with an execution-policy bypass for that one run, a pattern security tools watch for. Verify the SHA-256 hash and read the source first; see <a href=\"#verify\">check it before you run it<\/a>." } },
+        { "@type": "Question", "name": "Why does Odd$ Guard ask for administrator permission?", "acceptedAnswer": { "@type": "Answer", "text": "Some checks need elevated access, for example reading Microsoft Defender's exclusion list. The launcher asks Windows for permission, and if you decline it runs a limited scan and the report says which areas weren't checked. The scan itself is read-only either way." } },
+        { "@type": "Question", "name": "Does a flagged item mean my PC has been hacked?", "acceptedAnswer": { "@type": "Answer", "text": "Not necessarily. A flag means \"take a look\". Legitimate remote-access tools are flagged even when you installed them on purpose, and IT-management tools are marked as worth a look because IT companies use them legitimately. Follow the “What to do” note under each finding, and get help if you're unsure." } },
+        { "@type": "Question", "name": "Which remote-access tools does Odd$ Guard look for?", "acceptedAnswer": { "@type": "Answer", "text": "Thirty known tools, including AnyDesk, TeamViewer, ScreenConnect, UltraViewer, RustDesk, Splashtop, LogMeIn, Chrome Remote Desktop and VNC servers, plus IT-management tools such as Atera, NinjaOne, Kaseya and Datto RMM. It searches installed programs, background services, running processes and .exe files in Downloads and Desktop folders. The full list is in <a href=\"#what-it-checks\">what Odd$ Guard checks<\/a>." } },
+        { "@type": "Question", "name": "Which versions of Windows does Odd$ Guard work on?", "acceptedAnswer": { "@type": "Answer", "text": "It is built for Windows 10 and 11 and runs on the Windows PowerShell 5.1 that comes with them (PowerShell 7 or newer also works). If a feature it relies on is missing on your version of Windows, that check is skipped and the report says it wasn't checked. It does not run on Mac, Linux or phones." } },
+        { "@type": "Question", "name": "Where does Odd$ Guard save its reports?", "acceptedAnswer": { "@type": "Answer", "text": "In a Reports folder inside the Odd$ Guard folder: an HTML report for people and a JSON file for tools. If that folder can't be written to, such as on a read-only USB stick, it saves them to a folder called OddsGuard Reports on your Desktop. Reports stay on your PC unless you share them." } },
+        { "@type": "Question", "name": "How can I check who has remote access to my PC without Odd$ Guard?", "acceptedAnswer": { "@type": "Answer", "text": "You can check the main things by hand: installed remote-access programs, Windows Remote Desktop and Remote Assistance settings, administrator accounts, startup apps and scheduled tasks, antivirus exclusions, browser extensions, the hosts file and proxy settings. Our <a href=\"#check-by-hand\">guide to checking who can remotely access a Windows PC<\/a> shows where to look." } },
+        { "@type": "Question", "name": "What should I do if Odd$ Guard finds something I don't recognize?", "acceptedAnswer": { "@type": "Answer", "text": "Read the “What to do” note under that finding. For an unfamiliar remote-control app, the report suggests uninstalling it and changing your important passwords from a different device. For hidden startup commands or scheduled tasks it suggests not deleting them blindly and having a technician look. If you'd like help understanding your report, <a href=\"#help\">Favorable Odds can help<\/a>." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body data-fo-page-event="guard_page_view">
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- NAV -->
+<nav class="site-nav" aria-label="Primary">
+  <a href="/" class="nav-logo">
+    <img src="/business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img" width="48" height="48">
+    <span class="nav-wordmark">Favorable Odds Tech Solutions</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#audit">Free Audit ✦</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="nav">Instant Services ⚡</a></li>
+    <li><a href="/work">The Work ↗</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/tools/" aria-current="page" data-fo-event="free_tools_click" data-fo-location="nav">Free Tools</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="nav">Shop</a></li>
+    <li><a href="/#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" type="button" aria-label="Open menu" aria-controls="navOverlay" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-overlay" id="navOverlay">
+  <a href="/" class="nav-overlay-logo">
+    <img src="/business_logo.jpg" alt="Favorable Odds" width="40" height="40">
+    <span>Favorable Odds</span>
+  </a>
+  <button class="nav-overlay-close" id="navOverlayClose" type="button" aria-label="Close menu"></button>
+  <ul class="nav-overlay-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="mobile_nav">Free Tools</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="mobile_nav">Instant Services ⚡</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="mobile_nav">Shop</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/work">The Work ↗</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+<!-- HERO -->
+<header class="page-hero guard-hero">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="breadcrumb">Free Tools</a></li>
+        <li aria-current="page">Odd$ Guard</li>
+      </ol>
+    </nav>
+    <p class="hero-tag">Odd$ Guard by Favorable Odd$ · Windows download</p>
+    <h1>Who Can Get Into <em>Your PC?</em></h1>
+    <p class="hero-sub">Odd$ Guard is a free, read-only Windows audit. It checks remote access, administrator accounts, what starts with Windows, security settings, browser and network settings, and other signs that someone besides you could get into your computer, then explains what it found in a plain-English report.</p>
+    <ul class="hero-pills" aria-label="Key facts">
+      <li>Runs locally on Windows</li>
+      <li>Does not upload scan results</li>
+      <li>Does not change system settings</li>
+      <li>Creates local HTML and JSON reports</li>
+      <li>Works alongside antivirus, not a replacement</li>
+    </ul>
+    <div class="hero-actions">
+      <a href="#get-odds-guard" class="btn-primary" data-fo-event="guard_cta_click" data-fo-location="hero">Get Odd$ Guard Free</a>
+      <a href="#sample-report" class="btn-link" data-fo-event="guard_sample_click" data-fo-location="hero">See what the report looks like ↓</a>
+    </div>
+    <p class="hero-fine">Version 0.1.0 · Windows 10 and 11 · Not code-signed yet, <a href="#release-details">see download details</a></p>
+  </div>
+</header>
+
+<!-- GET IT -->
+<section class="t-section" id="get-odds-guard" aria-labelledby="get-title">
+  <div class="wrap get-grid">
+
+    <div class="get-main">
+      <p class="section-tag">Free download</p>
+      <h2 class="section-title" id="get-title">Get Odd$ Guard free</h2>
+      <p class="section-sub">Enter your email and the download unlocks right away. No account, no password and no email confirmation.</p>
+
+      <div class="lead-card" id="lead-gate">
+        <form id="lead-form" novalidate>
+          <label for="lead-email">Email address</label>
+          <div class="lead-row">
+            <input id="lead-email" name="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@example.com" aria-describedby="lead-msg lead-note">
+            <button type="submit" id="lead-submit" class="lead-btn">Get the download</button>
+          </div>
+          <div class="hp" aria-hidden="true"><label for="lead-website">Leave this field empty</label><input id="lead-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <p class="lead-msg" id="lead-msg" role="status" aria-live="polite"></p>
+          <p class="lead-note" id="lead-note">We'll use your email to send you Odd$ Guard updates and occasional tips from Favorable Odds, and you can ask us to stop at any time. Your email is delivered to us through EmailJS, our contact-form provider. Odd$ Guard itself never sends your scan results or any data from your PC anywhere.</p>
+        </form>
+        <noscript><p class="lead-msg is-error">Requesting the download needs JavaScript. Enable it and reload this page.</p></noscript>
+      </div>
+
+      <div class="dl-card" id="guard-download" tabindex="-1" hidden>
+        <h3>Your download is ready</h3>
+        <p>Odd$ Guard v0.1.0 for Windows. Before you run it, read the <a href="#release-details">download details</a>: it is not code-signed, and Windows may show security prompts.</p>
+        <a id="download-link" class="dl-btn" download="OddsGuard-v0.1.zip" data-fo-event="guard_download_click" data-fo-location="download_panel">Download OddsGuard-v0.1.zip <span>(22.3 KB)</span></a>
+        <p class="dl-next">Next: <a href="#how-it-works">how to run it</a> · <a href="#release-details">verify the SHA-256</a> · <a href="#sample-report">see a sample report</a></p>
+      </div>
+    </div>
+
+    <aside class="get-side" id="release-details" aria-labelledby="release-title">
+      <h3 id="release-title">Release details</h3>
+      <dl class="release">
+        <div><dt>Version</dt><dd>0.1.0</dd></div>
+        <div><dt>File</dt><dd><code>OddsGuard-v0.1.zip</code></dd></div>
+        <div><dt>Size</dt><dd>22,856 bytes (22.3 KB)</dd></div>
+        <div><dt>Works with</dt><dd>Windows 10 and 11, using the Windows PowerShell 5.1 that comes with them (PowerShell 7+ also works)</dd></div>
+        <div><dt>Code signing</dt><dd><strong>Not code-signed.</strong> Version 0.1 is unsigned.</dd></div>
+        <div><dt>SHA-256 (ZIP)</dt><dd><code class="hash">488009c4639587ae926953412ebcc4f7c563d7d5c508dbb07870787b2e818df9</code></dd></div>
+        <div><dt>SHA-256 (OddsGuard.ps1)</dt><dd><code class="hash">60633e60460d85efb5304e1f6960c6958af41c48e19b92e5c96cb5a85e5bc1bc</code></dd></div>
+        <div><dt>Contents</dt><dd><code>OddsGuard.ps1</code> (the scanner), <code>Run-OddsGuard.bat</code> (launcher), <code>README.md</code>, <code>OddsGuard-SAMPLE-report.html</code> (a demo, not a scan of your PC)</dd></div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<!-- VERIFY / TRANSPARENCY -->
+<section class="t-section white" id="verify" aria-labelledby="verify-title">
+  <div class="wrap">
+    <p class="section-tag">Trust and transparency</p>
+    <h2 class="section-title" id="verify-title">Check it before you run it</h2>
+    <p class="section-sub">Odd$ Guard is a plain-text PowerShell script, not a compiled program, so you can read exactly what it does. Because it looks at sensitive parts of your PC, we'd rather you verify it than take our word for it.</p>
+
+    <div class="trust-grid">
+      <article class="trust-card">
+        <h3>Verify the download</h3>
+        <p>After downloading, compare the ZIP's SHA-256 hash with the one above. In PowerShell:</p>
+        <pre><code>Get-FileHash .\OddsGuard-v0.1.zip -Algorithm SHA256</code></pre>
+        <p>Or in Command Prompt:</p>
+        <pre><code>certutil -hashfile OddsGuard-v0.1.zip SHA256</code></pre>
+        <p>The two should match exactly. If they don't, don't run it. A hash confirms the file wasn't damaged or swapped after we published it; it can't vouch for a website that has itself been compromised.</p>
+      </article>
+      <article class="trust-card">
+        <h3>Read the source</h3>
+        <p>These are plain-text copies of the exact files inside the ZIP (the <code>OddsGuard.ps1</code> copy matches the hash above):</p>
+        <ul class="plain-list">
+          <li><a href="/tools/odds-guard/source/OddsGuard.ps1.txt" data-fo-event="guard_source_click" data-fo-location="verify">OddsGuard.ps1</a>, the scanner (about 1,150 lines)</li>
+          <li><a href="/tools/odds-guard/source/Run-OddsGuard.bat.txt" data-fo-event="guard_source_click" data-fo-location="verify">Run-OddsGuard.bat</a>, the short launcher</li>
+        </ul>
+        <p>The scanner contains no commands that send data over the network. It writes its results only to a <code>Reports</code> folder on your PC.</p>
+      </article>
+      <article class="trust-card">
+        <h3>Not code-signed yet</h3>
+        <p>Version 0.1 of Odd$ Guard is <strong>not</strong> signed with a code-signing certificate. Windows SmartScreen or your antivirus may warn you, because Windows can't confirm who published it and the file is new.</p>
+        <p>The launcher starts PowerShell with <code>-NoProfile -ExecutionPolicy Bypass</code> for that one run so an unsigned script can execute. It doesn't change your PC's PowerShell settings, but security tools do watch for that pattern.</p>
+      </article>
+      <article class="trust-card">
+        <h3>Why it asks for administrator permission</h3>
+        <p>Some checks need elevated access, such as reading Microsoft Defender's exclusion list and looking at other Windows users' folders. The launcher asks Windows for permission; choose <strong>Yes</strong> for the full picture.</p>
+        <p>If you choose No, it runs a limited scan and the report says some areas weren't checked. Either way, the scan only reads settings.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT CHECKS -->
+<section class="t-section" id="what-it-checks" aria-labelledby="checks-title">
+  <div class="wrap">
+    <p class="section-tag">What's inside</p>
+    <h2 class="section-title" id="checks-title">What Odd$ Guard checks</h2>
+    <p class="section-sub">Sixteen checks, all read-only. Here is what they look at.</p>
+    <div class="check-grid">
+      <article class="check-card">
+        <h3>Remote-control software</h3>
+        <p>Looks for 30 known remote-access and remote-management tools, such as AnyDesk, TeamViewer, ScreenConnect, UltraViewer and RustDesk. It searches installed programs, background services, running processes and <code>.exe</code> files in Downloads and Desktop folders.</p>
+        <p>It notes whether a tool can accept connections at any time, is running from a download or temporary folder, or is connected to the internet right now. IT-management tools such as Atera or NinjaOne are marked "worth a look", since IT companies use them legitimately.</p>
+        <details><summary>See all 30 tools it looks for</summary>
+          <p><strong>Remote-control apps:</strong> AnyDesk, TeamViewer, ScreenConnect (ConnectWise Control), UltraViewer, RustDesk, AnyViewer, HopToDesk, Supremo, AeroAdmin, Ammyy Admin, SimpleHelp, NetSupport, Remote Utilities, Splashtop, LogMeIn / GoTo, Zoho Assist, RemotePC, Chrome Remote Desktop, DWService, ISL Online, MeshCentral agent, and VNC servers (TightVNC, UltraVNC, RealVNC, TigerVNC).</p>
+          <p><strong>IT management tools:</strong> Atera, NinjaOne, Kaseya, N-able, Datto RMM, Action1, Tactical RMM, Syncro.</p>
+        </details>
+      </article>
+      <article class="check-card">
+        <h3>Windows Remote Desktop, Remote Assistance and open ports</h3>
+        <p>Reports whether Windows Remote Desktop is turned on (and whether Network Level Authentication is on), whether Remote Assistance invitations are allowed, and whether this PC is listening for connections on common remote-access ports, including 22 (SSH), 3389 (Remote Desktop), 5900 to 5902 (VNC), 5938 (TeamViewer), 5985 and 5986 (Windows Remote Management), 7070 (AnyDesk), 8040 and 8041 (ScreenConnect), and 21116 and 21118 (RustDesk).</p>
+      </article>
+      <article class="check-card">
+        <h3>Administrator and hidden accounts</h3>
+        <p>Lists the local accounts on the PC and flags extra administrator accounts, accounts hidden from the sign-in screen, and the built-in Administrator and Guest accounts if they are turned on.</p>
+      </article>
+      <article class="check-card">
+        <h3>Startup programs and scheduled tasks</h3>
+        <p>Lists programs that start with Windows (registry Run entries and Startup folders) and non-Microsoft scheduled tasks. It flags commands with signs typical of malware, such as hidden windows, encoded commands or internet downloads, scripts that run at startup, unsigned programs in temporary or download folders, and hidden unsigned tasks.</p>
+      </article>
+      <article class="check-card">
+        <h3>Antivirus, exclusions, firewall and UAC</h3>
+        <p>Reports whether antivirus is switched on, lists Microsoft Defender exclusions (and calls out very broad ones, like a whole drive or the Downloads folder), and checks Windows Firewall and User Account Control.</p>
+      </article>
+      <article class="check-card">
+        <h3>Browser extensions</h3>
+        <p>For Chrome, Edge and Brave, checks for extensions forced onto the PC by policy, lists installed extensions for the Windows users it can read, and flags any whose name suggests remote desktop, remote control, remote access or screen sharing.</p>
+      </article>
+      <article class="check-card">
+        <h3>Network redirects and proxies</h3>
+        <p>Checks the Windows hosts file for entries that redirect websites, and looks for a web proxy or a proxy setup script in the current user's settings.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT DOES NOT DO -->
+<section class="t-section white" id="limits" aria-labelledby="limits-title">
+  <div class="wrap">
+    <p class="section-tag">Be realistic</p>
+    <h2 class="section-title" id="limits-title">What Odd$ Guard does not do</h2>
+    <p class="section-sub">Odd$ Guard shows you who and what might be able to get in. It is an audit, not a cleaner or a shield.</p>
+    <div class="limits-grid">
+      <div class="limit-card"><h3>It doesn't remove malware</h3><p>It doesn't scan files for viruses and has no ability to delete or quarantine anything.</p></div>
+      <div class="limit-card"><h3>It isn't antivirus</h3><p>It works alongside your antivirus and does not replace it. Keep your antivirus on.</p></div>
+      <div class="limit-card"><h3>It doesn't fix findings</h3><p>Each finding explains what to do, but Odd$ Guard changes nothing on your PC. It only writes its report files.</p></div>
+      <div class="limit-card"><h3>It doesn't upload results</h3><p>Reports stay on your PC, in the <code>Reports</code> folder. Nothing is sent to Favorable Odds.</p></div>
+      <div class="limit-card"><h3>Findings need a human</h3><p>A flagged item is a reason to look, not proof of a break-in. Legitimate remote-access tools are flagged even when you installed them on purpose, and a clear result means these checks found nothing, not that a PC is guaranteed safe.</p></div>
+      <div class="limit-card"><h3>It covers specific things</h3><p>It reads Microsoft Defender's exclusions (not other antivirus products'), checks Chrome, Edge and Brave (not Firefox), and reads local Windows accounts. It runs on Windows only.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE REPORT -->
+<section class="t-section" id="sample-report" aria-labelledby="sample-title">
+  <div class="wrap">
+    <p class="section-tag">Sample report</p>
+    <h2 class="section-title" id="sample-title">See what the report looks like</h2>
+    <p class="section-sub">Every scan ends with a plain-English report: what needs attention now, what's worth a look, what came back clear, and technical details for anyone helping you. Below is an excerpt of our sample report.</p>
+
+    <figure class="rp" aria-labelledby="rp-cap">
+      <p class="rp-banner">Sample report with example findings. No computer was scanned.</p>
+      <p class="rp-brand"><b>Odd$ Guard</b> <span>Who can get into this PC? A check by Favorable Odds Tech Solutions</span></p>
+      <p class="rp-verdict">2 things could let someone into this computer right now.</p>
+      <p class="rp-meta">2 need attention now, 3 are worth a look, 12 checks came back clear.</p>
+
+      <h3 class="rp-h">Needs attention now <small>urgent findings</small></h3>
+      <div class="rp-finding is-urgent">
+        <h4>AnyDesk can accept connections at any time</h4>
+        <p>It is set up for unattended access, so anyone with its password can take control, even while nobody is at the computer.</p>
+        <p class="rp-todo"><strong>What to do:</strong> If you do not use it on purpose, uninstall it from Settings &gt; Apps, then change your email and bank passwords from a different device.</p>
+        <details open><summary>Technical details</summary>
+          <table><tbody>
+            <tr><th scope="row">Area</th><td>Remote access</td></tr>
+            <tr><th scope="row">Installed as</th><td>AnyDesk ad 9.0.4</td></tr>
+            <tr><th scope="row">Background service</th><td>AnyDesk Service (Running, starts Auto)</td></tr>
+            <tr><th scope="row">Online right now</th><td>Yes, connected to the internet</td></tr>
+          </tbody></table>
+        </details>
+      </div>
+
+      <h3 class="rp-h">Worth a look <small>items to review</small></h3>
+      <div class="rp-finding is-review">
+        <h4>"support01" is another administrator on this PC</h4>
+        <p>Administrators can install software and change any setting, so every admin account is a full key to this computer.</p>
+        <p class="rp-todo"><strong>What to do:</strong> Make sure you know who uses this account. If you do not recognize it, have it disabled.</p>
+      </div>
+
+      <h3 class="rp-h">What was checked <small>clear results</small></h3>
+      <ul class="rp-checks">
+        <li class="is-clear"><span>Clear</span> Antivirus <em>On: Microsoft Defender</em></li>
+        <li class="is-clear"><span>Clear</span> Firewall <em>On for all networks</em></li>
+        <li class="is-clear"><span>Clear</span> Hidden accounts <em>None</em></li>
+        <li class="is-clear"><span>Clear</span> Proxy settings <em>None</em></li>
+        <li class="is-flag"><span>Flagged</span> Antivirus exclusions <em>2 exclusions</em></li>
+      </ul>
+      <figcaption id="rp-cap">Excerpt of the sample report. Example data only: the account, program and folder names are made up.</figcaption>
+    </figure>
+
+    <p class="sample-cta"><a href="/tools/odds-guard/sample-report/" class="btn-dark" target="_blank" rel="noopener" data-fo-event="guard_sample_click" data-fo-location="sample_section">View Sample Report →</a> <span>Opens the full sample in a new tab.</span></p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="t-section white" id="how-it-works" aria-labelledby="how-title">
+  <div class="wrap">
+    <p class="section-tag">Simple by design</p>
+    <h2 class="section-title" id="how-title">How Odd$ Guard works</h2>
+    <ol class="steps">
+      <li><h3>Download Odd$ Guard</h3><p>Get the ZIP from the <a href="#get-odds-guard">download section</a> and, if you like, verify its SHA-256 hash.</p></li>
+      <li><h3>Extract the ZIP</h3><p>Extract the whole folder. If Windows blocked the download, right-click the ZIP, choose Properties, tick <strong>Unblock</strong> and extract it again. Only do this if you trust the download.</p></li>
+      <li><h3>Run the launcher</h3><p>Double-click <code>Run-OddsGuard.bat</code> inside the extracted folder.</p></li>
+      <li><h3>Approve the Windows prompt</h3><p>Choose <strong>Yes</strong> when Windows asks for administrator permission so every check can run. If you decline, you get a limited scan.</p></li>
+      <li><h3>Review the report</h3><p>The report opens in your browser when the scan finishes. Copies are saved in the <code>Reports</code> folder next to the script: an HTML report for people and a JSON file for tools.</p></li>
+    </ol>
+    <div class="how-notes">
+      <p><strong>Where reports go.</strong> Reports are written to the <code>Reports</code> folder inside the Odd$ Guard folder. If that location can't be written to (a read-only USB stick, for example), Odd$ Guard saves them to <code>OddsGuard Reports</code> on your Desktop instead. It briefly creates and deletes a small test file to check the folder is writable.</p>
+      <p><strong>Tip.</strong> Run it while signed in to the Windows account you want checked. If Windows asks for a different administrator's password, per-user checks such as startup entries and proxy settings describe that administrator's profile.</p>
+      <details><summary>Advanced options</summary>
+        <pre><code>.\OddsGuard.ps1 -DemoReport      # sample report, no scan
+.\OddsGuard.ps1 -OutputDir D:\   # choose where reports go
+.\OddsGuard.ps1 -NoOpen          # do not open the report when done</code></pre>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY OF REPORTS -->
+<section class="t-section" id="report-privacy" aria-labelledby="rp-priv-title">
+  <div class="wrap">
+    <p class="section-tag">Your data</p>
+    <h2 class="section-title" id="rp-priv-title">What's in a report, and who sees it</h2>
+    <div class="prose">
+      <p>Only you do, unless you share it. Odd$ Guard doesn't send reports anywhere; they are files on your PC.</p>
+      <p>Because the report is written for someone who might be helping you, it includes technical detail: your computer's name, Windows account names, installed remote-access tools, program and file locations, full startup and scheduled-task commands, Microsoft Defender exclusions, hosts-file entries and proxy addresses. The JSON file holds the same findings. Read a report before you send it to anyone, and share only what you're comfortable with.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HELP / CONVERSION -->
+<section class="t-section tight" id="help" aria-labelledby="help-title">
+  <div class="wrap">
+    <div class="help-cta">
+      <div>
+        <h2 id="help-title">Found something you don't recognize?</h2>
+        <p>Odd$ Guard tells you what it finds. Favorable Odds can help you understand what matters and what to do next.</p>
+      </div>
+      <div class="help-actions">
+        <a href="/#contact" class="btn-primary" data-help-mail data-fo-event="guard_help_click" data-fo-location="help_section">Get Help With My Report</a>
+        <a href="/#services" class="btn-outline" data-fo-event="services_click" data-fo-location="guard_help">View Tech Services</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section class="t-section white" id="check-by-hand" aria-labelledby="hand-title">
+  <div class="wrap">
+    <p class="section-tag">Guide</p>
+    <h2 class="section-title" id="hand-title">How to check who can remotely access a Windows PC</h2>
+    <div class="prose">
+      <p>Remote access isn't bad by itself. IT companies, family members and you may all use it on purpose. The problem is remote access you didn't set up or no longer need, which is how tech-support scams and account takeovers keep a way back into a computer. A remote access audit simply lists every way in, so you can confirm each one is yours.</p>
+      <p>You can check the main ones by hand. Odd$ Guard does all of these in a couple of minutes and puts the results in one report.</p>
+    </div>
+    <div class="guide-grid">
+      <article class="guide-card">
+        <h3>Find remote-access software</h3>
+        <p>Open Settings &gt; Apps and look for programs such as AnyDesk, TeamViewer, ScreenConnect or UltraViewer. Also look in your Downloads folder for setup or portable <code>.exe</code> files. Scammers often have people download a tool and open it directly, so it may not appear in your installed apps. If you didn't install one on purpose, uninstall it and change your important passwords from a different device.</p>
+      </article>
+      <article class="guide-card">
+        <h3>Windows Remote Desktop security check</h3>
+        <p>Remote Desktop lets anyone with a password for an account on the PC sign in from another computer. Home computers rarely need it. Check Settings &gt; System &gt; Remote Desktop, and turn it off unless you use it. Remote Assistance invitations are under System Properties &gt; Remote.</p>
+      </article>
+      <article class="guide-card">
+        <h3>Check administrator accounts in Windows</h3>
+        <p>Administrators can install software and change any setting, so every admin account is a full key to the PC. Look at Settings &gt; Accounts &gt; Other users, or open an administrator command prompt and run <code>net localgroup administrators</code>. Watch for accounts you don't recognize, and for the built-in Administrator or Guest accounts being turned on.</p>
+      </article>
+      <article class="guide-card">
+        <h3>Spot suspicious startup programs</h3>
+        <p>Open Task Manager &gt; Startup apps to see what launches when you sign in, and Task Scheduler for scheduled tasks. Entries that run scripts, use hidden windows or launch from Temp or Downloads folders deserve a closer look. Don't delete something blindly; if you're unsure, get it checked.</p>
+      </article>
+      <article class="guide-card">
+        <h3>Look for antivirus exclusions</h3>
+        <p>Exclusions tell Windows Security not to scan certain folders or files, and malware or scammers sometimes add them so their tools are never caught. Review them in Windows Security &gt; Virus &amp; threat protection &gt; Manage settings &gt; Exclusions, and remove anything you didn't add.</p>
+      </article>
+      <article class="guide-card">
+        <h3>Browsers, hosts file and proxies</h3>
+        <p>Extensions that share or control your screen can be removed from your browser's extensions page. The hosts file (<code>C:\Windows\System32\drivers\etc\hosts</code>) can redirect websites to fake pages, and a proxy under Settings &gt; Network &amp; internet &gt; Proxy can route your browsing through another server. If this isn't a work PC, you rarely need either.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="t-section" id="faq" aria-labelledby="faq-title">
+  <div class="wrap">
+    <p class="section-tag">Questions</p>
+    <h2 class="section-title" id="faq-title">Odd$ Guard FAQ</h2>
+    <div class="faq">
+      <details>
+        <summary>What is Odd$ Guard?</summary>
+        <div class="ans"><p>Odd$ Guard is a free, read-only audit for Windows PCs. It checks for remote-access software, extra or hidden administrator accounts, suspicious startup items and scheduled tasks, weakened antivirus, firewall and User Account Control settings, browser extensions, hosts-file redirects, proxies and open remote-access ports, then writes a plain-English HTML report and a JSON file. See <a href="#what-it-checks">what Odd$ Guard checks</a> for the full list.</p></div>
+      </details>
+      <details>
+        <summary>Is Odd$ Guard free?</summary>
+        <div class="ans"><p>Yes. Odd$ Guard is a free download. You enter your email to unlock it, with no account, password or email confirmation. We may email you about Odd$ Guard updates and Favorable Odds services, and you can ask us to stop at any time.</p></div>
+      </details>
+      <details>
+        <summary>Does Odd$ Guard upload my scan results?</summary>
+        <div class="ans"><p>No. The script contains no commands that send data over the network, and it writes its results only to a Reports folder on your PC. You can read the script before you run it. Checking programs' publisher signatures is done by Windows itself, which may look up certificate information online, but Odd$ Guard sends nothing about your PC.</p></div>
+      </details>
+      <details>
+        <summary>Does Odd$ Guard change anything on my PC or fix problems?</summary>
+        <div class="ans"><p>No. It only reads settings and lists what it finds. It writes its report files (and briefly creates and deletes a small test file to confirm the report folder is writable). Each finding says what you could do, but you decide and you make the change.</p></div>
+      </details>
+      <details>
+        <summary>Is Odd$ Guard antivirus? Can it remove malware?</summary>
+        <div class="ans"><p>No. Odd$ Guard doesn't scan files for viruses and can't remove or quarantine anything. It works alongside your antivirus and does not replace it. Think of it as a checklist of the ways someone could get into your PC, not a shield.</p></div>
+      </details>
+      <details>
+        <summary>Why does Windows warn me about Odd$ Guard?</summary>
+        <div class="ans"><p>Version 0.1 of Odd$ Guard is not code-signed, so Windows SmartScreen or your antivirus may warn you that it can't confirm the publisher. The launcher also starts PowerShell with an execution-policy bypass for that one run, a pattern security tools watch for. Verify the SHA-256 hash and read the source first; see <a href="#verify">check it before you run it</a>.</p></div>
+      </details>
+      <details>
+        <summary>Why does Odd$ Guard ask for administrator permission?</summary>
+        <div class="ans"><p>Some checks need elevated access, for example reading Microsoft Defender's exclusion list. The launcher asks Windows for permission, and if you decline it runs a limited scan and the report says which areas weren't checked. The scan itself is read-only either way.</p></div>
+      </details>
+      <details>
+        <summary>Does a flagged item mean my PC has been hacked?</summary>
+        <div class="ans"><p>Not necessarily. A flag means "take a look". Legitimate remote-access tools are flagged even when you installed them on purpose, and IT-management tools are marked as worth a look because IT companies use them legitimately. Follow the “What to do” note under each finding, and get help if you're unsure.</p></div>
+      </details>
+      <details>
+        <summary>Which remote-access tools does Odd$ Guard look for?</summary>
+        <div class="ans"><p>Thirty known tools, including AnyDesk, TeamViewer, ScreenConnect, UltraViewer, RustDesk, Splashtop, LogMeIn, Chrome Remote Desktop and VNC servers, plus IT-management tools such as Atera, NinjaOne, Kaseya and Datto RMM. It searches installed programs, background services, running processes and .exe files in Downloads and Desktop folders. The full list is in <a href="#what-it-checks">what Odd$ Guard checks</a>.</p></div>
+      </details>
+      <details>
+        <summary>Which versions of Windows does Odd$ Guard work on?</summary>
+        <div class="ans"><p>It is built for Windows 10 and 11 and runs on the Windows PowerShell 5.1 that comes with them (PowerShell 7 or newer also works). If a feature it relies on is missing on your version of Windows, that check is skipped and the report says it wasn't checked. It does not run on Mac, Linux or phones.</p></div>
+      </details>
+      <details>
+        <summary>Where does Odd$ Guard save its reports?</summary>
+        <div class="ans"><p>In a Reports folder inside the Odd$ Guard folder: an HTML report for people and a JSON file for tools. If that folder can't be written to, such as on a read-only USB stick, it saves them to a folder called OddsGuard Reports on your Desktop. Reports stay on your PC unless you share them.</p></div>
+      </details>
+      <details>
+        <summary>How can I check who has remote access to my PC without Odd$ Guard?</summary>
+        <div class="ans"><p>You can check the main things by hand: installed remote-access programs, Windows Remote Desktop and Remote Assistance settings, administrator accounts, startup apps and scheduled tasks, antivirus exclusions, browser extensions, the hosts file and proxy settings. Our <a href="#check-by-hand">guide to checking who can remotely access a Windows PC</a> shows where to look.</p></div>
+      </details>
+      <details>
+        <summary>What should I do if Odd$ Guard finds something I don't recognize?</summary>
+        <div class="ans"><p>Read the “What to do” note under that finding. For an unfamiliar remote-control app, the report suggests uninstalling it and changing your important passwords from a different device. For hidden startup commands or scheduled tasks it suggests not deleting them blindly and having a technician look. If you'd like help understanding your report, <a href="#help">Favorable Odds can help</a>.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- MORE -->
+<section class="t-section tight" aria-labelledby="more-title">
+  <div class="wrap">
+    <h2 class="section-title" id="more-title">More from Favorable Odd$</h2>
+    <div class="more-grid">
+      <a class="more-card" href="/tools/odds-vault/" data-fo-event="free_tools_click" data-fo-location="guard_more"><strong>Odd$ Vault</strong><span>Our free browser tool that removes hidden metadata from photos and documents and packs them into an encrypted ZIP.</span><em>Try Odd$ Vault →</em></a>
+      <a class="more-card" href="/tools/" data-fo-event="free_tools_click" data-fo-location="guard_more"><strong>All Free Tools</strong><span>Free utilities from Favorable Odd$, with more on the way.</span><em>Explore free tools →</em></a>
+      <a class="more-card" href="/shop.html" data-fo-event="shop_click" data-fo-location="guard_more"><strong>The Shop</strong><span>Limited-release tees for people who chase what's possible.</span><em>Visit the shop →</em></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <a href="/" class="footer-brand">
+    <img src="/business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img" width="40" height="40">
+    <span class="footer-wordmark">Favorable Odds LLC</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="footer">Free Tools</a></li>
+    <li><a href="/tools/odds-guard/">Odd$ Guard</a></li>
+    <li><a href="/tools/odds-vault/">Odd$ Vault</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="footer">Instant Services</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="footer">Shop</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Favorable Odds LLC &nbsp;·&nbsp; hello&#64;favorableodds.io &nbsp;·&nbsp; 689-243-9704</div>
+</footer>
+
+<script src="/tools/tools.js" defer></script>
+<script src="/tools/odds-guard/vendor/email.min.js" defer></script>
+<script src="/tools/odds-guard/guard-config.js" defer></script>
+<script src="/tools/odds-guard/guard.js" defer></script>
+</body>
+</html>

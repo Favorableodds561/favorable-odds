@@ -1,0 +1,8 @@
+Third-party library used by the Odd$ Guard landing page. Self-hosted (not loaded from a CDN).
+
+email.min.js  @emailjs/browser 4.4.1   BSD-3-Clause   https://github.com/emailjs-com/emailjs-sdk
+              sha256 052f6916a21ba5be140366439e81b84ad11363c84dfba2a06f208c7b4a6f6d5f
+              Taken unmodified from dist/email.min.js in the npm package.
+              Its only network destination is https://api.emailjs.com (the page CSP allows that host and nothing else).
+
+The Odd$ Guard scanner itself (download/OddsGuard-v0.1.zip) has no third-party dependencies.
