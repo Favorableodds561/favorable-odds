@@ -1,0 +1,32 @@
+# Python / PyInstaller build output (never commit these)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+*.spec
+.pytest_cache/
+.coverage
+
+# Secrets and signing material: must live in GitHub Secrets, never in the repo
+.env
+.env.*
+*.pfx
+*.p12
+*.pem
+*.key
+*.snk
+*.cer
+
+# Local reports / logs / test output produced by running the tools
+odds-tune-*.json
+odds-tune-*.txt
+selftest.json
+*.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
