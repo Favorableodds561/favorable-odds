@@ -1,0 +1,221 @@
+name: Odd$ Tune - validate and build (Windows x64)
+
+# 1. validate : compile + unit tests on Windows AND Linux. Nothing is built if this fails.
+# 2. build    : PyInstaller on a Windows x64 runner, smoke-test the real EXE, (optionally) sign, THEN hash, then upload.
+# 3. publish  : (feature branch / manual only) commit the exact built EXE + hash into tools/odds-tune/download/ so the
+#               website can serve it. The website hash is taken from that committed file.
+# 4. release  : (tags odds-tune-v*) create a DRAFT GitHub Release with the build attached.
+#
+# Code signing is NOT configured yet. When the three secrets listed in desktop/odds-tune/docs/SIGNING.md exist,
+# the "Sign" step runs automatically and the hash is computed after signing. Until then the build is labelled UNSIGNED.
+
+on:
+  push:
+    branches: [main, feature/odds-tune-v1]
+    paths:
+      - 'desktop/odds-tune/**'
+      - '.github/workflows/build-odds-tune.yml'
+    tags: ['odds-tune-v*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish_to_repo:
+        description: 'Commit the built EXE into tools/odds-tune/download/ on this branch'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: odds-tune-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: desktop/odds-tune
+
+jobs:
+  validate:
+    name: Validate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12 x64
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
+
+      - name: Syntax / compile check
+        run: python -m compileall -q odds_tune_core.py odds_tune.py tests
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+  build:
+    name: Build OddsTune.exe (Windows x64)
+    needs: validate
+    runs-on: windows-latest
+    env:
+      CODESIGN_PFX_BASE64: ${{ secrets.CODESIGN_PFX_BASE64 }}
+      CODESIGN_PFX_PASSWORD: ${{ secrets.CODESIGN_PFX_PASSWORD }}
+      CODESIGN_TIMESTAMP_URL: ${{ secrets.CODESIGN_TIMESTAMP_URL }}
+    outputs:
+      label: ${{ steps.hash.outputs.label }}
+      sha256: ${{ steps.hash.outputs.sha256 }}
+      version: ${{ steps.hash.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12 x64
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
+
+      - name: Install build dependency (pinned)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-build.txt
+
+      - name: Build OddsTune.exe
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed --name OddsTune
+          --version-file version_info.txt --icon odds_tune.ico --add-data "odds_tune.ico;." odds_tune.py
+
+      - name: Smoke-test the built EXE (read-only self-test, builds the real window)
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath .\dist\OddsTune.exe -ArgumentList '--self-test','dist\selftest.json' -Wait -PassThru
+          if (-not (Test-Path dist\selftest.json)) { throw "self-test produced no result file (exit code $($p.ExitCode))" }
+          Get-Content dist\selftest.json
+          $r = Get-Content dist\selftest.json -Raw | ConvertFrom-Json
+          if ($p.ExitCode -ne 0 -or -not $r.scan_ok -or -not $r.gui_ok -or -not $r.frozen) { throw "EXE self-test failed" }
+
+      - name: Check EXE version resource matches the app version
+        shell: pwsh
+        run: |
+          $expected = python -c "import odds_tune_core as c; print(c.APP_VERSION)"
+          $vi = (Get-Item dist\OddsTune.exe).VersionInfo
+          "ProductName=$($vi.ProductName) ProductVersion=$($vi.ProductVersion) FileVersion=$($vi.FileVersion) Original=$($vi.OriginalFilename)"
+          if ($vi.ProductVersion -ne $expected -or $vi.ProductName -ne 'Odd$ Tune' -or $vi.OriginalFilename -ne 'OddsTune.exe') { throw "version resource mismatch (expected $expected)" }
+
+      # Runs only when the signing secrets exist. Untested until a certificate is available: see docs/SIGNING.md.
+      - name: Sign (skipped until signing secrets are configured)
+        if: ${{ env.CODESIGN_PFX_BASE64 != '' }}
+        shell: pwsh
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'codesign.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:CODESIGN_PFX_BASE64))
+          try {
+            $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+            $ts = if ($env:CODESIGN_TIMESTAMP_URL) { $env:CODESIGN_TIMESTAMP_URL } else { 'http://timestamp.digicert.com' }
+            & $signtool.FullName sign /fd SHA256 /f $pfx /p $env:CODESIGN_PFX_PASSWORD /tr $ts /td SHA256 /d 'Odd$ Tune' dist\OddsTune.exe
+            if ($LASTEXITCODE -ne 0) { throw 'signtool sign failed' }
+            & $signtool.FullName verify /pa /v dist\OddsTune.exe
+            if ($LASTEXITCODE -ne 0) { throw 'signtool verify failed' }
+          } finally { Remove-Item $pfx -Force -ErrorAction SilentlyContinue }
+
+      # IMPORTANT: hash AFTER the (optional) signing step, because signing changes the file bytes.
+      - name: Compute SHA-256 and build info
+        id: hash
+        shell: pwsh
+        run: |
+          $exe = 'dist\OddsTune.exe'
+          $sig = Get-AuthenticodeSignature $exe
+          $signed = ($sig.Status -eq 'Valid')
+          $label = if ($signed) { 'signed' } else { 'unsigned' }
+          $sha = (Get-FileHash -Algorithm SHA256 $exe).Hash.ToLower()
+          $version = python -c "import odds_tune_core as c; print(c.APP_VERSION)"
+          "$sha  OddsTune.exe" | Out-File -Encoding ascii -NoNewline dist\OddsTune.exe.sha256
+          [ordered]@{
+            product = 'Odd$ Tune'; version = $version; file = 'OddsTune.exe'; size_bytes = (Get-Item $exe).Length
+            sha256 = $sha; signed = $signed; signature_status = [string]$sig.Status
+            architecture = 'x64'; built_utc = (Get-Date).ToUniversalTime().ToString('s') + 'Z'
+            commit = $env:GITHUB_SHA; workflow_run = "$env:GITHUB_RUN_ID/$env:GITHUB_RUN_ATTEMPT"
+          } | ConvertTo-Json | Out-File -Encoding utf8 dist\build-info.json
+          Get-Content dist\build-info.json
+          "label=$label" >> $env:GITHUB_OUTPUT
+          "sha256=$sha" >> $env:GITHUB_OUTPUT
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "### Odd`$ Tune v$version ($label)`nSHA-256: ``$sha``" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: odds-tune-windows-x64-${{ steps.hash.outputs.label }}
+          path: |
+            desktop/odds-tune/dist/OddsTune.exe
+            desktop/odds-tune/dist/OddsTune.exe.sha256
+            desktop/odds-tune/dist/build-info.json
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Publish build into the repo (feature branch / manual only)
+    needs: build
+    if: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/feature/odds-tune-v1' || (github.event_name == 'workflow_dispatch' && inputs.publish_to_repo)) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: odds-tune-windows-x64-${{ needs.build.outputs.label }}
+          path: built
+
+      - name: Verify the downloaded file matches the hash computed by the build job
+        run: |
+          actual=$(sha256sum built/OddsTune.exe | cut -d' ' -f1)
+          echo "actual:   $actual"
+          echo "expected: ${{ needs.build.outputs.sha256 }}"
+          test "$actual" = "${{ needs.build.outputs.sha256 }}"
+
+      - name: Commit the exact built files
+        run: |
+          v="${{ needs.build.outputs.version }}"
+          dest="tools/odds-tune/download/v${v}"
+          mkdir -p "$dest"
+          cp built/OddsTune.exe built/OddsTune.exe.sha256 built/build-info.json "$dest/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          git commit -m "chore(release): publish Odd\$ Tune v${v} (${{ needs.build.outputs.label }}) build ${GITHUB_SHA::7}" -m "SHA-256: ${{ needs.build.outputs.sha256 }}" || { echo "nothing to commit"; exit 0; }
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+
+  release:
+    name: Draft GitHub Release (tags only)
+    needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/odds-tune-v') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: odds-tune-windows-x64-${{ needs.build.outputs.label }}
+          path: built
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" built/OddsTune.exe built/OddsTune.exe.sha256 built/build-info.json \
+            --repo "${{ github.repository }}" --draft --title "Odd\$ Tune v${{ needs.build.outputs.version }} (${{ needs.build.outputs.label }})" \
+            --notes "SHA-256: ${{ needs.build.outputs.sha256 }}. Status: ${{ needs.build.outputs.label }} build."
