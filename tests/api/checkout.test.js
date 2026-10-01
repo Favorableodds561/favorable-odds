@@ -182,3 +182,24 @@ test('buildParams is deterministic for a given order', () => {
   const b = buildParams({ ...GOOD, notes: '' }, CATALOG['data-rescue'], 'https://favorableodds.io').toString();
   assert.strictEqual(a, b);
 });
+
+test('bookkeeping plans check out and return to the bookkeeping page', async () => {
+  const f = stripeOk();
+  const res = await call({ body: { ...GOOD, service: 'books-standard' } }, { env: ENV, fetch: f });
+  assert.strictEqual(res.statusCode, 200);
+  const p = form(f.calls[0]);
+  assert.strictEqual(p.get('mode'), 'subscription');
+  assert.strictEqual(p.get('line_items[0][price_data][unit_amount]'), '34900');
+  assert.strictEqual(p.get('cancel_url'), 'https://favorableodds.io/bookkeeping?checkout=cancelled');
+  assert.strictEqual(p.get('metadata[source]'), 'favorableodds.io/bookkeeping');
+  const once = stripeOk();
+  await call({ body: { ...GOOD, service: 'books-newllc' } }, { env: ENV, fetch: once });
+  assert.strictEqual(form(once.calls[0]).get('mode'), 'payment');
+});
+
+test('the quoted Catch-Up Cleanup cannot be bought online', async () => {
+  const f = stripeOk();
+  const res = await call({ body: { ...GOOD, service: 'books-cleanup' } }, { env: ENV, fetch: f });
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(f.calls.length, 0);
+});
