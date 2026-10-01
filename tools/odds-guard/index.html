@@ -39,7 +39,7 @@
       "description": "Free, read-only Windows audit that checks remote-access software, administrator accounts, startup items and scheduled tasks, antivirus and firewall settings, browser extensions, proxy and hosts-file settings. Runs locally and writes an HTML and JSON report.",
       "applicationCategory": "SecurityApplication",
       "operatingSystem": "Windows 10, Windows 11",
-      "softwareVersion": "0.1.0",
+      "softwareVersion": "0.1.1",
       "isAccessibleForFree": true,
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "publisher": { "@type": "Organization", "name": "Favorable Odds LLC", "url": "https://favorableodds.io/", "logo": "https://favorableodds.io/business_logo.jpg" }
@@ -60,7 +60,7 @@
         { "@type": "Question", "name": "Does Odd$ Guard upload my scan results?", "acceptedAnswer": { "@type": "Answer", "text": "No. The script contains no commands that send data over the network, and it writes its results only to a Reports folder on your PC. You can read the script before you run it. Checking programs' publisher signatures is done by Windows itself, which may look up certificate information online, but Odd$ Guard sends nothing about your PC." } },
         { "@type": "Question", "name": "Does Odd$ Guard change anything on my PC or fix problems?", "acceptedAnswer": { "@type": "Answer", "text": "No. It only reads settings and lists what it finds. It writes its report files (and briefly creates and deletes a small test file to confirm the report folder is writable). Each finding says what you could do, but you decide and you make the change." } },
         { "@type": "Question", "name": "Is Odd$ Guard antivirus? Can it remove malware?", "acceptedAnswer": { "@type": "Answer", "text": "No. Odd$ Guard doesn't scan files for viruses and can't remove or quarantine anything. It works alongside your antivirus and does not replace it. Think of it as a checklist of the ways someone could get into your PC, not a shield." } },
-        { "@type": "Question", "name": "Why does Windows warn me about Odd$ Guard?", "acceptedAnswer": { "@type": "Answer", "text": "Version 0.1 of Odd$ Guard is not code-signed, so Windows SmartScreen or your antivirus may warn you that it can't confirm the publisher. The launcher also starts PowerShell with an execution-policy bypass for that one run, a pattern security tools watch for. Verify the SHA-256 hash and read the source first; see <a href=\"#verify\">check it before you run it<\/a>." } },
+        { "@type": "Question", "name": "Why does Windows warn me about Odd$ Guard?", "acceptedAnswer": { "@type": "Answer", "text": "Version 0.1.1 of Odd$ Guard is not code-signed, so Windows SmartScreen or your antivirus may warn you that it can't confirm the publisher. The launcher also starts PowerShell with an execution-policy bypass for that one run, a pattern security tools watch for. Verify the SHA-256 hash and read the source first; see <a href=\"#verify\">check it before you run it<\/a>." } },
         { "@type": "Question", "name": "Why does Odd$ Guard ask for administrator permission?", "acceptedAnswer": { "@type": "Answer", "text": "Some checks need elevated access, for example reading Microsoft Defender's exclusion list. The launcher asks Windows for permission, and if you decline it runs a limited scan and the report says which areas weren't checked. The scan itself is read-only either way." } },
         { "@type": "Question", "name": "Does a flagged item mean my PC has been hacked?", "acceptedAnswer": { "@type": "Answer", "text": "Not necessarily. A flag means \"take a look\". Legitimate remote-access tools are flagged even when you installed them on purpose, and IT-management tools are marked as worth a look because IT companies use them legitimately. Follow the “What to do” note under each finding, and get help if you're unsure." } },
         { "@type": "Question", "name": "Which remote-access tools does Odd$ Guard look for?", "acceptedAnswer": { "@type": "Answer", "text": "Thirty known tools, including AnyDesk, TeamViewer, ScreenConnect, UltraViewer, RustDesk, Splashtop, LogMeIn, Chrome Remote Desktop and VNC servers, plus IT-management tools such as Atera, NinjaOne, Kaseya and Datto RMM. It searches installed programs, background services, running processes and .exe files in Downloads and Desktop folders. The full list is in <a href=\"#what-it-checks\">what Odd$ Guard checks<\/a>." } },
@@ -142,7 +142,7 @@
       <a href="#get-odds-guard" class="btn-primary" data-fo-event="guard_cta_click" data-fo-location="hero">Get Odd$ Guard Free</a>
       <a href="#sample-report" class="btn-link" data-fo-event="guard_sample_click" data-fo-location="hero">See what the report looks like ↓</a>
     </div>
-    <p class="hero-fine">Version 0.1.0 · Windows 10 and 11 · Not code-signed yet, <a href="#release-details">see download details</a></p>
+    <p class="hero-fine">Version 0.1.1 · Windows 10 and 11 · Not code-signed yet, <a href="#release-details">see download details</a></p>
   </div>
 </header>
 
@@ -171,8 +171,8 @@
 
       <div class="dl-card" id="guard-download" tabindex="-1" hidden>
         <h3>Your download is ready</h3>
-        <p>Odd$ Guard v0.1.0 for Windows. Before you run it, read the <a href="#release-details">download details</a>: it is not code-signed, and Windows may show security prompts.</p>
-        <a id="download-link" class="dl-btn" download="OddsGuard-v0.1.zip" data-fo-event="guard_download_click" data-fo-location="download_panel">Download OddsGuard-v0.1.zip <span>(22.2 KB)</span></a>
+        <p>Odd$ Guard v0.1.1 for Windows. Before you run it, read the <a href="#release-details">download details</a>: it is not code-signed, and Windows may show security prompts.</p>
+        <a id="download-link" class="dl-btn" download="OddsGuard-v0.1.1.zip" data-fo-event="guard_download_click" data-fo-location="download_panel">Download OddsGuard-v0.1.1.zip <span>(22.4 KB)</span></a>
         <p class="dl-next">Next: <a href="#how-it-works">how to run it</a> · <a href="#release-details">verify the SHA-256</a> · <a href="#sample-report">see a sample report</a></p>
       </div>
     </div>
@@ -180,13 +180,13 @@
     <aside class="get-side" id="release-details" aria-labelledby="release-title">
       <h3 id="release-title">Release details</h3>
       <dl class="release">
-        <div><dt>Version</dt><dd>0.1.0</dd></div>
-        <div><dt>File</dt><dd><code>OddsGuard-v0.1.zip</code></dd></div>
-        <div><dt>Size</dt><dd>22,758 bytes (22.2 KB)</dd></div>
+        <div><dt>Version</dt><dd>0.1.1</dd></div>
+        <div><dt>File</dt><dd><code>OddsGuard-v0.1.1.zip</code></dd></div>
+        <div><dt>Size</dt><dd>22,950 bytes (22.4 KB)</dd></div>
         <div><dt>Works with</dt><dd>Windows 10 and 11, using the Windows PowerShell 5.1 that comes with them (PowerShell 7+ also works)</dd></div>
-        <div><dt>Code signing</dt><dd><strong>Not code-signed.</strong> Version 0.1 is unsigned.</dd></div>
-        <div><dt>SHA-256 (ZIP)</dt><dd><code class="hash">c3a490e6bf0ab9c285df4a52d1bc4049bd07e5770f1ac1546f9fac803bef8503</code></dd></div>
-        <div><dt>SHA-256 (OddsGuard.ps1)</dt><dd><code class="hash">b395fa2d33445c4d6d3bdb08bf91f6797e298b9364ce42746e2ee123eafcb90c</code></dd></div>
+        <div><dt>Code signing</dt><dd><strong>Not code-signed.</strong> Version 0.1.1 is unsigned.</dd></div>
+        <div><dt>SHA-256 (ZIP)</dt><dd><code class="hash">746686d316a7ff96dad06f9b92d927360a45922f4f7ebfe8f0c3e94183c6f4a5</code></dd></div>
+        <div><dt>SHA-256 (OddsGuard.ps1)</dt><dd><code class="hash">02a5bef5478a93b047ae43f7f450e0e21b9d92fbf22db2e3855efa3b0dcc6f43</code></dd></div>
         <div><dt>Contents</dt><dd><code>OddsGuard.ps1</code> (the scanner), <code>Run-OddsGuard.bat</code> (launcher), <code>README.md</code>, <code>OddsGuard-SAMPLE-report.html</code> (a demo, not a scan of your PC)</dd></div>
       </dl>
     </aside>
@@ -204,9 +204,9 @@
       <article class="trust-card">
         <h3>Verify the download</h3>
         <p>After downloading, compare the ZIP's SHA-256 hash with the one above. In PowerShell:</p>
-        <pre><code>Get-FileHash .\OddsGuard-v0.1.zip -Algorithm SHA256</code></pre>
+        <pre><code>Get-FileHash .\OddsGuard-v0.1.1.zip -Algorithm SHA256</code></pre>
         <p>Or in Command Prompt:</p>
-        <pre><code>certutil -hashfile OddsGuard-v0.1.zip SHA256</code></pre>
+        <pre><code>certutil -hashfile OddsGuard-v0.1.1.zip SHA256</code></pre>
         <p>The two should match exactly. If they don't, don't run it. A hash confirms the file wasn't damaged or swapped after we published it; it can't vouch for a website that has itself been compromised.</p>
       </article>
       <article class="trust-card">
@@ -220,7 +220,7 @@
       </article>
       <article class="trust-card">
         <h3>Not code-signed yet</h3>
-        <p>Version 0.1 of Odd$ Guard is <strong>not</strong> signed with a code-signing certificate. Windows SmartScreen or your antivirus may warn you, because Windows can't confirm who published it and the file is new.</p>
+        <p>Version 0.1.1 of Odd$ Guard is <strong>not</strong> signed with a code-signing certificate. Windows SmartScreen or your antivirus may warn you, because Windows can't confirm who published it and the file is new.</p>
         <p>The launcher starts PowerShell with <code>-NoProfile -ExecutionPolicy Bypass</code> for that one run so an unsigned script can execute. It doesn't change your PC's PowerShell settings, but security tools do watch for that pattern.</p>
       </article>
       <article class="trust-card">
@@ -461,7 +461,7 @@
       </details>
       <details>
         <summary>Why does Windows warn me about Odd$ Guard?</summary>
-        <div class="ans"><p>Version 0.1 of Odd$ Guard is not code-signed, so Windows SmartScreen or your antivirus may warn you that it can't confirm the publisher. The launcher also starts PowerShell with an execution-policy bypass for that one run, a pattern security tools watch for. Verify the SHA-256 hash and read the source first; see <a href="#verify">check it before you run it</a>.</p></div>
+        <div class="ans"><p>Version 0.1.1 of Odd$ Guard is not code-signed, so Windows SmartScreen or your antivirus may warn you that it can't confirm the publisher. The launcher also starts PowerShell with an execution-policy bypass for that one run, a pattern security tools watch for. Verify the SHA-256 hash and read the source first; see <a href="#verify">check it before you run it</a>.</p></div>
       </details>
       <details>
         <summary>Why does Odd$ Guard ask for administrator permission?</summary>

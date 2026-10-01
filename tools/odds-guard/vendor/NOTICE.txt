@@ -5,4 +5,4 @@ email.min.js  @emailjs/browser 4.4.1   BSD-3-Clause   https://github.com/emailjs
               Taken unmodified from dist/email.min.js in the npm package.
               Its only network destination is https://api.emailjs.com (the page CSP allows that host and nothing else).
 
-The Odd$ Guard scanner itself (download/OddsGuard-v0.1.zip) has no third-party dependencies.
+The Odd$ Guard scanner itself (download/OddsGuard-v0.1.1.zip) has no third-party dependencies.
