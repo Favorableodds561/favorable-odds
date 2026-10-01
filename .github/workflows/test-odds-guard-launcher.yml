@@ -1,0 +1,78 @@
+name: Test Odd$ Guard release
+
+on:
+  pull_request:
+    paths: ['tools/odds-guard/**', 'tests/guard/**', '.github/workflows/test-odds-guard-launcher.yml']
+  push:
+    branches: [main]
+    paths: ['tools/odds-guard/**', 'tests/guard/**', '.github/workflows/test-odds-guard-launcher.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  release-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test "tests/guard/*.test.js"
+
+  launcher-on-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract the published ZIP the way a customer would (Expand-Archive)
+        shell: powershell
+        run: |
+          $zip = (Get-ChildItem tools/odds-guard/download/*.zip).FullName
+          Expand-Archive -LiteralPath $zip -DestinationPath "$env:RUNNER_TEMP\extracted"
+          $root = "$env:RUNNER_TEMP\extracted\OddsGuard"
+          foreach ($f in 'Run-OddsGuard.bat','OddsGuard.ps1','README.md','OddsGuard-SAMPLE-report.html') {
+            if (-not (Test-Path -LiteralPath "$root\$f")) { throw "missing $f in the ZIP" }
+          }
+          $a = (Get-FileHash "$root\OddsGuard.ps1").Hash
+          $b = (Get-FileHash tools/odds-guard/source/OddsGuard.ps1.txt).Hash
+          if ($a -ne $b) { throw 'OddsGuard.ps1 in the ZIP differs from the published source' }
+          # The script must parse cleanly under Windows PowerShell 5.1
+          $errs = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile("$root\OddsGuard.ps1", [ref]$null, [ref]$errs)
+          if ($errs.Count) { $errs | ForEach-Object { Write-Error $_.Message }; throw 'OddsGuard.ps1 has parse errors' }
+          "ZIP extracts and the script parses."
+
+      - name: The elevation command parses for a folder name with an apostrophe
+        shell: powershell
+        run: |
+          function Test-Parse($text) {
+            $errs = $null
+            [void][System.Management.Automation.Language.Parser]::ParseInput($text, [ref]$null, [ref]$errs)
+            return $errs.Count
+          }
+          $apostrophePath = "C:\Users\O'Brien\Downloads\OddsGuard\Run-OddsGuard.bat"
+          # Control: the 0.1.0 launcher put the path inside the command text. That must fail to parse, proving this test can catch the bug.
+          $old = "try { Start-Process -FilePath '$apostrophePath' -Verb RunAs -ErrorAction Stop; exit 0 } catch { exit 1 }"
+          if ((Test-Parse $old) -eq 0) { throw 'control failed: the old command should not parse' }
+          # Real launcher: pull the -Command text out of the shipped file.
+          $line = Get-Content tools/odds-guard/source/Run-OddsGuard.bat.txt | Where-Object { $_ -match 'Start-Process' }
+          if (@($line).Count -ne 1) { throw 'expected exactly one Start-Process line' }
+          $cmd = [regex]::Match($line, '-Command "(.*)"\s*$').Groups[1].Value
+          if (-not $cmd) { throw 'could not read the -Command text' }
+          if ($cmd -match '%~') { throw 'the command text still embeds the launcher path' }
+          if ((Test-Parse $cmd) -ne 0) { throw 'the shipped elevation command does not parse' }
+          "Shipped elevation command parses; old one would not."
+
+      - name: Run the launcher from a folder whose name contains an apostrophe
+        shell: cmd
+        run: |
+          set "DIR=%RUNNER_TEMP%\O'Brien Test & Co"
+          mkdir "%DIR%"
+          copy /y tools\odds-guard\source\Run-OddsGuard.bat.txt "%DIR%\Run-OddsGuard.bat" >nul
+          rem Stand-in for the real scanner: records that the launcher reached it with the right folder.
+          > "%DIR%\OddsGuard.ps1" echo Set-Content -LiteralPath (Join-Path $PSScriptRoot 'ran.txt') -Value 'ok'
+          rem GitHub runners are already administrators, so the launcher goes straight to the scan step.
+          call "%DIR%\Run-OddsGuard.bat" < nul
+          if not exist "%DIR%\ran.txt" (echo launcher did not reach the scanner & exit /b 1)
+          echo launcher ran from a folder with an apostrophe.

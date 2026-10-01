@@ -16,8 +16,8 @@
    existing "order request" template, so leads land in the same inbox formatted as requests. Create a dedicated
    template (e.g. template_odds_guard_lead) in EmailJS and put its id here when you can. */
 window.FO_GUARD_CONFIG = {
-  version: '0.1.0',
-  downloadPath: '/tools/odds-guard/download/OddsGuard-v0.1.zip',
+  version: '0.1.1',
+  downloadPath: '/tools/odds-guard/download/OddsGuard-v0.1.1.zip',
   lead: {
     provider: 'emailjs',
     emailjs: {
