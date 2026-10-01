@@ -636,7 +636,7 @@ function renderCart(){
     <div class="sline"><span>Shipping (US only)</span><span>${money(p.shipping)} flat</span></div>
     <div class="sline total"><span>Total</span><span>${money(p.total)}</span></div>
     <div class="ship-note" style="margin:0 0 4px">Sales tax, if any, is calculated at checkout.</div>
-    ${checkoutFailed?`<div class="nudge" style="margin-top:12px" role="alert">Online checkout isn't available right now. Nothing was charged. You can reserve this order by email instead.</div>`:''}
+    ${checkoutFailed?`<div class="nudge" style="margin-top:12px" role="alert">Online checkout isn't available right now. Nothing was charged. You can reserve this order by email instead.<div style="opacity:.6;font-size:.72rem;margin-top:4px">Error: ${checkoutErrorCode}</div></div>`:''}
     <button class="btn block" id="checkoutBtn" style="margin-top:14px"${checkingOut?' disabled':''}>${checkingOut?'Taking you to secure checkout…':'Checkout securely'}</button>
     ${checkoutFailed?`<button class="btn ghost block" id="reserveOrder" style="margin-top:10px">Reserve by email</button>`:''}
     <div class="ship-note">${CONFIG.preorderNote} Secure payment by Stripe. We never see your card details.</div>`;
@@ -663,10 +663,10 @@ function addToCart(){
 }
 
 /* ---------------- Stripe Checkout ---------------- */
-let checkingOut = false, checkoutFailed = false, redirectingToCheckout = false;
+let checkingOut = false, checkoutFailed = false, redirectingToCheckout = false, checkoutErrorCode = '';
 async function checkoutOrder(){
   if(cart.length===0 || checkingOut) return;
-  checkingOut = true; checkoutFailed = false;
+  checkingOut = true; checkoutFailed = false; checkoutErrorCode = '';
   renderCart();
   try{
     // Only ids, sizes and quantities are sent. The server owns every price.
@@ -675,13 +675,13 @@ async function checkoutOrder(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({items:cart.map(i=>({id:i.id,size:i.size,qty:i.qty}))})
     });
-    if(!r.ok) throw new Error('checkout '+r.status);
-    const d = await r.json();
-    if(!d || !d.url) throw new Error('no checkout url');
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok || !d || !d.url){ checkoutErrorCode = (d && d.error) || ('http_'+r.status); throw new Error('checkout '+r.status+' '+checkoutErrorCode); }
     redirectingToCheckout = true;
     window.location.href = d.url;
   }catch(err){
     console.warn('Checkout unavailable:', err);
+    if(!checkoutErrorCode) checkoutErrorCode = 'network';
     checkingOut = false; checkoutFailed = true;
     renderCart();
   }

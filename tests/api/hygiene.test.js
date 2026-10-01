@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.join(__dirname, '..', '..');
-const files = ['api/_catalog.js', 'api/_shop.js', 'api/_stripe.js', 'api/create-checkout-session.js', 'api/create-shop-checkout.js', 'api/README.md',
+const files = ['api/_catalog.js', 'api/_shop.js', 'api/_stripe.js', 'api/checkout-status.js', 'api/create-checkout-session.js', 'api/create-shop-checkout.js', 'api/README.md',
   'services.html', 'bookkeeping.html', 'shop.html', 'services-thanks.html', 'shop-thanks.html', 'vercel.json'];
 
 test('no Stripe secret, restricted or webhook keys are committed', () => {

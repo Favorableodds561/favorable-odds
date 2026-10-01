@@ -32,6 +32,28 @@ Never paste a secret key into chat, issues or code. If one is exposed, roll it i
 
 Redeploy after changing environment variables.
 
+## Check that it is working
+
+Open **`/api/checkout-status`** on the address you are testing (for example `https://favorableodds.io/api/checkout-status` or a Vercel preview address). It reports, in plain language:
+
+- whether `STRIPE_SECRET_KEY` is set for **that** environment and whether it is a test or live key,
+- whether Stripe accepts the key and the account can take charges,
+- whether Stripe Tax is active (needed for shop checkout), with the missing items if not,
+- whether that address is allowed to start checkouts.
+
+It reads only. It creates nothing in Stripe and never shows the key. `"ready": true` means everything it can see is fine.
+
+If a customer sees "Online checkout isn't available" on the shop (the page shows an `Error:` code), the usual causes are:
+
+| Error code | Meaning | Fix |
+| --- | --- | --- |
+| `payments_unavailable` (503) | No usable `STRIPE_SECRET_KEY` in this Vercel environment | Add it (Production and Preview are separate checkboxes) and **redeploy** |
+| `forbidden_origin` (403) | Opened from an address the function does not recognize | Set `SITE_URL`, or use the Vercel-provided address |
+| `checkout_unavailable` (502) | Stripe rejected the request | Check `/api/checkout-status` (usually Stripe Tax not active). Vercel → Logs shows the exact reason (`stripe_failed ...`) |
+| `http_404` | The `/api` functions were not deployed | Confirm the deployment includes the `api/` folder |
+
+Note: this repo is connected to more than one Vercel project. Environment variables belong to a project, so set the key on the project that serves your domain.
+
 ## Test mode first
 
 1. Use `sk_test_...` for the **Preview** environment and test with card `4242 4242 4242 4242`, any future expiry, any CVC.
