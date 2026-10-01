@@ -1,0 +1,1148 @@
+<#
+.SYNOPSIS
+    Odd$ Guard - "Who can get into my PC?" access audit for Windows.
+
+.DESCRIPTION
+    Read-only scan. Looks for remote-control software, hidden or extra admin
+    accounts, suspicious startup items and scheduled tasks, weakened security
+    settings, and network redirects. Writes a plain-English HTML report and a
+    JSON file to .\Reports next to this script. Changes nothing on the PC.
+
+.PARAMETER OutputDir
+    Folder for the report. Defaults to .\Reports next to the script.
+
+.PARAMETER NoOpen
+    Do not open the report when the scan finishes.
+
+.PARAMETER DemoReport
+    Build a sample report with example findings, without scanning.
+    Useful for sales demos and for previewing report changes.
+
+.NOTES
+    Favorable Odds Tech Solutions - https://favorableodds.io
+    Compatible with Windows PowerShell 5.1 and PowerShell 7+.
+#>
+[CmdletBinding()]
+param(
+    [string]$OutputDir,
+    [switch]$NoOpen,
+    [switch]$DemoReport
+)
+
+Set-StrictMode -Off
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference    = 'SilentlyContinue'
+
+# ---------------------------------------------------------------------------
+# Identity and environment
+# ---------------------------------------------------------------------------
+$Brand    = 'Odd$ Guard'
+$Company  = 'Favorable Odds Tech Solutions'
+$Website  = 'https://favorableodds.io'
+$Version  = '0.1.0'
+$Culture  = [Globalization.CultureInfo]::InvariantCulture
+$ScanTime = Get-Date
+$Computer = if ($env:COMPUTERNAME) { $env:COMPUTERNAME } else { [Environment]::MachineName }
+
+$IsWindowsHost = ($env:OS -eq 'Windows_NT')
+$IsAdmin = $false
+if ($IsWindowsHost) {
+    try {
+        $principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+        $IsAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    } catch { }
+}
+
+if (-not $IsWindowsHost -and -not $DemoReport) {
+    Write-Host ($Brand + ' scans Windows computers only. Use -DemoReport to preview a sample report.')
+    exit 1
+}
+
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
+if (-not $OutputDir) { $OutputDir = Join-Path $ScriptDir 'Reports' }
+
+# ---------------------------------------------------------------------------
+# Result collections
+# ---------------------------------------------------------------------------
+$script:Findings = New-Object System.Collections.ArrayList
+$script:Checks   = New-Object System.Collections.ArrayList
+$script:Inv = @{
+    Accounts   = New-Object System.Collections.ArrayList
+    Startup    = New-Object System.Collections.ArrayList
+    Tasks      = New-Object System.Collections.ArrayList
+    Extensions = New-Object System.Collections.ArrayList
+}
+$script:SignerCache = @{}
+
+# ---------------------------------------------------------------------------
+# Detection data
+# ---------------------------------------------------------------------------
+# Tier 'Consumer' = remote-control apps common in tech-support scams.
+# Tier 'IT'       = remote management agents normally installed by IT firms.
+$RemoteTools = @(
+    [pscustomobject]@{ Name = 'AnyDesk';                          Tier = 'Consumer'; Pattern = 'anydesk' }
+    [pscustomobject]@{ Name = 'TeamViewer';                       Tier = 'Consumer'; Pattern = 'teamviewer' }
+    [pscustomobject]@{ Name = 'ScreenConnect (ConnectWise)';      Tier = 'Consumer'; Pattern = 'screenconnect|connectwise control' }
+    [pscustomobject]@{ Name = 'UltraViewer';                      Tier = 'Consumer'; Pattern = 'ultraviewer' }
+    [pscustomobject]@{ Name = 'RustDesk';                         Tier = 'Consumer'; Pattern = 'rustdesk' }
+    [pscustomobject]@{ Name = 'AnyViewer';                        Tier = 'Consumer'; Pattern = 'anyviewer' }
+    [pscustomobject]@{ Name = 'HopToDesk';                        Tier = 'Consumer'; Pattern = 'hoptodesk' }
+    [pscustomobject]@{ Name = 'Supremo';                          Tier = 'Consumer'; Pattern = '\bsupremo' }
+    [pscustomobject]@{ Name = 'AeroAdmin';                        Tier = 'Consumer'; Pattern = 'aeroadmin' }
+    [pscustomobject]@{ Name = 'Ammyy Admin';                      Tier = 'Consumer'; Pattern = 'ammyy' }
+    [pscustomobject]@{ Name = 'SimpleHelp';                       Tier = 'Consumer'; Pattern = 'simplehelp|simple-help' }
+    [pscustomobject]@{ Name = 'NetSupport';                       Tier = 'Consumer'; Pattern = 'netsupport|\bclient32\.exe' }
+    [pscustomobject]@{ Name = 'Remote Utilities';                 Tier = 'Consumer'; Pattern = 'remote utilities|rutserv|rfusclient' }
+    [pscustomobject]@{ Name = 'Splashtop';                        Tier = 'Consumer'; Pattern = 'splashtop' }
+    [pscustomobject]@{ Name = 'LogMeIn / GoTo';                   Tier = 'Consumer'; Pattern = 'logmein|gotoassist|goto resolve|gotoresolve' }
+    [pscustomobject]@{ Name = 'Zoho Assist';                      Tier = 'Consumer'; Pattern = 'zoho assist|zohoassist' }
+    [pscustomobject]@{ Name = 'RemotePC';                         Tier = 'Consumer'; Pattern = 'remotepc' }
+    [pscustomobject]@{ Name = 'Chrome Remote Desktop';            Tier = 'Consumer'; Pattern = 'chrome remote desktop|remoting_host' }
+    [pscustomobject]@{ Name = 'DWService';                        Tier = 'Consumer'; Pattern = 'dwservice|dwagent' }
+    [pscustomobject]@{ Name = 'ISL Online';                       Tier = 'Consumer'; Pattern = 'isl light|isl alwayson|islalwayson' }
+    [pscustomobject]@{ Name = 'MeshCentral agent';                Tier = 'Consumer'; Pattern = 'mesh agent|meshagent' }
+    [pscustomobject]@{ Name = 'VNC';                              Tier = 'Consumer'; Pattern = 'tightvnc|ultravnc|realvnc|tigervnc|\bvnc server|winvnc|tvnserver' }
+    [pscustomobject]@{ Name = 'Atera';                            Tier = 'IT';       Pattern = '\batera' }
+    [pscustomobject]@{ Name = 'NinjaOne';                         Tier = 'IT';       Pattern = 'ninjarmm|ninjaone' }
+    [pscustomobject]@{ Name = 'Kaseya';                           Tier = 'IT';       Pattern = 'kaseya' }
+    [pscustomobject]@{ Name = 'N-able';                           Tier = 'IT';       Pattern = 'n-able|n-central|advanced monitoring agent' }
+    [pscustomobject]@{ Name = 'Datto RMM';                        Tier = 'IT';       Pattern = 'datto rmm|centrastage|\bcagservice' }
+    [pscustomobject]@{ Name = 'Action1';                          Tier = 'IT';       Pattern = 'action1' }
+    [pscustomobject]@{ Name = 'Tactical RMM';                     Tier = 'IT';       Pattern = 'tacticalrmm|tactical rmm' }
+    [pscustomobject]@{ Name = 'Syncro';                           Tier = 'IT';       Pattern = '\bsyncro\b|kabuto' }
+)
+
+$RemotePorts = @{
+    22    = 'SSH'
+    3389  = 'Windows Remote Desktop'
+    5900  = 'VNC'
+    5901  = 'VNC'
+    5902  = 'VNC'
+    5938  = 'TeamViewer'
+    5985  = 'Windows Remote Management'
+    5986  = 'Windows Remote Management'
+    7070  = 'AnyDesk'
+    8040  = 'ScreenConnect'
+    8041  = 'ScreenConnect'
+    21116 = 'RustDesk'
+    21118 = 'RustDesk'
+}
+
+$UninstallKeys = @(
+    'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*'
+    'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
+    'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*'
+)
+
+$RegMetaRx        = '^PS(Path|ParentPath|ChildName|Drive|Provider)$'
+$SuspiciousPathRx = '(?i)\\AppData\\Local\\Temp\\|\\Windows\\Temp\\|\\Users\\Public\\|\\Downloads\\|\\\$Recycle\.Bin\\'
+$AnyHostRx        = '(?i)(^|\\)(powershell|pwsh|mshta|wscript|cscript|rundll32|regsvr32|cmd)(\.exe)?$'
+$ScriptHostRx     = '(?i)(^|\\)(powershell|pwsh|mshta|wscript|cscript)(\.exe)?$'
+$DangerArgsRx     = '(?i)(\s|^)-e(nc|ncodedcommand)?\s|frombase64string|downloadstring|downloadfile|invoke-webrequest|invoke-expression|\biex\b|https?://|-w(indowstyle)?\s+h(idden)?\b|javascript:|vbscript:'
+$BroadExclusionRx = '(?i)^[a-z]:\\?$|^[a-z]:\\users\\?$|\\temp\\?$|\\appdata|\\downloads|\\users\\public|^\.?(exe|dll|ps1|bat|cmd|vbs|js|scr)$'
+$RemoteExtRx      = '(?i)remote desktop|remote control|remote access|screen ?shar'
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+function Add-Finding {
+    param(
+        [Parameter(Mandatory = $true)][ValidateSet('Urgent', 'Review')][string]$Level,
+        [Parameter(Mandatory = $true)][string]$Area,
+        [Parameter(Mandatory = $true)][string]$Title,
+        [Parameter(Mandatory = $true)][string]$Why,
+        [Parameter(Mandatory = $true)][string]$Action,
+        [System.Collections.IDictionary]$Details
+    )
+    [void]$script:Findings.Add([pscustomobject]@{
+        Level = $Level; Area = $Area; Title = $Title; Why = $Why; Action = $Action; Details = $Details
+    })
+}
+
+function Add-Check {
+    param(
+        [string]$Area,
+        [string]$Name,
+        [string]$Result,
+        [ValidateSet('Clear', 'Flagged', 'Skipped')][string]$Status = 'Clear'
+    )
+    [void]$script:Checks.Add([pscustomobject]@{ Area = $Area; Name = $Name; Result = $Result; Status = $Status })
+}
+
+function Write-Step([string]$Text) { Write-Host ('  - ' + $Text) }
+
+function Get-RegValues([string]$Path) {
+    if (-not (Test-Path -Path $Path)) { return @() }
+    $item = Get-ItemProperty -Path $Path
+    if (-not $item) { return @() }
+    return @($item.PSObject.Properties | Where-Object { $_.Name -notmatch $RegMetaRx })
+}
+
+function Get-ExePath([string]$Command) {
+    if (-not $Command) { return $null }
+    $c = [Environment]::ExpandEnvironmentVariables($Command.Trim())
+    if ($c.StartsWith('"')) {
+        $end = $c.IndexOf('"', 1)
+        if ($end -gt 1) { return $c.Substring(1, $end - 1) }
+    }
+    $m = [regex]::Match($c, '^(.+?\.(exe|com|bat|cmd|vbs|js|ps1|scr|lnk))(\s|,|$)', 'IgnoreCase')
+    if ($m.Success) { return $m.Groups[1].Value }
+    return ($c -split '\s+')[0]
+}
+
+function Get-SignerName([string]$Path) {
+    if (-not $Path) { return 'Unknown' }
+    if ($script:SignerCache.ContainsKey($Path)) { return $script:SignerCache[$Path] }
+    $result = 'Unknown'
+    try {
+        $p = $Path
+        if (-not [IO.Path]::IsPathRooted($p)) {
+            $cmd = Get-Command -Name $p -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($cmd) { $p = $cmd.Source } else { $p = $null }
+        }
+        if (-not $p -or -not (Test-Path -LiteralPath $p -PathType Leaf)) {
+            $result = 'File not found'
+        } else {
+            $sig = Get-AuthenticodeSignature -LiteralPath $p -ErrorAction SilentlyContinue
+            if ($sig -and $sig.Status -eq 'Valid' -and $sig.SignerCertificate) {
+                $m = [regex]::Match($sig.SignerCertificate.Subject, 'CN="?([^",]+)')
+                $result = if ($m.Success) { 'Signed by ' + $m.Groups[1].Value } else { 'Signed' }
+            } elseif ($sig) {
+                $result = 'Not signed'
+            }
+        }
+    } catch { }
+    $script:SignerCache[$Path] = $result
+    return $result
+}
+
+function Format-InstallDate([string]$Raw) {
+    if ($Raw -match '^\d{8}$') {
+        try { return [datetime]::ParseExact($Raw, 'yyyyMMdd', $Culture).ToString('MMM d, yyyy', $Culture) } catch { }
+    }
+    return $Raw
+}
+
+function Format-Plural([int]$Count, [string]$One, [string]$Many) {
+    if ($Count -eq 1) { return ('{0} {1}' -f $Count, $One) }
+    return ('{0} {1}' -f $Count, $Many)
+}
+
+function Test-AvEnabled($State) {
+    try {
+        $hex = '{0:X6}' -f [uint32]$State
+        return ($hex.Substring(2, 2) -eq '10' -or $hex.Substring(2, 2) -eq '11')
+    } catch { return $false }
+}
+
+# ---------------------------------------------------------------------------
+# Finding templates shared by the scan and the demo report
+# ---------------------------------------------------------------------------
+function Add-RemoteToolFinding {
+    param([string]$ToolName, [string]$Mode, [System.Collections.IDictionary]$Details)
+    switch ($Mode) {
+        'IT' {
+            Add-Finding -Level Review -Area 'Remote access' -Details $Details `
+                -Title ('{0} is installed' -f $ToolName) `
+                -Why 'This is a tool IT companies use to manage and control computers remotely. It is normal when a business you trust looks after this PC.' `
+                -Action 'Confirm who installed it. If no IT company manages this computer, uninstall it and change your important passwords.'
+        }
+        'Portable' {
+            Add-Finding -Level Urgent -Area 'Remote access' -Details $Details `
+                -Title ('{0} is running from a download folder' -f $ToolName) `
+                -Why 'Scammers posing as tech support usually have people download and open this directly. Anyone with its ID and code can see and control this screen.' `
+                -Action 'If you did not start this yourself, disconnect from the internet now and close it. Do not sign in to banking or email on this PC until it has been checked.'
+        }
+        'Unattended' {
+            Add-Finding -Level Urgent -Area 'Remote access' -Details $Details `
+                -Title ('{0} can accept connections at any time' -f $ToolName) `
+                -Why 'It is set up for unattended access, so anyone with its password can take control, even while nobody is at the computer.' `
+                -Action 'If you do not use it on purpose, uninstall it from Settings > Apps, then change your email and bank passwords from a different device.'
+        }
+        default {
+            Add-Finding -Level Review -Area 'Remote access' -Details $Details `
+                -Title ('{0} is on this computer' -f $ToolName) `
+                -Why 'This program lets someone see and control this PC once it is opened and a code is shared. It is safe when you use it on purpose, and it is also a favorite tool in tech-support scams.' `
+                -Action 'Keep it only if you use it. Otherwise uninstall it, or delete the copy in your Downloads folder.'
+        }
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Scan: remote-control software
+# ---------------------------------------------------------------------------
+function Invoke-RemoteToolScan {
+    Write-Step 'Looking for remote-control programs'
+
+    $installed = @(foreach ($k in $UninstallKeys) { Get-ItemProperty -Path $k | Where-Object { $_.DisplayName } })
+    $services  = @(Get-CimInstance -ClassName Win32_Service)
+    $processes = @(Get-CimInstance -ClassName Win32_Process)
+    $conns     = @()
+    try { $conns = @(Get-NetTCPConnection -State Established -ErrorAction Stop) } catch { }
+
+    $looseExe = @()
+    $usersRoot = Join-Path $env:SystemDrive 'Users'
+    foreach ($u in @(Get-ChildItem -LiteralPath $usersRoot -Directory)) {
+        foreach ($sub in @('Downloads', 'Desktop')) {
+            $d = Join-Path $u.FullName $sub
+            if (Test-Path -LiteralPath $d) {
+                $looseExe += @(Get-ChildItem -LiteralPath $d -Filter '*.exe' -File -Recurse -Depth 1)
+            }
+        }
+    }
+
+    $hits = 0
+    foreach ($tool in $RemoteTools) {
+        $rx    = '(?i)' + $tool.Pattern
+        $inst  = @($installed | Where-Object { $_.DisplayName -match $rx })
+        $svc   = @($services  | Where-Object { $_.Name -match $rx -or $_.DisplayName -match $rx -or $_.PathName -match $rx })
+        $proc  = @($processes | Where-Object { $_.Name -match $rx -or $_.ExecutablePath -match $rx })
+        $loose = @($looseExe  | Where-Object { $_.Name -match $rx })
+        if (($inst.Count + $svc.Count + $proc.Count + $loose.Count) -eq 0) { continue }
+        $hits++
+
+        $autoSvc = @($svc | Where-Object { $_.StartMode -eq 'Auto' -or $_.State -eq 'Running' })
+        $pids    = @($proc | ForEach-Object { $_.ProcessId })
+        $online  = @($conns | Where-Object { $pids -contains $_.OwningProcess -and $_.RemoteAddress -notmatch '^(127\.|::1$|0\.0\.0\.0)' })
+        $oddRun  = @($proc | Where-Object { $_.ExecutablePath -match $SuspiciousPathRx })
+
+        $d = [ordered]@{}
+        $d['Type'] = if ($tool.Tier -eq 'IT') { 'IT management tool' } else { 'Remote-control app' }
+        if ($inst.Count) {
+            $d['Installed as'] = (@($inst | ForEach-Object { ('{0} {1}' -f $_.DisplayName, $_.DisplayVersion).Trim() }) | Select-Object -Unique) -join '; '
+            $dates = @($inst | Where-Object { $_.InstallDate } | ForEach-Object { Format-InstallDate $_.InstallDate }) | Select-Object -Unique
+            if ($dates) { $d['Install date'] = $dates -join '; ' }
+        }
+        if ($svc.Count) {
+            $d['Background service'] = (@($svc | ForEach-Object { '{0} ({1}, starts {2})' -f $_.DisplayName, $_.State, $_.StartMode })) -join '; '
+        }
+        if ($proc.Count) {
+            $d['Running from'] = (@($proc | ForEach-Object { if ($_.ExecutablePath) { $_.ExecutablePath } else { $_.Name } }) | Select-Object -Unique) -join '; '
+        }
+        $d['Online right now'] = if ($online.Count) { 'Yes, connected to the internet' } elseif ($proc.Count) { 'Running, no outside connection seen' } else { 'Not running' }
+        if ($loose.Count) { $d['Downloaded copies'] = (@($loose | ForEach-Object { $_.FullName })) -join '; ' }
+
+        $mode = if ($tool.Tier -eq 'IT') { 'IT' }
+                elseif ($oddRun.Count) { 'Portable' }
+                elseif ($autoSvc.Count) { 'Unattended' }
+                else { 'Present' }
+        Add-RemoteToolFinding -ToolName $tool.Name -Mode $mode -Details $d
+    }
+
+    if ($hits) {
+        Add-Check 'Remote access' 'Remote-control programs' ('{0} found (searched for {1} known tools)' -f $hits, $RemoteTools.Count) 'Flagged'
+    } else {
+        Add-Check 'Remote access' 'Remote-control programs' ('None of {0} known tools found' -f $RemoteTools.Count)
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Scan: Windows built-in remote access
+# ---------------------------------------------------------------------------
+function Invoke-BuiltInRemoteScan {
+    Write-Step 'Checking Windows Remote Desktop and Remote Assistance'
+
+    $ts = Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server'
+    if ($ts -and $ts.fDenyTSConnections -eq 0) {
+        $nla = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp').UserAuthentication
+        Add-Finding -Level Review -Area 'Remote access' `
+            -Title 'Windows Remote Desktop is turned on' `
+            -Why 'Anyone who knows a password for an account on this PC can sign in to it from another computer. Home computers rarely need this.' `
+            -Action 'If nobody connects to this PC remotely on purpose, turn it off in Settings > System > Remote Desktop.' `
+            -Details ([ordered]@{ 'Network Level Authentication' = $(if ($nla -eq 1) { 'On' } else { 'Off (weaker)' }) })
+        Add-Check 'Remote access' 'Windows Remote Desktop' 'Turned on' 'Flagged'
+    } else {
+        Add-Check 'Remote access' 'Windows Remote Desktop' 'Off'
+    }
+
+    $ra = Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance'
+    if ($ra -and $ra.fAllowToGetHelp -eq 1) {
+        Add-Check 'Remote access' 'Remote Assistance invitations' 'Allowed. Low risk, and you can turn it off under System Properties > Remote.'
+    } else {
+        Add-Check 'Remote access' 'Remote Assistance invitations' 'Off'
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Scan: accounts
+# ---------------------------------------------------------------------------
+function Get-AdminMembers {
+    $out = @()
+    try {
+        $out = @(Get-LocalGroupMember -SID 'S-1-5-32-544' -ErrorAction Stop | ForEach-Object { $_.Name })
+    } catch {
+        try {
+            $grp = ((New-Object Security.Principal.SecurityIdentifier 'S-1-5-32-544').Translate([Security.Principal.NTAccount]).Value -split '\\')[-1]
+            $g = [ADSI]('WinNT://./{0},group' -f $grp)
+            $out = @($g.psbase.Invoke('Members') | ForEach-Object {
+                $path  = $_.GetType().InvokeMember('ADsPath', 'GetProperty', $null, $_, $null)
+                $parts = ($path -replace '^WinNT://', '') -split '/'
+                $parts[-2] + '\' + $parts[-1]
+            })
+        } catch { }
+    }
+    return $out
+}
+
+function Invoke-AccountScan {
+    Write-Step 'Reviewing user accounts'
+
+    $users = @()
+    try {
+        $users = @(Get-LocalUser -ErrorAction Stop | ForEach-Object {
+            [pscustomobject]@{ Name = $_.Name; Enabled = [bool]$_.Enabled; SID = $_.SID.Value; PasswordLastSet = $_.PasswordLastSet }
+        })
+    } catch { }
+    if (-not $users.Count) {
+        $users = @(Get-CimInstance -ClassName Win32_UserAccount -Filter 'LocalAccount=True' | ForEach-Object {
+            [pscustomobject]@{ Name = $_.Name; Enabled = -not $_.Disabled; SID = $_.SID; PasswordLastSet = $null }
+        })
+    }
+    if (-not $users.Count) {
+        Add-Check 'Accounts' 'Local accounts' 'Could not be read' 'Skipped'
+        return
+    }
+
+    $adminMembers = @(Get-AdminMembers)
+    $me = ([Security.Principal.WindowsIdentity]::GetCurrent().Name -split '\\')[-1]
+    $interactive = [string](Get-CimInstance -ClassName Win32_ComputerSystem).UserName
+    $known = @($me, ($interactive -split '\\')[-1]) | Where-Object { $_ }
+
+    $hiddenKey = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList'
+    $hidden = @(Get-RegValues $hiddenKey | Where-Object { $_.Value -eq 0 } | ForEach-Object { $_.Name })
+
+    $flagged = 0
+    $adminCount = 0
+    foreach ($u in $users) {
+        $isAdm = [bool]($adminMembers | Where-Object { ($_ -split '\\')[-1] -ieq $u.Name -and ($_ -split '\\')[0] -ieq $Computer })
+        $isHidden = [bool]($hidden | Where-Object { $_ -ieq $u.Name })
+        $pwSet = if ($u.PasswordLastSet) { ([datetime]$u.PasswordLastSet).ToString('MMM d, yyyy', $Culture) } else { '' }
+        if ($isAdm -and $u.Enabled) { $adminCount++ }
+
+        [void]$script:Inv.Accounts.Add([pscustomobject]@{
+            Account = $u.Name
+            Enabled = $(if ($u.Enabled) { 'Yes' } else { 'No' })
+            Administrator = $(if ($isAdm) { 'Yes' } else { 'No' })
+            'Hidden from sign-in' = $(if ($isHidden) { 'Yes' } else { 'No' })
+            'Password set' = $pwSet
+        })
+        if (-not $u.Enabled) { continue }
+
+        $det = [ordered]@{ 'Account' = $u.Name; 'Administrator' = $(if ($isAdm) { 'Yes' } else { 'No' }) }
+        if ($pwSet) { $det['Password last set'] = $pwSet }
+
+        if ($isHidden) {
+            $flagged++
+            $lvl = if ($isAdm) { 'Urgent' } else { 'Review' }
+            Add-Finding -Level $lvl -Area 'Accounts' -Details $det `
+                -Title ('The account "{0}" is hidden from the sign-in screen' -f $u.Name) `
+                -Why 'Windows is set to hide this account, so you would never see it when signing in. Attackers use this trick to keep a secret way back in.' `
+                -Action 'Unless an IT provider created it on purpose, have the account disabled and change your important passwords.'
+            continue
+        }
+        if ($u.SID -like '*-500') {
+            $flagged++
+            Add-Finding -Level Review -Area 'Accounts' -Details $det `
+                -Title 'The built-in Administrator account is turned on' `
+                -Why 'This all-powerful account is normally switched off, and it is a common target for password guessing.' `
+                -Action 'Unless an IT provider needs it, turn it off by running "net user Administrator /active:no" in an administrator command prompt.'
+            continue
+        }
+        if ($u.SID -like '*-501') {
+            $flagged++
+            Add-Finding -Level Review -Area 'Accounts' -Details $det `
+                -Title 'The Guest account is turned on' `
+                -Why 'The Guest account lets anyone use this PC without a password.' `
+                -Action 'Turn it off by running "net user Guest /active:no" in an administrator command prompt.'
+            continue
+        }
+        if ($isAdm -and -not ($known | Where-Object { $_ -ieq $u.Name })) {
+            $flagged++
+            Add-Finding -Level Review -Area 'Accounts' -Details $det `
+                -Title ('"{0}" is another administrator on this PC' -f $u.Name) `
+                -Why 'Administrators can install software and change any setting, so every admin account is a full key to this computer.' `
+                -Action 'Make sure you know who uses this account. If you do not recognize it, have it disabled.'
+        }
+    }
+
+    Add-Check 'Accounts' 'Administrator accounts' ('{0} active' -f $adminCount) $(if ($flagged) { 'Flagged' } else { 'Clear' })
+    Add-Check 'Accounts' 'Hidden accounts' $(if ($hidden.Count) { Format-Plural $hidden.Count 'hidden account' 'hidden accounts' } else { 'None' }) $(if ($hidden.Count) { 'Flagged' } else { 'Clear' })
+}
+
+# ---------------------------------------------------------------------------
+# Scan: startup items and scheduled tasks
+# ---------------------------------------------------------------------------
+function Get-AutorunVerdict([string]$Exe, [string]$FullCommand, [string]$Signer) {
+    if ($Exe -match $AnyHostRx -and $FullCommand -match $DangerArgsRx) { return 'Hidden' }
+    if ($Exe -match $SuspiciousPathRx -and $Signer -eq 'Not signed') { return 'OddFolder' }
+    if ($Exe -match $ScriptHostRx) { return 'Script' }
+    return 'OK'
+}
+
+function Invoke-StartupScan {
+    Write-Step 'Listing programs that start with Windows'
+
+    $items = New-Object System.Collections.ArrayList
+    $runKeys = @(
+        @{ Where = 'All users';            Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run' }
+        @{ Where = 'All users (32-bit)';   Path = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run' }
+        @{ Where = 'All users, once';      Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce' }
+        @{ Where = 'This user';            Path = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run' }
+        @{ Where = 'This user, once';      Path = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce' }
+    )
+    foreach ($k in $runKeys) {
+        foreach ($v in (Get-RegValues $k.Path)) {
+            [void]$items.Add([pscustomobject]@{ Name = $v.Name; Where = $k.Where; Command = [string]$v.Value })
+        }
+    }
+
+    $shell = $null
+    try { $shell = New-Object -ComObject WScript.Shell } catch { }
+    $folders = @(
+        @{ Where = 'Startup folder, this user'; Path = [Environment]::GetFolderPath('Startup') }
+        @{ Where = 'Startup folder, all users'; Path = [Environment]::GetFolderPath('CommonStartup') }
+    )
+    foreach ($f in $folders) {
+        if (-not $f.Path -or -not (Test-Path -LiteralPath $f.Path)) { continue }
+        foreach ($file in @(Get-ChildItem -LiteralPath $f.Path -File | Where-Object { $_.Name -ne 'desktop.ini' })) {
+            $cmd = '"' + $file.FullName + '"'
+            if ($file.Extension -ieq '.lnk' -and $shell) {
+                $lnk = $shell.CreateShortcut($file.FullName)
+                $cmd = ('"{0}" {1}' -f $lnk.TargetPath, $lnk.Arguments).Trim()
+            }
+            [void]$items.Add([pscustomobject]@{ Name = $file.BaseName; Where = $f.Where; Command = $cmd })
+        }
+    }
+
+    $flagged = 0
+    foreach ($i in $items) {
+        $exe = Get-ExePath $i.Command
+        $signer = Get-SignerName $exe
+        [void]$script:Inv.Startup.Add([pscustomobject]@{ Name = $i.Name; 'Starts for' = $i.Where; Command = $i.Command; Publisher = $signer })
+
+        $det = [ordered]@{ 'Entry' = $i.Name; 'Starts for' = $i.Where; 'Command' = $i.Command; 'Publisher' = $signer }
+        switch (Get-AutorunVerdict $exe $i.Command $signer) {
+            'Hidden' {
+                $flagged++
+                Add-Finding -Level Urgent -Area 'Startup' -Details $det `
+                    -Title 'A hidden command runs every time Windows starts' `
+                    -Why 'A startup entry launches a script with options typical of malware, such as a hidden window, an encoded command, or a download from the internet.' `
+                    -Action 'Do not delete it blindly. Have a technician look at it, since it may be how someone keeps access.'
+            }
+            'OddFolder' {
+                $flagged++
+                Add-Finding -Level Review -Area 'Startup' -Details $det `
+                    -Title ('"{0}" starts from an unusual folder' -f $i.Name) `
+                    -Why 'It runs from a temporary or download folder and is not signed by a known publisher. Real software rarely does this.' `
+                    -Action 'If you do not recognize it, disable it in Task Manager > Startup apps and have it checked.'
+            }
+            'Script' {
+                $flagged++
+                Add-Finding -Level Review -Area 'Startup' -Details $det `
+                    -Title ('"{0}" runs a script at startup' -f $i.Name) `
+                    -Why 'Scripts that run at sign-in can be legitimate, but they are also a common way to keep malware running.' `
+                    -Action 'If you do not recognize it, disable it in Task Manager > Startup apps and have it checked.'
+            }
+        }
+    }
+    Add-Check 'Startup' 'Programs that start with Windows' ('{0}, {1} look normal' -f (Format-Plural $items.Count 'found' 'found'), ($items.Count - $flagged)) $(if ($flagged) { 'Flagged' } else { 'Clear' })
+}
+
+function Invoke-TaskScan {
+    Write-Step 'Reviewing scheduled tasks'
+
+    $tasks = @()
+    try {
+        $tasks = @(Get-ScheduledTask -ErrorAction Stop | Where-Object { $_.TaskPath -notlike '\Microsoft\*' })
+    } catch {
+        Add-Check 'Startup' 'Scheduled tasks' 'Could not be read on this version of Windows' 'Skipped'
+        return
+    }
+
+    $flagged = 0
+    foreach ($t in $tasks) {
+        foreach ($a in @($t.Actions)) {
+            if (-not $a.Execute) { continue }
+            $exe    = [Environment]::ExpandEnvironmentVariables(([string]$a.Execute).Trim().Trim('"'))
+            $arg    = [string]$a.Arguments
+            $full   = ('{0} {1}' -f $exe, $arg).Trim()
+            $signer = Get-SignerName $exe
+            $hiddenTask = [bool]$t.Settings.Hidden
+
+            [void]$script:Inv.Tasks.Add([pscustomobject]@{ Task = $t.TaskName; Folder = $t.TaskPath; Runs = $full; Publisher = $signer; State = [string]$t.State })
+
+            $det = [ordered]@{ 'Task' = ($t.TaskPath + $t.TaskName); 'Runs' = $full; 'Publisher' = $signer; 'State' = [string]$t.State; 'Hidden task' = $(if ($hiddenTask) { 'Yes' } else { 'No' }) }
+            $verdict = Get-AutorunVerdict $exe $full $signer
+            if ($verdict -eq 'OK' -and $hiddenTask -and $signer -eq 'Not signed') { $verdict = 'HiddenTask' }
+
+            switch ($verdict) {
+                'Hidden' {
+                    $flagged++
+                    Add-Finding -Level Urgent -Area 'Scheduled tasks' -Details $det `
+                        -Title ('The scheduled task "{0}" runs a hidden command' -f $t.TaskName) `
+                        -Why 'It launches a script with options typical of malware, such as a hidden window, an encoded command, or a download from the internet.' `
+                        -Action 'Have a technician check it. To stop it for now, open Task Scheduler, find the task, right-click it and choose Disable.'
+                }
+                { $_ -eq 'OddFolder' -or $_ -eq 'HiddenTask' } {
+                    $flagged++
+                    Add-Finding -Level Review -Area 'Scheduled tasks' -Details $det `
+                        -Title ('The scheduled task "{0}" runs an unsigned program' -f $t.TaskName) `
+                        -Why 'The program has no publisher signature and either lives in a temporary or download folder or is hidden from view. Real software rarely does this.' `
+                        -Action 'If you do not recognize it, open Task Scheduler, right-click the task and choose Disable, then have it checked.'
+                }
+                'Script' {
+                    $flagged++
+                    Add-Finding -Level Review -Area 'Scheduled tasks' -Details $det `
+                        -Title ('The scheduled task "{0}" runs a script' -f $t.TaskName) `
+                        -Why 'Scheduled scripts can be legitimate, but they are also a common way to keep malware or remote access running.' `
+                        -Action 'If you do not recognize it, open Task Scheduler, right-click the task and choose Disable, then have it checked.'
+                }
+            }
+        }
+    }
+    Add-Check 'Startup' 'Scheduled tasks (non-Microsoft)' ('{0}, {1} look normal' -f (Format-Plural $script:Inv.Tasks.Count 'action found' 'actions found'), ($script:Inv.Tasks.Count - $flagged)) $(if ($flagged) { 'Flagged' } else { 'Clear' })
+}
+
+# ---------------------------------------------------------------------------
+# Scan: security settings
+# ---------------------------------------------------------------------------
+function Invoke-SecurityScan {
+    Write-Step 'Checking antivirus, firewall and admin prompts'
+
+    # Antivirus status
+    $avList = @()
+    try { $avList = @(Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName AntiVirusProduct -ErrorAction Stop) } catch { }
+    $mp = $null
+    try { $mp = Get-MpComputerStatus -ErrorAction Stop } catch { }
+
+    if ($avList.Count) {
+        $avOn = @($avList | Where-Object { Test-AvEnabled $_.productState })
+        if (-not $avOn.Count) {
+            Add-Finding -Level Urgent -Area 'Security' `
+                -Title 'No antivirus is actively protecting this PC' `
+                -Why 'Antivirus is installed but switched off. Malware and scammers often turn it off first.' `
+                -Action 'Open Windows Security > Virus & threat protection and turn Real-time protection back on.' `
+                -Details ([ordered]@{ 'Installed' = ((@($avList | ForEach-Object { $_.displayName })) -join '; ') })
+            Add-Check 'Security' 'Antivirus' 'Off' 'Flagged'
+        } else {
+            Add-Check 'Security' 'Antivirus' ('On: ' + ((@($avOn | ForEach-Object { $_.displayName }) | Select-Object -Unique) -join ', '))
+        }
+    } elseif ($mp) {
+        if (-not $mp.RealTimeProtectionEnabled) {
+            Add-Finding -Level Urgent -Area 'Security' `
+                -Title 'Windows Security real-time protection is off' `
+                -Why 'Nothing is scanning files as they arrive. Malware and scammers often turn this off first.' `
+                -Action 'Open Windows Security > Virus & threat protection and turn Real-time protection back on.'
+            Add-Check 'Security' 'Antivirus' 'Off' 'Flagged'
+        } else {
+            Add-Check 'Security' 'Antivirus' 'On: Microsoft Defender'
+        }
+    } else {
+        Add-Check 'Security' 'Antivirus' 'Status could not be read' 'Skipped'
+    }
+
+    # Defender exclusions
+    $pref = $null
+    try { $pref = Get-MpPreference -ErrorAction Stop } catch { }
+    if ($pref) {
+        $raw = @($pref.ExclusionPath) + @($pref.ExclusionProcess) + @($pref.ExclusionExtension)
+        $needsAdmin = [bool]($raw | Where-Object { $_ -like 'N/A*' })
+        $ex = @($raw | Where-Object { $_ -and $_ -notlike 'N/A*' })
+        if ($needsAdmin) {
+            Add-Check 'Security' 'Antivirus exclusions' 'Needs administrator rights to read' 'Skipped'
+        } elseif (-not $ex.Count) {
+            Add-Check 'Security' 'Antivirus exclusions' 'None'
+        } else {
+            $broad = @($ex | Where-Object { $_ -match $BroadExclusionRx })
+            $lvl = if ($broad.Count) { 'Urgent' } else { 'Review' }
+            Add-Finding -Level $lvl -Area 'Security' `
+                -Title 'Antivirus has been told to ignore parts of this PC' `
+                -Why 'Exclusions tell Windows Security not to scan certain folders or files. Malware and scammers add them so their tools are never caught.' `
+                -Action 'Review the list in Windows Security > Virus & threat protection > Manage settings > Exclusions and remove anything you did not add.' `
+                -Details ([ordered]@{ 'Excluded' = ($ex -join '; '); 'Very broad exclusions' = $(if ($broad.Count) { $broad -join '; ' } else { 'None' }) })
+            Add-Check 'Security' 'Antivirus exclusions' (Format-Plural $ex.Count 'exclusion' 'exclusions') 'Flagged'
+        }
+    }
+
+    # Firewall
+    try {
+        $off = @(Get-NetFirewallProfile -ErrorAction Stop | Where-Object { [string]$_.Enabled -eq 'False' })
+        if ($off.Count) {
+            $names = (@($off | ForEach-Object { $_.Name })) -join ', '
+            Add-Finding -Level Review -Area 'Security' `
+                -Title ('Windows Firewall is off for {0} networks' -f $names) `
+                -Why 'The firewall blocks other computers from reaching programs on this PC. With it off, any open door is reachable.' `
+                -Action 'Turn it back on in Windows Security > Firewall & network protection, unless another security product manages your firewall.'
+            Add-Check 'Security' 'Firewall' ('Off for ' + $names) 'Flagged'
+        } else {
+            Add-Check 'Security' 'Firewall' 'On for all networks'
+        }
+    } catch {
+        Add-Check 'Security' 'Firewall' 'Status could not be read' 'Skipped'
+    }
+
+    # User Account Control
+    $sys = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
+    if ($sys -and $sys.EnableLUA -eq 0) {
+        Add-Finding -Level Urgent -Area 'Security' `
+            -Title 'User Account Control is switched off' `
+            -Why 'Windows no longer asks before programs make system-wide changes, so anything that runs can quietly take full control.' `
+            -Action 'Search the Start menu for "Change User Account Control settings", move the slider back to the default, and restart.'
+        Add-Check 'Security' 'Admin permission prompts' 'Off' 'Flagged'
+    } elseif ($sys -and $sys.ConsentPromptBehaviorAdmin -eq 0) {
+        Add-Finding -Level Review -Area 'Security' `
+            -Title 'Admin permission prompts are set to never ask' `
+            -Why 'Programs can make system-wide changes without asking you first.' `
+            -Action 'Search the Start menu for "Change User Account Control settings" and move the slider back to the default.'
+        Add-Check 'Security' 'Admin permission prompts' 'Never ask' 'Flagged'
+    } else {
+        Add-Check 'Security' 'Admin permission prompts' 'On'
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Scan: browsers
+# ---------------------------------------------------------------------------
+function Resolve-ExtensionName([string]$VersionDir, $Manifest) {
+    $n = [string]$Manifest.name
+    if ($n -match '^__MSG_(.+)__$') {
+        $key = $Matches[1]
+        $locales = @([string]$Manifest.default_locale, 'en', 'en_US') | Where-Object { $_ }
+        foreach ($l in $locales) {
+            $f = Join-Path $VersionDir ('_locales\{0}\messages.json' -f $l)
+            if (Test-Path -LiteralPath $f) {
+                try {
+                    $msgs = Get-Content -LiteralPath $f -Raw -Encoding UTF8 | ConvertFrom-Json
+                    $prop = $msgs.PSObject.Properties | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
+                    if ($prop -and $prop.Value.message) { return [string]$prop.Value.message }
+                } catch { }
+            }
+        }
+    }
+    return $n
+}
+
+function Invoke-BrowserScan {
+    Write-Step 'Checking browsers for forced or screen-sharing extensions'
+
+    # Extensions forced by policy
+    $policyKeys = @(
+        @{ Browser = 'Chrome'; Path = 'SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist' }
+        @{ Browser = 'Edge';   Path = 'SOFTWARE\Policies\Microsoft\Edge\ExtensionInstallForcelist' }
+        @{ Browser = 'Brave';  Path = 'SOFTWARE\Policies\BraveSoftware\Brave\ExtensionInstallForcelist' }
+    )
+    $forced = @()
+    foreach ($pk in $policyKeys) {
+        foreach ($hive in @('HKLM:', 'HKCU:')) {
+            foreach ($v in (Get-RegValues (Join-Path $hive $pk.Path))) {
+                $forced += ('{0}: {1}' -f $pk.Browser, $v.Value)
+            }
+        }
+    }
+    if ($forced.Count) {
+        Add-Finding -Level Review -Area 'Browsers' `
+            -Title 'Browser extensions are being forced onto this PC' `
+            -Why 'A policy setting installs these extensions and stops you from removing them. Workplaces do this on purpose, and so do browser hijackers.' `
+            -Action 'If this is not a work computer, have the policy removed and the extensions checked.' `
+            -Details ([ordered]@{ 'Forced extensions' = ($forced -join '; ') })
+        Add-Check 'Browsers' 'Forced extensions' (Format-Plural $forced.Count 'found' 'found') 'Flagged'
+    } else {
+        Add-Check 'Browsers' 'Forced extensions' 'None'
+    }
+
+    # Extension inventory for every readable profile
+    $roots = @(
+        @{ Browser = 'Chrome'; Rel = 'AppData\Local\Google\Chrome\User Data' }
+        @{ Browser = 'Edge';   Rel = 'AppData\Local\Microsoft\Edge\User Data' }
+        @{ Browser = 'Brave';  Rel = 'AppData\Local\BraveSoftware\Brave-Browser\User Data' }
+    )
+    $usersRoot = Join-Path $env:SystemDrive 'Users'
+    $flagged = 0
+    foreach ($u in @(Get-ChildItem -LiteralPath $usersRoot -Directory)) {
+        foreach ($r in $roots) {
+            $base = Join-Path $u.FullName $r.Rel
+            if (-not (Test-Path -LiteralPath $base)) { continue }
+            foreach ($prof in @(Get-ChildItem -LiteralPath $base -Directory | Where-Object { $_.Name -eq 'Default' -or $_.Name -like 'Profile *' })) {
+                $extDir = Join-Path $prof.FullName 'Extensions'
+                foreach ($ext in @(Get-ChildItem -LiteralPath $extDir -Directory)) {
+                    $ver = Get-ChildItem -LiteralPath $ext.FullName -Directory | Sort-Object Name -Descending | Select-Object -First 1
+                    if (-not $ver) { continue }
+                    $mf = Join-Path $ver.FullName 'manifest.json'
+                    if (-not (Test-Path -LiteralPath $mf)) { continue }
+                    try { $manifest = Get-Content -LiteralPath $mf -Raw -Encoding UTF8 | ConvertFrom-Json } catch { continue }
+                    $name = Resolve-ExtensionName $ver.FullName $manifest
+                    [void]$script:Inv.Extensions.Add([pscustomobject]@{ Browser = $r.Browser; 'Windows user' = $u.Name; Profile = $prof.Name; Extension = $name; ID = $ext.Name })
+                    if ($name -match $RemoteExtRx) {
+                        $flagged++
+                        Add-Finding -Level Review -Area 'Browsers' `
+                            -Title ('The {0} extension "{1}" can share or control this screen' -f $r.Browser, $name) `
+                            -Why 'Screen-sharing and remote-control extensions give another person a view into this computer when active.' `
+                            -Action 'Keep it only if you use it on purpose. Otherwise remove it from the browser extensions page.' `
+                            -Details ([ordered]@{ 'Windows user' = $u.Name; 'Profile' = $prof.Name; 'Extension ID' = $ext.Name })
+                    }
+                }
+            }
+        }
+    }
+    Add-Check 'Browsers' 'Browser extensions' ('{0} listed, {1} flagged' -f $script:Inv.Extensions.Count, $flagged) $(if ($flagged) { 'Flagged' } else { 'Clear' })
+}
+
+# ---------------------------------------------------------------------------
+# Scan: network redirects and open ports
+# ---------------------------------------------------------------------------
+function Invoke-NetworkScan {
+    Write-Step 'Checking for web redirects, proxies and open doors'
+
+    # Hosts file
+    $hostsPath = Join-Path $env:windir 'System32\drivers\etc\hosts'
+    $lines = @(Get-Content -LiteralPath $hostsPath | ForEach-Object { ($_ -replace '#.*$', '').Trim() } | Where-Object { $_ -and $_ -notmatch '^(127\.0\.0\.1|::1)\s+localhost$' })
+    $redirects = @($lines | Where-Object { $_ -notmatch '^(0\.0\.0\.0|127\.0\.0\.1|::1?)\s' })
+    if ($redirects.Count) {
+        Add-Finding -Level Review -Area 'Network' `
+            -Title 'Some websites are redirected on this PC' `
+            -Why 'The hosts file overrides where website names point. It can send you to a fake bank or email page that looks real.' `
+            -Action 'Have the entries checked. Anything pointing a real website to an unfamiliar address should be removed.' `
+            -Details ([ordered]@{ 'Redirect entries' = ($redirects -join '; ') })
+        Add-Check 'Network' 'Website redirects (hosts file)' (Format-Plural $redirects.Count 'redirect' 'redirects') 'Flagged'
+    } elseif ($lines.Count) {
+        Add-Check 'Network' 'Website redirects (hosts file)' ('None. {0} blocking the sites listed.' -f (Format-Plural $lines.Count 'entry is' 'entries are'))
+    } else {
+        Add-Check 'Network' 'Website redirects (hosts file)' 'None'
+    }
+
+    # Proxy
+    $is = Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'
+    $proxyFound = $false
+    if ($is -and $is.ProxyEnable -eq 1 -and $is.ProxyServer) {
+        $proxyFound = $true
+        Add-Finding -Level Review -Area 'Network' `
+            -Title 'Web traffic is routed through a proxy' `
+            -Why 'All browsing passes through another server first. Workplaces use this, and attackers use it to watch or change what you see.' `
+            -Action 'If this is not a work PC, turn it off in Settings > Network & internet > Proxy.' `
+            -Details ([ordered]@{ 'Proxy server' = [string]$is.ProxyServer })
+    }
+    if ($is -and $is.AutoConfigURL) {
+        $proxyFound = $true
+        Add-Finding -Level Review -Area 'Network' `
+            -Title 'A proxy script controls web traffic' `
+            -Why 'A setup script decides where your browsing goes. Workplaces use this, and attackers use it to watch or change what you see.' `
+            -Action 'If this is not a work PC, turn off "Use setup script" in Settings > Network & internet > Proxy.' `
+            -Details ([ordered]@{ 'Script address' = [string]$is.AutoConfigURL })
+    }
+    Add-Check 'Network' 'Proxy settings' $(if ($proxyFound) { 'In use' } else { 'None' }) $(if ($proxyFound) { 'Flagged' } else { 'Clear' })
+
+    # Listening remote-access ports
+    try {
+        $listen = @(Get-NetTCPConnection -State Listen -ErrorAction Stop | Where-Object {
+            $RemotePorts.ContainsKey([int]$_.LocalPort) -and $_.LocalAddress -notmatch '^(127\.|::1$)'
+        })
+    } catch {
+        Add-Check 'Network' 'Open remote-access ports' 'Could not be read on this version of Windows' 'Skipped'
+        return
+    }
+    $ports = @($listen | Group-Object LocalPort)
+    foreach ($p in $ports) {
+        $port  = [int]$p.Name
+        $label = $RemotePorts[$port]
+        $procs = (@($p.Group | ForEach-Object { (Get-Process -Id $_.OwningProcess).ProcessName }) | Where-Object { $_ } | Select-Object -Unique) -join ', '
+        Add-Finding -Level Review -Area 'Network' `
+            -Title ('Port {0} is open for {1}' -f $port, $label) `
+            -Why ('This is a door that other computers on the network, or the internet, can knock on to reach {0}.' -f $label) `
+            -Action 'Close it by turning off or uninstalling the program that opened it, unless you use it on purpose.' `
+            -Details ([ordered]@{ 'Port' = $port; 'Used by' = $(if ($procs) { $procs } else { 'Unknown' }) })
+    }
+    Add-Check 'Network' 'Open remote-access ports' $(if ($ports.Count) { Format-Plural $ports.Count 'open' 'open' } else { 'None' }) $(if ($ports.Count) { 'Flagged' } else { 'Clear' })
+}
+
+# ---------------------------------------------------------------------------
+# Demo data (sample report, no scanning)
+# ---------------------------------------------------------------------------
+function Add-DemoData {
+    Add-RemoteToolFinding -ToolName 'AnyDesk' -Mode 'Unattended' -Details ([ordered]@{
+        'Type' = 'Remote-control app'; 'Installed as' = 'AnyDesk ad 9.0.4'; 'Install date' = 'Sep 24, 2026'
+        'Background service' = 'AnyDesk Service (Running, starts Auto)'; 'Online right now' = 'Yes, connected to the internet'
+    })
+    Add-Finding -Level Urgent -Area 'Security' `
+        -Title 'Antivirus has been told to ignore parts of this PC' `
+        -Why 'Exclusions tell Windows Security not to scan certain folders or files. Malware and scammers add them so their tools are never caught.' `
+        -Action 'Review the list in Windows Security > Virus & threat protection > Manage settings > Exclusions and remove anything you did not add.' `
+        -Details ([ordered]@{ 'Excluded' = 'C:\Users\Public\svc; C:\ProgramData\AnyDesk'; 'Very broad exclusions' = 'C:\Users\Public\svc' })
+    Add-RemoteToolFinding -ToolName 'UltraViewer' -Mode 'Present' -Details ([ordered]@{
+        'Type' = 'Remote-control app'; 'Online right now' = 'Not running'; 'Downloaded copies' = 'C:\Users\Martha\Downloads\UltraViewer_setup_6.6_en.exe'
+    })
+    Add-Finding -Level Review -Area 'Accounts' `
+        -Title '"support01" is another administrator on this PC' `
+        -Why 'Administrators can install software and change any setting, so every admin account is a full key to this computer.' `
+        -Action 'Make sure you know who uses this account. If you do not recognize it, have it disabled.' `
+        -Details ([ordered]@{ 'Account' = 'support01'; 'Administrator' = 'Yes'; 'Password last set' = 'Sep 24, 2026' })
+    Add-Finding -Level Review -Area 'Remote access' `
+        -Title 'Windows Remote Desktop is turned on' `
+        -Why 'Anyone who knows a password for an account on this PC can sign in to it from another computer. Home computers rarely need this.' `
+        -Action 'If nobody connects to this PC remotely on purpose, turn it off in Settings > System > Remote Desktop.' `
+        -Details ([ordered]@{ 'Network Level Authentication' = 'On' })
+
+    Add-Check 'Remote access' 'Remote-control programs' ('2 found (searched for {0} known tools)' -f $RemoteTools.Count) 'Flagged'
+    Add-Check 'Remote access' 'Windows Remote Desktop' 'Turned on' 'Flagged'
+    Add-Check 'Remote access' 'Remote Assistance invitations' 'Off'
+    Add-Check 'Accounts' 'Administrator accounts' '2 active' 'Flagged'
+    Add-Check 'Accounts' 'Hidden accounts' 'None'
+    Add-Check 'Startup' 'Programs that start with Windows' '6 found, 6 look normal'
+    Add-Check 'Startup' 'Scheduled tasks (non-Microsoft)' '9 actions found, 9 look normal'
+    Add-Check 'Security' 'Antivirus' 'On: Microsoft Defender'
+    Add-Check 'Security' 'Antivirus exclusions' '2 exclusions' 'Flagged'
+    Add-Check 'Security' 'Firewall' 'On for all networks'
+    Add-Check 'Security' 'Admin permission prompts' 'On'
+    Add-Check 'Browsers' 'Forced extensions' 'None'
+    Add-Check 'Browsers' 'Browser extensions' '7 listed, 0 flagged'
+    Add-Check 'Network' 'Website redirects (hosts file)' 'None'
+    Add-Check 'Network' 'Proxy settings' 'None'
+    Add-Check 'Network' 'Open remote-access ports' 'None'
+
+    [void]$script:Inv.Accounts.Add([pscustomobject]@{ Account = 'Martha'; Enabled = 'Yes'; Administrator = 'Yes'; 'Hidden from sign-in' = 'No'; 'Password set' = 'Mar 2, 2025' })
+    [void]$script:Inv.Accounts.Add([pscustomobject]@{ Account = 'support01'; Enabled = 'Yes'; Administrator = 'Yes'; 'Hidden from sign-in' = 'No'; 'Password set' = 'Sep 24, 2026' })
+    [void]$script:Inv.Startup.Add([pscustomobject]@{ Name = 'OneDrive'; 'Starts for' = 'This user'; Command = '"C:\Users\Martha\AppData\Local\Microsoft\OneDrive\OneDrive.exe" /background'; Publisher = 'Signed by Microsoft Corporation' })
+    [void]$script:Inv.Startup.Add([pscustomobject]@{ Name = 'SecurityHealth'; 'Starts for' = 'All users'; Command = '%windir%\system32\SecurityHealthSystray.exe'; Publisher = 'Signed by Microsoft Windows' })
+    [void]$script:Inv.Tasks.Add([pscustomobject]@{ Task = 'GoogleUpdaterTaskSystem'; Folder = '\GoogleSystem\'; Runs = 'C:\Program Files (x86)\Google\GoogleUpdater\updater.exe --wake'; Publisher = 'Signed by Google LLC'; State = 'Ready' })
+    [void]$script:Inv.Extensions.Add([pscustomobject]@{ Browser = 'Chrome'; 'Windows user' = 'Martha'; Profile = 'Default'; Extension = 'Google Docs Offline'; ID = 'ghbmnnjooekpmoecnnnilnnbdlolhkhi' })
+}
+
+# ---------------------------------------------------------------------------
+# Report
+# ---------------------------------------------------------------------------
+function Enc($Value) {
+    if ($null -eq $Value) { return '' }
+    return [System.Net.WebUtility]::HtmlEncode([string]$Value)
+}
+
+function Get-FindingHtml($F) {
+    $cls = $F.Level.ToLower()
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.AppendLine(('<article class="finding {0}">' -f $cls))
+    [void]$sb.AppendLine(('<h3>{0}</h3>' -f (Enc $F.Title)))
+    [void]$sb.AppendLine(('<p>{0}</p>' -f (Enc $F.Why)))
+    [void]$sb.AppendLine(('<p class="todo"><strong>What to do:</strong> {0}</p>' -f (Enc $F.Action)))
+    [void]$sb.AppendLine('<details><summary>Technical details</summary><div class="wrap"><table class="kv">')
+    [void]$sb.AppendLine(('<tr><th scope="row">Area</th><td>{0}</td></tr>' -f (Enc $F.Area)))
+    if ($F.Details) {
+        foreach ($k in $F.Details.Keys) {
+            [void]$sb.AppendLine(('<tr><th scope="row">{0}</th><td>{1}</td></tr>' -f (Enc $k), (Enc $F.Details[$k])))
+        }
+    }
+    [void]$sb.AppendLine('</table></div></details></article>')
+    return $sb.ToString()
+}
+
+function Get-TableHtml($Rows) {
+    $list = @($Rows)
+    if (-not $list.Count) { return '<p class="empty">Nothing found.</p>' }
+    $cols = @($list[0].PSObject.Properties | ForEach-Object { $_.Name })
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<div class="wrap"><table><thead><tr>')
+    foreach ($c in $cols) { [void]$sb.Append(('<th scope="col">{0}</th>' -f (Enc $c))) }
+    [void]$sb.AppendLine('</tr></thead><tbody>')
+    foreach ($r in $list) {
+        [void]$sb.Append('<tr>')
+        foreach ($c in $cols) { [void]$sb.Append(('<td>{0}</td>' -f (Enc $r.$c))) }
+        [void]$sb.AppendLine('</tr>')
+    }
+    [void]$sb.AppendLine('</tbody></table></div>')
+    return $sb.ToString()
+}
+
+function New-ReportHtml {
+    $urgent  = @($script:Findings | Where-Object { $_.Level -eq 'Urgent' })
+    $review  = @($script:Findings | Where-Object { $_.Level -eq 'Review' })
+    $clear   = @($script:Checks   | Where-Object { $_.Status -eq 'Clear' }).Count
+
+    if ($urgent.Count) {
+        $verdictClass = 'urgent'
+        $headline = '{0} could let someone into this computer right now.' -f (Format-Plural $urgent.Count 'thing' 'things')
+    } elseif ($review.Count) {
+        $verdictClass = 'review'
+        $headline = 'Nothing urgent. {0} worth a quick look.' -f (Format-Plural $review.Count 'item is' 'items are')
+    } else {
+        $verdictClass = 'clear'
+        $headline = 'No signs of outside access on this computer.'
+    }
+
+    $when = '{0} at {1}' -f $ScanTime.ToString('dddd, MMMM d, yyyy', $Culture), $ScanTime.ToString('h:mm tt', $Culture)
+    $summaryParts = @()
+    if ($urgent.Count) { $summaryParts += (Format-Plural $urgent.Count 'needs attention now' 'need attention now') }
+    if ($review.Count) { $summaryParts += (Format-Plural $review.Count 'is worth a look' 'are worth a look') }
+    $summaryParts += (Format-Plural $clear 'check came back clear' 'checks came back clear')
+    $summary = ($summaryParts -join ', ') + '.'
+
+    $css = @'
+:root {
+  --ink: #1A2233; --muted: #566074; --line: #D6DBE2; --page: #E9EDF2; --sheet: #FFFFFF;
+  --urgent: #B3261E; --urgent-tint: #FCEEEC;
+  --review: #8A5A00; --review-tint: #FFF4DC;
+  --clear: #1D6B4E; --focus: #2457C5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 18px/1.6 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
+.sheet { max-width: 860px; margin: 0 auto; background: var(--sheet); min-height: 100vh; padding: 44px 56px 56px; }
+h1, h2, h3, .brand { font-family: Bahnschrift, "DIN Alternate", "Segoe UI", sans-serif; }
+.brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin: 0 0 40px; }
+.brand b { font-size: 22px; font-weight: 700; }
+.brand span { color: var(--muted); font-size: 15px; font-family: "Segoe UI", system-ui, sans-serif; }
+.verdict { font-size: 46px; line-height: 1.08; font-weight: 600; letter-spacing: -0.01em; max-width: 19ch;
+  margin: 0 0 18px; padding-left: 22px; border-left: 12px solid var(--clear); }
+.verdict.urgent { border-left-color: var(--urgent); }
+.verdict.review { border-left-color: var(--review); }
+.meta { margin: 0 0 4px; color: var(--muted); }
+.banner { margin: 28px 0 0; padding: 14px 18px; background: var(--review-tint); border-left: 4px solid var(--review); }
+section { margin-top: 56px; }
+h2 { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px;
+  font-size: 26px; font-weight: 600; margin: 0 0 22px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+h2 small { font: 400 15px "Segoe UI", system-ui, sans-serif; color: var(--muted); }
+.finding { border-left: 6px solid var(--line); padding: 2px 0 2px 22px; margin: 0 0 34px; }
+.finding.urgent { border-left-color: var(--urgent); }
+.finding.review { border-left-color: var(--review); }
+.finding h3 { font-size: 22px; font-weight: 600; line-height: 1.25; margin: 0 0 8px; }
+.finding p { margin: 0 0 10px; max-width: 66ch; }
+.finding .todo { padding: 10px 14px; background: var(--urgent-tint); }
+.finding.review .todo { background: var(--review-tint); }
+summary { cursor: pointer; color: var(--muted); font-size: 15px; }
+summary:hover { color: var(--ink); }
+.wrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+th { font-weight: 600; }
+.kv th { width: 32%; color: var(--muted); font-weight: 400; }
+.checks { list-style: none; margin: 0; padding: 0; }
+.checks li { display: grid; grid-template-columns: 7em 1fr 1.3fr; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+.status { font-weight: 600; font-size: 14px; padding-top: 2px; }
+.s-clear .status { color: var(--clear); }
+.s-flagged .status { color: var(--urgent); }
+.s-skipped .status { color: var(--muted); }
+.result { color: var(--muted); }
+.inventory details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+.inventory summary { font-size: 17px; color: var(--ink); }
+.empty { color: var(--muted); margin: 8px 0 0; }
+footer { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 15px; color: var(--muted); }
+footer p { margin: 0 0 8px; max-width: 70ch; }
+a { color: var(--focus); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (max-width: 680px) {
+  .sheet { padding: 28px 20px 40px; }
+  .verdict { font-size: 34px; }
+  .checks li { grid-template-columns: 1fr; gap: 2px; }
+}
+@media print {
+  body { background: #fff; }
+  .sheet { max-width: none; padding: 0; }
+}
+'@
+
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.AppendLine('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">')
+    [void]$sb.AppendLine('<meta name="viewport" content="width=device-width, initial-scale=1">')
+    [void]$sb.AppendLine(('<title>{0} report for {1}</title>' -f (Enc $Brand), (Enc $Computer)))
+    [void]$sb.AppendLine('<style>' + $css + '</style></head><body><main class="sheet">')
+
+    [void]$sb.AppendLine(('<p class="brand"><b>{0}</b><span>Who can get into this PC? A check by {1}</span></p>' -f (Enc $Brand), (Enc $Company)))
+    [void]$sb.AppendLine(('<h1 class="verdict {0}">{1}</h1>' -f $verdictClass, (Enc $headline)))
+    [void]$sb.AppendLine(('<p class="meta">{0}, scanned {1}.</p>' -f (Enc $Computer), (Enc $when)))
+    [void]$sb.AppendLine(('<p class="meta">{0}</p>' -f (Enc $summary)))
+    if ($DemoReport) {
+        [void]$sb.AppendLine('<p class="banner">This is a sample report with example findings. No computer was scanned.</p>')
+    } elseif (-not $IsAdmin) {
+        [void]$sb.AppendLine('<p class="banner">This scan ran without administrator rights, so some areas could not be checked. Run it again and choose Yes when Windows asks for permission to get the full picture.</p>')
+    }
+
+    if ($urgent.Count) {
+        [void]$sb.AppendLine(('<section><h2>Needs attention now <small>{0}</small></h2>' -f (Format-Plural $urgent.Count 'item' 'items')))
+        foreach ($f in $urgent) { [void]$sb.AppendLine((Get-FindingHtml $f)) }
+        [void]$sb.AppendLine('</section>')
+    }
+    if ($review.Count) {
+        [void]$sb.AppendLine(('<section><h2>Worth a look <small>{0}</small></h2>' -f (Format-Plural $review.Count 'item' 'items')))
+        foreach ($f in $review) { [void]$sb.AppendLine((Get-FindingHtml $f)) }
+        [void]$sb.AppendLine('</section>')
+    }
+
+    [void]$sb.AppendLine(('<section><h2>What was checked <small>{0}</small></h2><ul class="checks">' -f (Format-Plural $script:Checks.Count 'check' 'checks')))
+    foreach ($c in $script:Checks) {
+        $word = switch ($c.Status) { 'Flagged' { 'Flagged' } 'Skipped' { 'Not checked' } default { 'Clear' } }
+        [void]$sb.AppendLine(('<li class="s-{0}"><span class="status">{1}</span><span>{2}</span><span class="result">{3}</span></li>' -f $c.Status.ToLower(), $word, (Enc $c.Name), (Enc $c.Result)))
+    }
+    [void]$sb.AppendLine('</ul></section>')
+
+    [void]$sb.AppendLine('<section class="inventory"><h2>Everything we found <small>For a technician</small></h2>')
+    $inv = @(
+        @{ Label = 'User accounts';                     Rows = $script:Inv.Accounts }
+        @{ Label = 'Programs that start with Windows';  Rows = $script:Inv.Startup }
+        @{ Label = 'Scheduled tasks (non-Microsoft)';   Rows = $script:Inv.Tasks }
+        @{ Label = 'Browser extensions';                Rows = $script:Inv.Extensions }
+    )
+    foreach ($i in $inv) {
+        [void]$sb.AppendLine(('<details><summary>{0} ({1})</summary>' -f (Enc $i.Label), @($i.Rows).Count))
+        [void]$sb.AppendLine((Get-TableHtml $i.Rows))
+        [void]$sb.AppendLine('</details>')
+    }
+    [void]$sb.AppendLine('</section>')
+
+    [void]$sb.AppendLine('<footer>')
+    [void]$sb.AppendLine(('<p>Nothing on this computer was changed. {0} only reads settings and lists what it finds. It works alongside your antivirus and does not replace it.</p>' -f (Enc $Brand)))
+    [void]$sb.AppendLine(('<p>Want help cleaning something up? {0} can walk you through it at <a href="{1}">favorableodds.io</a>.</p>' -f (Enc $Company), $Website))
+    [void]$sb.AppendLine(('<p>{0} version {1}</p>' -f (Enc $Brand), $Version))
+    [void]$sb.AppendLine('</footer></main></body></html>')
+    return $sb.ToString()
+}
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+Write-Host ''
+Write-Host ('{0} v{1}   {2}' -f $Brand, $Version, $Company)
+Write-Host 'Read-only scan. Nothing on this computer will be changed.'
+if ($IsWindowsHost -and -not $IsAdmin -and -not $DemoReport) {
+    Write-Host 'Note: running without administrator rights, so some checks will be skipped.' -ForegroundColor Yellow
+}
+Write-Host ''
+
+if ($DemoReport) {
+    Write-Step 'Building a sample report (no scan)'
+    Add-DemoData
+} else {
+    $steps = @('Invoke-RemoteToolScan', 'Invoke-BuiltInRemoteScan', 'Invoke-AccountScan', 'Invoke-StartupScan',
+               'Invoke-TaskScan', 'Invoke-SecurityScan', 'Invoke-BrowserScan', 'Invoke-NetworkScan')
+    foreach ($s in $steps) {
+        try { & $s } catch { Add-Check 'Scanner' $s ('Stopped early: ' + $_.Exception.Message) 'Skipped' }
+    }
+}
+
+# Pick a writable output folder (a USB stick may be read-only)
+try {
+    if (-not (Test-Path -LiteralPath $OutputDir)) { New-Item -ItemType Directory -Path $OutputDir -Force -ErrorAction Stop | Out-Null }
+    $probe = Join-Path $OutputDir '.write-test'
+    [IO.File]::WriteAllText($probe, 'ok')
+    Remove-Item -LiteralPath $probe -Force
+} catch {
+    $OutputDir = Join-Path ([Environment]::GetFolderPath('Desktop')) 'OddsGuard Reports'
+    New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
+}
+
+$stamp    = $ScanTime.ToString('yyyyMMdd-HHmm', $Culture)
+$baseName = if ($DemoReport) { 'OddsGuard-SAMPLE-' + $stamp } else { 'OddsGuard-{0}-{1}' -f $Computer, $stamp }
+$htmlPath = Join-Path $OutputDir ($baseName + '.html')
+$jsonPath = Join-Path $OutputDir ($baseName + '.json')
+$utf8     = New-Object System.Text.UTF8Encoding($false)
+
+[IO.File]::WriteAllText($htmlPath, (New-ReportHtml), $utf8)
+$json = [ordered]@{
+    tool = $Brand; version = $Version; computer = $Computer; scannedAt = $ScanTime.ToString('o', $Culture)
+    ranAsAdmin = $IsAdmin; demo = [bool]$DemoReport
+    findings = $script:Findings; checks = $script:Checks
+} | ConvertTo-Json -Depth 6
+[IO.File]::WriteAllText($jsonPath, $json, $utf8)
+
+$u = @($script:Findings | Where-Object { $_.Level -eq 'Urgent' }).Count
+$r = @($script:Findings | Where-Object { $_.Level -eq 'Review' }).Count
+Write-Host ''
+Write-Host ('Done. {0} urgent, {1} to review.' -f $u, $r) -ForegroundColor $(if ($u) { 'Red' } elseif ($r) { 'Yellow' } else { 'Green' })
+Write-Host ('Report: ' + $htmlPath)
+
+if (-not $NoOpen -and $IsWindowsHost) { Start-Process -FilePath $htmlPath }
