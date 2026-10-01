@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You — Favorable Odds Shop</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg:#0d0d0f; --card:#14110a; --bone:#f3ead2; --muted:#a89f88; --gold:#c9a24b; --line:rgba(201,162,75,.35); --ok:#4ade80; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--bone); line-height:1.6; min-height:100vh; display:flex; flex-direction:column; }
+header { padding:14px 24px; border-bottom:1px solid var(--line); }
+header a { font-family:'Oswald',sans-serif; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--bone); text-decoration:none; }
+main { flex:1; display:flex; align-items:center; justify-content:center; padding:48px 16px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:40px 32px; max-width:560px; width:100%; text-align:center; }
+.tick { width:60px; height:60px; border-radius:50%; border:2px solid var(--ok); color:var(--ok); font-size:28px; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
+h1 { font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.04em; font-size:clamp(26px,6vw,34px); margin-bottom:12px; }
+p { color:var(--muted); margin-bottom:14px; }
+ul { text-align:left; margin:18px auto 24px; padding-left:22px; color:var(--muted); max-width:420px; }
+li { margin-bottom:8px; }
+.btn { display:inline-block; background:var(--gold); color:#1a1407; text-decoration:none; font-weight:700; padding:12px 24px; border-radius:10px; }
+.small { font-size:13px; margin-top:18px; margin-bottom:0; }
+.small a { color:var(--gold); }
+</style>
+</head>
+<body>
+<header><a href="/">Favorable Odds</a></header>
+<main>
+  <div class="card">
+    <div class="tick" aria-hidden="true">✓</div>
+    <h1>Thank you!</h1>
+    <p>If your payment went through, Stripe is emailing you a receipt.</p>
+    <ul>
+      <li>This is a pre-order. Items ship within 2–3 weeks of purchase.</li>
+      <li>We ship to the US address you entered at checkout.</li>
+      <li>Need to change something? Reply to your receipt or contact us as soon as possible.</li>
+    </ul>
+    <a class="btn" href="/shop.html">Keep shopping</a>
+    <p class="small">No receipt in a few minutes? Check spam, then text 689-243-9704 or email <a href="mailto:hello@favorableodds.io">hello@favorableodds.io</a>.</p>
+  </div>
+</main>
+<script>
+// Landing here means Stripe sent the customer back, so the saved cart is no longer needed.
+try { localStorage.removeItem('fo_cart_v1'); } catch (e) {}
+</script>
+</body>
+</html>
