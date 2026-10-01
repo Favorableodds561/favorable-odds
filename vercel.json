@@ -1,17 +1,16 @@
 {
   "rewrites": [
-    { "source": "/services", "destination": "/services.html" },
-    { "source": "/bookkeeping", "destination": "/bookkeeping.html" },
-    { "source": "/work", "destination": "/work/index.html" },
-    { "source": "/tools", "destination": "/tools/index.html" },
-    { "source": "/tools/odds-vault", "destination": "/tools/odds-vault/index.html" },
-    { "source": "/tools/odds-guard", "destination": "/tools/odds-guard/index.html" },
-    { "source": "/tools/odds-guard/sample-report", "destination": "/tools/odds-guard/sample-report/index.html" }
+    {"source": "/services", "destination": "/services.html"},
+    {"source": "/bookkeeping", "destination": "/bookkeeping.html"},
+    {"source": "/work", "destination": "/work/index.html"},
+    {"source": "/tools", "destination": "/tools/index.html"},
+    {"source": "/tools/odds-vault", "destination": "/tools/odds-vault/index.html"},
+    {"source": "/tools/odds-guard", "destination": "/tools/odds-guard/index.html"},
+    {"source": "/tools/odds-guard/sample-report", "destination": "/tools/odds-guard/sample-report/index.html"},
+    {"source": "/tools/odds-tune", "destination": "/tools/odds-tune/index.html"}
   ],
   "headers": [
-    {
-      "source": "/tools/odds-guard/(sample-report|download|source)/(.*)",
-      "headers": [ { "key": "X-Robots-Tag", "value": "noindex, follow" } ]
-    }
+    {"source": "/tools/odds-guard/(sample-report|download|source)/(.*)", "headers": [{"key": "X-Robots-Tag", "value": "noindex, follow"}]},
+    {"source": "/tools/odds-tune/download/(.*)", "headers": [{"key": "X-Robots-Tag", "value": "noindex, follow"}, {"key": "X-Content-Type-Options", "value": "nosniff"}]}
   ]
 }

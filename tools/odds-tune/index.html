@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Static page: no scripts beyond the shared menu/analytics shim, and no network requests (connect-src 'none'). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<title>Odd$ Tune: Free Safe Windows Cleanup &amp; Maintenance Tool</title>
+<meta name="description" content="Free Windows cleanup tool that scans first, removes only eligible old temp files, reviews startup apps, optimizes drives with Windows tools and runs DISM and SFC. No telemetry.">
+<link rel="canonical" href="https://favorableodds.io/tools/odds-tune/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Favorable Odds">
+<meta property="og:title" content="Odd$ Tune: Safe Windows Cleanup, Maintenance and Repair">
+<meta property="og:description" content="A free Windows utility that scans first, cleans only a short allowlist of old temp files, and uses built-in Windows tools for drive optimization and repair. Local reports, no telemetry.">
+<meta property="og:url" content="https://favorableodds.io/tools/odds-tune/">
+<meta property="og:image" content="https://favorableodds.io/business_logo.jpg">
+<meta property="og:image:alt" content="Favorable Odds logo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Odd$ Tune: Safe Windows Cleanup, Maintenance and Repair">
+<meta name="twitter:description" content="Free Windows utility. Scan first, conservative cleanup, built-in Windows maintenance tools, local reports.">
+<meta name="twitter:image" content="https://favorableodds.io/business_logo.jpg">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="icon" href="/business_logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="stylesheet" href="/tools/odds-tune/tune.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Odd$ Tune",
+      "url": "https://favorableodds.io/tools/odds-tune/",
+      "description": "Free Windows cleanup and maintenance utility. Scans first, cleans only allowlisted old temporary files, opens Windows Startup Apps, runs Windows' media-aware drive optimization and DISM/SFC repair, and saves local HTML and JSON reports. No telemetry.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Windows 11 (x64), Windows 10 (x64, best effort)",
+      "softwareVersion": "1.0.0",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "Favorable Odds LLC", "url": "https://favorableodds.io/", "logo": "https://favorableodds.io/business_logo.jpg" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://favorableodds.io/" },
+        { "@type": "ListItem", "position": 2, "name": "Free Tools", "item": "https://favorableodds.io/tools/" },
+        { "@type": "ListItem", "position": 3, "name": "Odd$ Tune", "item": "https://favorableodds.io/tools/odds-tune/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is Odd$ Tune free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Odd$ Tune is free to download and use. There is no account, no sign-up and no ads." } },
+        { "@type": "Question", "name": "Is it safe? Will it delete my personal files?", "acceptedAnswer": { "@type": "Answer", "text": "Odd$ Tune only cleans a short allowlist of Windows temporary, cache and error-report folders, and only files older than a minimum age (48 hours, 72 hours or 7 days depending on the folder). It does not touch Documents, Desktop, Downloads, Pictures or your browser data. It scans first, shows what it found, and deletes nothing until you choose categories and confirm. See <a href=\"#what-it-cleans\">exactly what Odd$ Tune cleans<\/a>." } },
+        { "@type": "Question", "name": "What exactly gets deleted?", "acceptedAnswer": { "@type": "Answer", "text": "Old files in your user Temp folder, crash dumps, the DirectX shader cache, the Windows Temp folder, and queued or archived Windows Error Reporting files, plus the Recycle Bin only if you tick that option. Recent files, locked files, and anything reached through a link or junction are skipped." } },
+        { "@type": "Question", "name": "Will Odd$ Tune make my PC faster?", "acceptedAnswer": { "@type": "Answer", "text": "It can free storage by removing eligible temporary files, and it gives you access to documented Windows tools, but we don't promise a speed-up and the app doesn't invent a performance score. Many slow PCs are slow for reasons cleanup can't fix, such as too many startup apps, an almost-full drive or aging hardware. That's why it includes a shortcut to Windows' Startup Apps page and shows your free disk space as a measurable fact." } },
+        { "@type": "Question", "name": "Does Odd$ Tune upload anything or collect telemetry?", "acceptedAnswer": { "@type": "Answer", "text": "No. It runs locally, has no telemetry, analytics, account system or upload code, and its automated tests fail if a networking library is added. Reports are saved on your PC and are not uploaded. Choosing to open the web page launches your browser; running Advanced Windows Repair may use Windows Update through DISM, which is a Windows component." } },
+        { "@type": "Question", "name": "Why does Windows show a security warning when I run it?", "acceptedAnswer": { "@type": "Answer", "text": "Version 1.0.0 is not code-signed, so Windows SmartScreen or your antivirus may warn that the publisher is unknown. Verify the SHA-256 hash on this page before running it, and read the open-source code if you like. See <a href=\"#verify\">check it before you run it<\/a>." } },
+        { "@type": "Question", "name": "Why does it ask for administrator permission?", "acceptedAnswer": { "@type": "Answer", "text": "Scanning and cleaning your own temp files doesn't need it. Cleaning the protected Windows Temp and Windows Error Reporting folders, optimizing the drive, and running DISM and SFC do. Odd$ Tune explains why before Windows asks, and if you choose No, nothing starts and nothing is changed." } },
+        { "@type": "Question", "name": "Is drive optimization safe for an SSD?", "acceptedAnswer": { "@type": "Answer", "text": "Odd$ Tune runs Windows' own defrag command with the /O switch, which tells Windows to perform the optimization appropriate to the drive type: a retrim for an SSD and defragmentation for a hard disk. It does not run a traditional defragmentation on an SSD." } },
+        { "@type": "Question", "name": "What are DISM and SFC, and when should I use them?", "acceptedAnswer": { "@type": "Answer", "text": "DISM and System File Checker are Windows repair tools that check for and repair damaged system files and the Windows component store. Use them if Windows shows errors, crashes or seems corrupted, not as routine maintenance or a speed boost. Odd$ Tune runs DISM first, then SFC, shows the live output and saves a log. It never runs them during an ordinary cleanup." } },
+        { "@type": "Question", "name": "Which versions of Windows are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Windows 11 on 64-bit (x64) PCs is the primary target, and Windows 10 64-bit is best effort. ARM64 and 32-bit Windows are not supported. Automated tests and the build run on a Windows x64 runner." } },
+        { "@type": "Question", "name": "Where are the reports saved, and what do they contain?", "acceptedAnswer": { "@type": "Answer", "text": "In Documents\\Favorable Odds\\Odd$ Tune Reports as HTML and JSON files (maintenance runs also save a text log). They list the Windows version, CPU, RAM, disk space, what was found and removed, what was skipped and why, and operation results. They don't record your computer name or user name, and nothing is uploaded." } },
+        { "@type": "Question", "name": "Does it remove malware, clean the registry or clear my browser?", "acceptedAnswer": { "@type": "Answer", "text": "No. Odd$ Tune is not an antivirus or malware remover, and it deliberately has no registry cleaner, RAM booster, service disabling, driver updater or browser-data cleaning. If you're worried someone else can access your PC, try <a href=\"/tools/odds-guard/\">Odd$ Guard<\/a>." } },
+        { "@type": "Question", "name": "How do I uninstall it?", "acceptedAnswer": { "@type": "Answer", "text": "There is nothing to uninstall: Odd$ Tune is a single file with no installer. Delete OddsTune.exe. Any reports you saved stay in your Documents folder until you delete them." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body data-fo-page-event="tune_page_view">
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="site-nav" aria-label="Primary">
+  <a href="/" class="nav-logo">
+    <img src="/business_logo.jpg" alt="Favorable Odds logo" class="nav-logo-img" width="48" height="48">
+    <span class="nav-wordmark">Favorable Odds Tech Solutions</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#audit">Free Audit ✦</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="nav">Instant Services ⚡</a></li>
+    <li><a href="/work">The Work ↗</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/tools/" aria-current="page" data-fo-event="free_tools_click" data-fo-location="nav">Free Tools</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="nav">Shop</a></li>
+    <li><a href="/#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" type="button" aria-label="Open menu" aria-controls="navOverlay" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-overlay" id="navOverlay">
+  <a href="/" class="nav-overlay-logo">
+    <img src="/business_logo.jpg" alt="Favorable Odds" width="40" height="40">
+    <span>Favorable Odds</span>
+  </a>
+  <button class="nav-overlay-close" id="navOverlayClose" type="button" aria-label="Close menu"></button>
+  <ul class="nav-overlay-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="mobile_nav">Free Tools</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="mobile_nav">Instant Services ⚡</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="mobile_nav">Shop</a></li>
+    <li><a href="/bookkeeping">Bookkeeping</a></li>
+    <li><a href="/work">The Work ↗</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+<header class="page-hero tune-hero">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="breadcrumb">Free Tools</a></li>
+        <li aria-current="page">Odd$ Tune</li>
+      </ol>
+    </nav>
+    <p class="hero-tag">Odd$ Tune by Favorable Odd$ · Windows download</p>
+    <h1>Safe Windows Cleanup <em>Without the Mystery</em></h1>
+    <p class="hero-sub">Odd$ Tune is a free Windows utility for safe cleanup, maintenance and repair. It scans first, shows you what it found, and removes eligible old temporary files only after you choose. It also gives you one-click access to documented Windows tools: Startup Apps, drive optimization, DISM and SFC.</p>
+    <ul class="hero-pills" aria-label="Key facts">
+      <li>Runs locally on your PC</li>
+      <li>Nothing is uploaded</li>
+      <li>No desktop telemetry</li>
+      <li>No account required</li>
+      <li>Scan first, delete only what you select</li>
+    </ul>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary" data-fo-event="tune_cta_click" data-fo-location="hero">Get Odd$ Tune</a>
+      <a href="#what-it-cleans" class="btn-link">See exactly what it cleans ↓</a>
+    </div>
+    <p class="hero-fine">Version 1.0.0 · Windows 11 x64 (primary) · Windows 10 x64 (best effort) · Not code-signed yet, <a href="#release-details">see release details</a></p>
+  </div>
+</header>
+
+<!-- DOWNLOAD -->
+<section class="t-section" id="download" aria-labelledby="download-title">
+  <div class="wrap get-grid">
+    <div class="get-main">
+      <p class="section-tag">Free download</p>
+      <h2 class="section-title" id="download-title">Get Odd$ Tune</h2>
+      <p class="section-sub">One file, no installer, no account. Download it, check the SHA-256, and run it.</p>
+<!-- DL:BEGIN -->
+      <div class="dl-card is-pending" id="tune-download">
+        <h3>Download not available yet</h3>
+        <p>The first Windows build has not been published to this page. The download button is switched on only after the executable has been built, tested and its SHA-256 recorded here.</p>
+        <span class="dl-btn is-disabled" aria-disabled="true">Download unavailable</span>
+      </div>
+<!-- DL:END -->
+    </div>
+
+    <aside class="get-side" id="release-details" aria-labelledby="release-title">
+      <h3 id="release-title">Release details</h3>
+      <dl class="release">
+        <div><dt>Version</dt><dd>1.0.0 (initial release)</dd></div>
+        <div><dt>File</dt><dd><code>OddsTune.exe</code></dd></div>
+<!-- REL:BEGIN -->
+        <div><dt>Size</dt><dd>Published with the build</dd></div>
+        <div><dt>SHA-256</dt><dd>Published with the build</dd></div>
+<!-- REL:END -->
+        <div><dt>Code signing</dt><dd><strong>Unsigned.</strong> Version 1.0.0 is not code-signed.</dd></div>
+        <div><dt>Supported</dt><dd>Windows 11 x64 (primary). Windows 10 x64 (best effort). ARM64 and 32-bit Windows are not supported.</dd></div>
+        <div><dt>Built by</dt><dd>GitHub Actions on a Windows x64 runner, after automated tests pass</dd></div>
+        <div><dt>Source</dt><dd><a href="https://github.com/Favorableodds561/favorable-odds/tree/main/desktop/odds-tune" data-fo-event="tune_source_click" data-fo-location="release_box" rel="noopener">desktop/odds-tune on GitHub</a></dd></div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<!-- VERIFY -->
+<section class="t-section white" id="verify" aria-labelledby="verify-title">
+  <div class="wrap">
+    <p class="section-tag">Trust and transparency</p>
+    <h2 class="section-title" id="verify-title">Check it before you run it</h2>
+    <p class="section-sub">A cleanup tool deletes files, so you should be able to verify it. The program is open source and every build is hashed.</p>
+    <div class="trust-grid">
+      <article class="trust-card">
+        <h3>Verify the download</h3>
+        <p>After downloading, compare the file's SHA-256 with the one in the release details. In PowerShell:</p>
+        <pre><code>Get-FileHash .\OddsTune.exe -Algorithm SHA256</code></pre>
+        <p>Or in Command Prompt:</p>
+        <pre><code>certutil -hashfile OddsTune.exe SHA256</code></pre>
+        <p>If the values differ, don't run it. A hash confirms the file wasn't damaged or swapped after it was published; it can't vouch for a website that has itself been compromised.</p>
+      </article>
+      <article class="trust-card caution">
+        <h3>Not code-signed yet</h3>
+        <p>Version 1.0.0 is <strong>unsigned</strong>: it has no code-signing certificate. Windows SmartScreen or your antivirus may warn you that the publisher is unknown, because the file is new and unsigned.</p>
+        <p>We will not describe it as signed until it is. If a signed build is published later, it will have a new SHA-256.</p>
+      </article>
+      <article class="trust-card">
+        <h3>Read the source</h3>
+        <p>The full source code, the cleanup rules and the automated tests are public. Each build runs the tests on Windows and Linux before the executable is created, then starts the built program once as a self-check.</p>
+        <p><a href="https://github.com/Favorableodds561/favorable-odds/tree/main/desktop/odds-tune" data-fo-event="tune_source_click" data-fo-location="verify" rel="noopener">View the source and documentation →</a></p>
+      </article>
+      <article class="trust-card">
+        <h3>Why it may ask for administrator permission</h3>
+        <p>Scanning and cleaning your own temporary files needs no special rights. Cleaning the protected Windows Temp and Windows Error Reporting folders, optimizing the drive, and running DISM and SFC need Administrator permission.</p>
+        <p>Odd$ Tune explains why before Windows asks, and you can say No. Declining changes nothing.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="t-section" id="features" aria-labelledby="features-title">
+  <div class="wrap">
+    <p class="section-tag">What it does</p>
+    <h2 class="section-title" id="features-title">Core features</h2>
+    <p class="section-sub">Removes eligible temporary files and provides access to documented Windows maintenance and repair functions. It does not promise a faster PC.</p>
+    <div class="check-grid">
+      <article class="check-card"><h3>PC Health Scan</h3><p>A read-only look at your PC: Windows version and build, CPU, RAM, system drive free and used space, SSD or hard-disk type where Windows reports it, pending restart, how much storage is eligible for cleanup, the Recycle Bin's size, administrator status, and whether the Windows repair tools are present. Measurable facts only: no "health score".</p></article>
+      <article class="check-card"><h3>Safe Cleanup</h3><p>Pick from a short list of known temporary and cache locations. You see the estimated space before you confirm and the space actually recovered afterwards, including how many items were skipped.</p></article>
+      <article class="check-card"><h3>Startup Review</h3><p>Opens Windows' own Startup Apps page. You decide what runs at sign-in. Odd$ Tune never turns a startup program off for you.</p></article>
+      <article class="check-card"><h3>SSD/HDD-aware Drive Optimization</h3><p>Runs Windows' <code>defrag &lt;drive&gt; /O</code> on your Windows drive, so Windows chooses the right operation for the drive type: retrim for an SSD, defragmentation for a hard disk.</p></article>
+      <article class="check-card"><h3>Advanced Windows Repair</h3><p>A separate, deliberate action for Windows problems: <code>DISM /Online /Cleanup-Image /RestoreHealth</code>, then <code>sfc /scannow</code>. Live output, exit codes and a saved log. It is a repair tool, not a speed booster.</p></article>
+      <article class="check-card"><h3>Local Reports</h3><p>HTML and JSON reports saved on your PC: before and after space, what was found and removed, what was skipped and why, and operation results. They don't include your computer or user name.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT CLEANS -->
+<section class="t-section white" id="what-it-cleans" aria-labelledby="cleans-title">
+  <div class="wrap">
+    <p class="section-tag">Cleanup rules</p>
+    <h2 class="section-title" id="cleans-title">Exactly what Odd$ Tune cleans</h2>
+    <p class="section-sub">Cleanup is allowlist-based. It looks only inside these locations and only at files that are old enough. It never searches your profile for <code>.tmp</code> or <code>.log</code> files.</p>
+    <div class="table-wrap">
+      <table class="tune-table">
+        <thead><tr><th scope="col">Category</th><th scope="col">Location</th><th scope="col">Only items older than</th><th scope="col">Administrator</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">User temporary files</th><td><code>%LOCALAPPDATA%\Temp</code></td><td>48 hours</td><td>No</td></tr>
+          <tr><th scope="row">Application crash dumps</th><td><code>%LOCALAPPDATA%\CrashDumps</code></td><td>7 days</td><td>No</td></tr>
+          <tr><th scope="row">DirectX shader cache</th><td><code>%LOCALAPPDATA%\D3DSCache</code></td><td>7 days</td><td>No</td></tr>
+          <tr><th scope="row">Windows temporary files</th><td><code>%WINDIR%\Temp</code></td><td>72 hours</td><td>Some files</td></tr>
+          <tr><th scope="row">Windows Error Reporting</th><td><code>%PROGRAMDATA%\Microsoft\Windows\WER\ReportQueue</code> and <code>ReportArchive</code></td><td>7 days</td><td>Usually</td></tr>
+          <tr><th scope="row">Recycle Bin</th><td>Your Windows drive's Recycle Bin</td><td>Only if you tick it</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="limits-grid">
+      <div class="limit-card"><h3>Recent files are protected</h3><p>A file is only eligible if it is old by both its modified time and its creation time, so freshly extracted installer files are left alone.</p></div>
+      <div class="limit-card"><h3>Links are never followed</h3><p>Symbolic links, junctions and other redirected folders are skipped, so cleanup can't wander outside the folders listed above.</p></div>
+      <div class="limit-card"><h3>Locked files are skipped</h3><p>Files in use by Windows or an app are skipped and counted. One locked file never stops the rest of the cleanup.</p></div>
+      <div class="limit-card"><h3>Unusual folders are skipped</h3><p>If your TEMP setting points somewhere unusual, such as a drive root or your Documents folder, Odd$ Tune ignores it for safety and says so.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEVER -->
+<section class="t-section" id="never" aria-labelledby="never-title">
+  <div class="wrap">
+    <p class="section-tag">Deliberately left out</p>
+    <h2 class="section-title" id="never-title">What Odd$ Tune does not do</h2>
+    <p class="section-sub">Many "PC optimizers" do things that can cause problems. Odd$ Tune is intentionally not one of them.</p>
+    <ul class="never-list">
+      <li>No registry cleaning</li>
+      <li>No "RAM boosting"</li>
+      <li>No disabling Windows services or scheduled tasks</li>
+      <li>No automatic disabling of startup programs</li>
+      <li>No driver updating</li>
+      <li>No browser history, cookies or password cleaning</li>
+      <li>No scanning your whole profile for <code>.tmp</code>, <code>.temp</code> or <code>.log</code> files</li>
+      <li>No uninstalling software</li>
+      <li>No telemetry, analytics, ads or background services</li>
+      <li>No upload of reports or scan results</li>
+    </ul>
+    <p class="note-box">It also does not remove malware and is not a replacement for antivirus. If you suspect someone else has access to your PC, our free <a href="/tools/odds-guard/" data-fo-event="guard_tool_click" data-fo-location="tune_never">Odd$ Guard</a> audit shows remote-access software, extra administrators and weakened security settings.</p>
+  </div>
+</section>
+
+<!-- CLEANUP vs REPAIR -->
+<section class="t-section white" id="cleanup-vs-repair" aria-labelledby="cvr-title">
+  <div class="wrap">
+    <p class="section-tag">Know the difference</p>
+    <h2 class="section-title" id="cvr-title">Cleanup is not repair</h2>
+    <div class="trust-grid">
+      <article class="trust-card">
+        <h3>Cleanup (Safe Cleanup tab)</h3>
+        <p>Removes eligible old temporary files to free storage. It is optional, routine and changes only the allowlisted locations. It never runs repair tools.</p>
+      </article>
+      <article class="trust-card caution">
+        <h3>Repair (Maintenance tab)</h3>
+        <p>DISM and System File Checker are Windows integrity tools for corruption, crashes, errors or damaged system components. They are not speed boosters and can take a long time. DISM may use Windows Update to fetch replacement components. Odd$ Tune only runs them when you ask.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="t-section" id="how-it-works" aria-labelledby="how-title">
+  <div class="wrap">
+    <p class="section-tag">Simple by design</p>
+    <h2 class="section-title" id="how-title">How Odd$ Tune works</h2>
+    <ol class="steps">
+      <li><h3>Download and run</h3><p>There is no installer. Download <code>OddsTune.exe</code>, verify its hash if you like, and double-click it.</p></li>
+      <li><h3>Scan My PC</h3><p>A read-only scan. Nothing is deleted or written, and no report is created unless you ask for one.</p></li>
+      <li><h3>Review</h3><p>See what could be cleaned and how much space it is, category by category.</p></li>
+      <li><h3>Choose and confirm</h3><p>Tick only what you want. The Recycle Bin is off unless you tick it. Confirm and cleanup runs.</p></li>
+      <li><h3>Check the report</h3><p>A before and after report is saved locally. Maintenance actions open their own window with live output and a saved log.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="t-section white" id="privacy" aria-labelledby="privacy-title">
+  <div class="wrap">
+    <p class="section-tag">Privacy</p>
+    <h2 class="section-title" id="privacy-title">Your PC stays your business</h2>
+    <div class="prose">
+      <p>Odd$ Tune runs entirely on your computer. It has no account system, no telemetry or analytics, no upload code and no auto-update, and the project's automated tests fail if a networking library is added to the program. Reports stay on your PC in <code>Documents\Favorable Odds\Odd$ Tune Reports</code> unless you choose to share them, and they don't record your computer name or user name.</p>
+      <p>The program's "open web page" button launches your normal browser only when you click it. When you run Advanced Windows Repair, DISM is a Windows component that may contact Windows Update to obtain replacement files; that is Windows, not Odd$ Tune.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<section class="t-section" id="changelog" aria-labelledby="changelog-title">
+  <div class="wrap">
+    <p class="section-tag">Release notes</p>
+    <h2 class="section-title" id="changelog-title">Changelog</h2>
+    <article class="release-note">
+      <h3>1.0.0 <small>initial release · unsigned</small></h3>
+      <ul class="plain-list">
+        <li>Read-only PC Health Scan, with no files written during a scan.</li>
+        <li>Allowlisted Safe Cleanup with age thresholds, link and junction protection, and locked-file handling.</li>
+        <li>Review Startup Apps (opens Windows Settings), media-aware drive optimization (<code>defrag /O</code>), and Advanced Windows Repair (DISM then SFC).</li>
+        <li>Local HTML and JSON reports; no telemetry.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="t-section white" id="faq" aria-labelledby="faq-title">
+  <div class="wrap">
+    <p class="section-tag">Questions</p>
+    <h2 class="section-title" id="faq-title">Odd$ Tune FAQ</h2>
+    <div class="faq">
+      <details>
+        <summary>Is Odd$ Tune free?</summary>
+        <div class="ans"><p>Yes. Odd$ Tune is free to download and use. There is no account, no sign-up and no ads.</p></div>
+      </details>
+      <details>
+        <summary>Is it safe? Will it delete my personal files?</summary>
+        <div class="ans"><p>Odd$ Tune only cleans a short allowlist of Windows temporary, cache and error-report folders, and only files older than a minimum age (48 hours, 72 hours or 7 days depending on the folder). It does not touch Documents, Desktop, Downloads, Pictures or your browser data. It scans first, shows what it found, and deletes nothing until you choose categories and confirm. See <a href="#what-it-cleans">exactly what Odd$ Tune cleans</a>.</p></div>
+      </details>
+      <details>
+        <summary>What exactly gets deleted?</summary>
+        <div class="ans"><p>Old files in your user Temp folder, crash dumps, the DirectX shader cache, the Windows Temp folder, and queued or archived Windows Error Reporting files, plus the Recycle Bin only if you tick that option. Recent files, locked files, and anything reached through a link or junction are skipped.</p></div>
+      </details>
+      <details>
+        <summary>Will Odd$ Tune make my PC faster?</summary>
+        <div class="ans"><p>It can free storage by removing eligible temporary files, and it gives you access to documented Windows tools, but we don't promise a speed-up and the app doesn't invent a performance score. Many slow PCs are slow for reasons cleanup can't fix, such as too many startup apps, an almost-full drive or aging hardware. That's why it includes a shortcut to Windows' Startup Apps page and shows your free disk space as a measurable fact.</p></div>
+      </details>
+      <details>
+        <summary>Does Odd$ Tune upload anything or collect telemetry?</summary>
+        <div class="ans"><p>No. It runs locally, has no telemetry, analytics, account system or upload code, and its automated tests fail if a networking library is added. Reports are saved on your PC and are not uploaded. Choosing to open the web page launches your browser; running Advanced Windows Repair may use Windows Update through DISM, which is a Windows component.</p></div>
+      </details>
+      <details>
+        <summary>Why does Windows show a security warning when I run it?</summary>
+        <div class="ans"><p>Version 1.0.0 is not code-signed, so Windows SmartScreen or your antivirus may warn that the publisher is unknown. Verify the SHA-256 hash on this page before running it, and read the open-source code if you like. See <a href="#verify">check it before you run it</a>.</p></div>
+      </details>
+      <details>
+        <summary>Why does it ask for administrator permission?</summary>
+        <div class="ans"><p>Scanning and cleaning your own temp files doesn't need it. Cleaning the protected Windows Temp and Windows Error Reporting folders, optimizing the drive, and running DISM and SFC do. Odd$ Tune explains why before Windows asks, and if you choose No, nothing starts and nothing is changed.</p></div>
+      </details>
+      <details>
+        <summary>Is drive optimization safe for an SSD?</summary>
+        <div class="ans"><p>Odd$ Tune runs Windows' own defrag command with the /O switch, which tells Windows to perform the optimization appropriate to the drive type: a retrim for an SSD and defragmentation for a hard disk. It does not run a traditional defragmentation on an SSD.</p></div>
+      </details>
+      <details>
+        <summary>What are DISM and SFC, and when should I use them?</summary>
+        <div class="ans"><p>DISM and System File Checker are Windows repair tools that check for and repair damaged system files and the Windows component store. Use them if Windows shows errors, crashes or seems corrupted, not as routine maintenance or a speed boost. Odd$ Tune runs DISM first, then SFC, shows the live output and saves a log. It never runs them during an ordinary cleanup.</p></div>
+      </details>
+      <details>
+        <summary>Which versions of Windows are supported?</summary>
+        <div class="ans"><p>Windows 11 on 64-bit (x64) PCs is the primary target, and Windows 10 64-bit is best effort. ARM64 and 32-bit Windows are not supported. Automated tests and the build run on a Windows x64 runner.</p></div>
+      </details>
+      <details>
+        <summary>Where are the reports saved, and what do they contain?</summary>
+        <div class="ans"><p>In Documents\Favorable Odds\Odd$ Tune Reports as HTML and JSON files (maintenance runs also save a text log). They list the Windows version, CPU, RAM, disk space, what was found and removed, what was skipped and why, and operation results. They don't record your computer name or user name, and nothing is uploaded.</p></div>
+      </details>
+      <details>
+        <summary>Does it remove malware, clean the registry or clear my browser?</summary>
+        <div class="ans"><p>No. Odd$ Tune is not an antivirus or malware remover, and it deliberately has no registry cleaner, RAM booster, service disabling, driver updater or browser-data cleaning. If you're worried someone else can access your PC, try <a href="/tools/odds-guard/">Odd$ Guard</a>.</p></div>
+      </details>
+      <details>
+        <summary>How do I uninstall it?</summary>
+        <div class="ans"><p>There is nothing to uninstall: Odd$ Tune is a single file with no installer. Delete OddsTune.exe. Any reports you saved stay in your Documents folder until you delete them.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- HELP -->
+<section class="t-section tight" id="help" aria-labelledby="help-title">
+  <div class="wrap">
+    <div class="help-cta">
+      <div>
+        <h2 id="help-title">Stubborn Windows problem?</h2>
+        <p>Odd$ Tune handles routine cleanup. If your PC is still slow, crashing or acting strangely, Favorable Odds offers computer cleanup and maintenance help.</p>
+      </div>
+      <div class="help-actions">
+        <a href="/#contact" class="btn-primary" data-help-mail data-fo-event="tune_help_click" data-fo-location="help_section">Get Help With My PC</a>
+        <a href="/#services" class="btn-outline" data-fo-event="services_click" data-fo-location="tune_help">View Tech Services</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="t-section tight" aria-labelledby="more-title">
+  <div class="wrap">
+    <h2 class="section-title" id="more-title">More from Favorable Odd$</h2>
+    <div class="more-grid">
+      <a class="more-card" href="/tools/odds-guard/" data-fo-event="guard_tool_click" data-fo-location="tune_more"><strong>Odd$ Guard</strong><span>Free Windows audit: who or what may be able to access your PC.</span><em>View Odd$ Guard →</em></a>
+      <a class="more-card" href="/tools/odds-vault/" data-fo-event="free_tools_click" data-fo-location="tune_more"><strong>Odd$ Vault</strong><span>Free browser tool that removes hidden file metadata and makes encrypted ZIPs.</span><em>Try Odd$ Vault →</em></a>
+      <a class="more-card" href="/tools/" data-fo-event="free_tools_click" data-fo-location="tune_more"><strong>All Free Tools</strong><span>Free utilities from Favorable Odd$, with more on the way.</span><em>Explore free tools →</em></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <a href="/" class="footer-brand">
+    <img src="/business_logo.jpg" alt="Favorable Odds logo" class="footer-logo-img" width="40" height="40">
+    <span class="footer-wordmark">Favorable Odds LLC</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/tools/" data-fo-event="free_tools_click" data-fo-location="footer">Free Tools</a></li>
+    <li><a href="/tools/odds-tune/">Odd$ Tune</a></li>
+    <li><a href="/tools/odds-guard/">Odd$ Guard</a></li>
+    <li><a href="/tools/odds-vault/">Odd$ Vault</a></li>
+    <li><a href="/services" data-fo-event="services_click" data-fo-location="footer">Instant Services</a></li>
+    <li><a href="/shop.html" data-fo-event="shop_click" data-fo-location="footer">Shop</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Favorable Odds LLC &nbsp;·&nbsp; hello&#64;favorableodds.io &nbsp;·&nbsp; 689-243-9704</div>
+</footer>
+
+<script src="/tools/tools.js" defer></script>
+<script src="/tools/odds-tune/tune.js" defer></script>
+</body>
+</html>
