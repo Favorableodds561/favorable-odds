@@ -207,6 +207,8 @@ class OddTuneApp:
         ttk.Label(tab, text="These use tools built into Windows. Odd$ Tune never disables services or startup programs and never edits "
                             "the registry for speed. Cleanup and repair are separate: repair is for Windows problems, not for speed.",
                   style="Body.TLabel", wraplength=900).pack(anchor="w", pady=(4, 10))
+        self.tools_var = StringVar(value="Run a scan to check which Windows tools are available on this PC.")
+        ttk.Label(tab, textvariable=self.tools_var, style="Body.TLabel", wraplength=900).pack(anchor="w", pady=(0, 6))
         self._maintenance_card(tab, "Review Startup Apps", "READ-ONLY  ·  opens Windows Settings", "Safe.TLabel",
                                "Opens Windows' Startup Apps page so you decide what runs at sign-in. Odd$ Tune never turns startup programs off for you.",
                                "Review Startup Apps", self.review_startup)
@@ -302,6 +304,13 @@ class OddTuneApp:
         for c in self.categories:
             self.category_size_vars[c.key].set(f"{bytes_readable(c.estimate_bytes)} · {c.estimate_files} files" if c.available else "n/a")
         self.save_scan_btn.config(state="normal")
+        t = snap.tools
+        self.tools_var.set("Detected on this PC:  drive optimization (defrag) " + ("available" if t.get("defrag") else "NOT found") +
+                           "  ·  DISM " + ("available" if t.get("dism") else "NOT found") +
+                           "  ·  System File Checker " + ("available" if t.get("sfc") else "NOT found") +
+                           ".  Optimization and repair need Administrator permission.")
+        self.optimize_btn.config(state="normal" if t.get("defrag") or not core.is_windows() else "disabled")
+        self.repair_btn.config(state="normal" if (t.get("dism") and t.get("sfc")) or not core.is_windows() else "disabled")
         note = "" if snap.support_tier == "primary" else f" {snap.support_note}"
         self.set_busy(False, f"Scan complete: {bytes_readable(snap.cleanable_bytes)} eligible across {snap.cleanable_files} files. "
                              f"Nothing was changed.{note}")

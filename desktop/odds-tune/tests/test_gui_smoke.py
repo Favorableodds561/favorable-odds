@@ -56,6 +56,8 @@ class GuiFlow(unittest.TestCase):
         self.assertEqual(str(self.app.save_scan_btn.cget("state")), "normal")
         self.assertIn("Windows 11", self.app.metric_vars["windows"].get())
         self.assertIn("SSD", self.app.metric_vars["drive"].get())
+        self.assertIn("DISM available", self.app.tools_var.get())
+        self.assertIn("System File Checker available", self.app.tools_var.get())
 
     def test_declining_the_confirmation_deletes_nothing(self):
         with tempfile.TemporaryDirectory() as td:
