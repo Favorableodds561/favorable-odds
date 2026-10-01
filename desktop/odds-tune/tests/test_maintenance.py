@@ -152,6 +152,48 @@ class Elevation(unittest.TestCase):
             self.assertEqual(core._shell_execute_runas("x.exe", ""), "failed")
 
 
+class DriveDetection(unittest.TestCase):
+    """Drive type comes from a read-only storage query, never from launching a process."""
+
+    def descriptor(self, vendor=b"Samsung ", product=b"SSD 970 EVO 1TB", bus=17):
+        import struct
+        strings = vendor + b"\x00" + product + b"\x00"
+        return struct.pack("<IIBBBBIIIIII", 1, 36 + len(strings), 0, 0, 0, 1, 36, 36 + len(vendor) + 1, 0, 0, bus, 0) + strings
+
+    def test_parse_device_descriptor(self):
+        self.assertEqual(core.parse_device_descriptor(self.descriptor()), ("Samsung SSD 970 EVO 1TB", "NVMe"))
+        self.assertEqual(core.parse_device_descriptor(self.descriptor(bus=11))[1], "SATA")
+        self.assertEqual(core.parse_device_descriptor(self.descriptor(bus=999))[1], "Unknown")
+
+    def test_parse_is_defensive_about_garbage(self):
+        for junk in (b"", b"\x00" * 5, b"\xff" * 40, self.descriptor()[:30]):
+            model, bus = core.parse_device_descriptor(junk)
+            self.assertIsInstance(model, str)
+            self.assertIsInstance(bus, str)
+
+    def test_seek_penalty_means_hdd(self):
+        import struct
+        self.assertIs(core.parse_seek_penalty(struct.pack("<IIB", 1, 9, 1)), True)    # spinning disk
+        self.assertIs(core.parse_seek_penalty(struct.pack("<IIB", 1, 9, 0)), False)   # no penalty = SSD
+        self.assertIsNone(core.parse_seek_penalty(b""))
+
+    def test_no_process_is_launched_to_detect_the_drive(self):
+        with mock.patch.object(core.subprocess, "run", side_effect=AssertionError("launched a process")), \
+             mock.patch.object(core.subprocess, "Popen", side_effect=AssertionError("launched a process")):
+            result = core.detect_drive("C:")
+        self.assertEqual(len(result), 3)
+
+    def test_invalid_drive_is_unknown(self):
+        self.assertEqual(core.detect_drive("C:; calc"), ("Unknown", "Unknown", "Unknown"))
+
+    @unittest.skipUnless(core.is_windows(), "Windows only")
+    def test_real_system_drive_query_does_not_raise(self):
+        model, media, bus = core.detect_drive()
+        self.assertIn(media, ("SSD", "HDD", "Unknown"))
+        self.assertIsInstance(model, str)
+        self.assertIsInstance(bus, str)
+
+
 class WindowsApiShapes(unittest.TestCase):
     def test_recycle_bin_struct_matches_the_windows_header(self):
         """SHQUERYRBINFO is packed to 20 bytes. The un-packed 24-byte layout makes the API call fail silently."""

@@ -57,6 +57,14 @@ class ScanIsReadOnly(unittest.TestCase):
             self.assertEqual(snapshot.cleanable_files, 4)
             self.assertEqual(snapshot.cleanable_bytes, sum(range(5, 9)))
 
+    def test_scan_launches_no_processes(self):
+        """Launching PowerShell and similar tools writes caches under the user profile, which a scan must not do."""
+        with tempfile.TemporaryDirectory() as td:
+            cats = core.build_categories({}, Path(td), str(Path(td) / "Temp"))
+            with mock.patch.object(core.subprocess, "Popen", side_effect=AssertionError("scan launched a process")), \
+                 mock.patch.object(core.subprocess, "run", side_effect=AssertionError("scan launched a process")):
+                core.collect_snapshot(cats)
+
     def test_scan_does_not_create_the_reports_folder(self):
         with tempfile.TemporaryDirectory() as home:
             with mock.patch.dict(os.environ, {"HOME": home, "USERPROFILE": home}), mock.patch.object(Path, "home", return_value=Path(home)):

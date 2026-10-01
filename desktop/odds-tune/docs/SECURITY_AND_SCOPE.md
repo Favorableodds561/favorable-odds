@@ -19,7 +19,7 @@
 | Deleting our own running files | The PyInstaller extraction folder is excluded | `test_own_pyinstaller_extraction_folder_is_protected` |
 | Locked, read-only, denied, vanished files | Skipped and counted; read-only flag cleared only for an eligible old file; never aborts the run | `MissingEmptyAndFailures` |
 | Fresh empty folders removed under a running app | Folders removed only if they were old before the run; never the root | `test_empty_root_and_empty_folders` |
-| Scan modifying the PC | One shared read-only traversal; tests forbid every modifying API and compare the tree before/after | `ScanIsReadOnly` |
+| Scan modifying the PC | One shared read-only traversal; no process is launched during a scan (not even PowerShell, which writes its own caches); tests forbid every modifying API and compare the tree before/after | `ScanIsReadOnly` |
 
 ## Elevation
 

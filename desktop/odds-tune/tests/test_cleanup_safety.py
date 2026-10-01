@@ -238,8 +238,11 @@ class MissingEmptyAndFailures(unittest.TestCase):
             free = write(root / "free.tmp", b"F" * 20, age_hours=100)
             if IS_WINDOWS:
                 handle = open(locked, "rb")          # Python opens without FILE_SHARE_DELETE, so Windows refuses deletion
-                self.addCleanup(handle.close)
-                result = core.clean_root(root, 48)
+                try:
+                    result = core.clean_root(root, 48)
+                    still_there = locked.exists()
+                finally:
+                    handle.close()                    # must be released before the temp folder is removed
             else:
                 real_unlink = os.unlink
 
@@ -250,7 +253,8 @@ class MissingEmptyAndFailures(unittest.TestCase):
 
                 with mock.patch.object(core.os, "unlink", side_effect=fake):
                     result = core.clean_root(root, 48)
-            self.assertTrue(locked.exists())
+                still_there = locked.exists()
+            self.assertTrue(still_there)
             self.assertFalse(free.exists())
             self.assertEqual(result.skipped_locked, 1)
             self.assertEqual(result.deleted_files, 1)

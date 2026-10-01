@@ -765,37 +765,89 @@ def empty_recycle_bin(drive: Optional[str] = None) -> tuple[bool, str]:
         return False, redact(str(exc))
 
 
-def run_hidden(argv: list[str], timeout: int) -> subprocess.CompletedProcess:
-    return subprocess.run(argv, capture_output=True, text=True, timeout=timeout, shell=False,
-                          creationflags=CREATE_NO_WINDOW if is_windows() else 0)
+# --- Drive type, read-only, without launching any process -------------------------------------------------------------
+# Uses the same documented IOCTLs Windows' own tools use. Opening the volume with access 0 allows query-only calls and
+# needs no administrator rights. If anything fails the answer is "Unknown": we never guess.
+
+IOCTL_STORAGE_QUERY_PROPERTY = 0x002D1400
+STORAGE_DEVICE_PROPERTY = 0
+STORAGE_DEVICE_SEEK_PENALTY_PROPERTY = 7
+BUS_TYPES = {0: "Unknown", 1: "SCSI", 2: "ATAPI", 3: "ATA", 4: "1394", 5: "SSA", 6: "Fibre Channel", 7: "USB", 8: "RAID", 9: "iSCSI",
+             10: "SAS", 11: "SATA", 12: "SD", 13: "MMC", 14: "Virtual", 15: "File-backed virtual", 16: "Storage Spaces", 17: "NVMe",
+             18: "SCM", 19: "UFS"}
+
+
+def parse_seek_penalty(buf: bytes) -> Optional[bool]:
+    """DEVICE_SEEK_PENALTY_DESCRIPTOR: Version u32, Size u32, IncursSeekPenalty u8. True = spinning disk."""
+    if len(buf) < 9:
+        return None
+    return bool(buf[8])
+
+
+def parse_device_descriptor(buf: bytes) -> tuple[str, str]:
+    """STORAGE_DEVICE_DESCRIPTOR -> (model, bus type). Strings live at offsets inside the buffer."""
+    import struct
+    if len(buf) < 36:
+        return "Unknown", "Unknown"
+    vendor_off, product_off = struct.unpack_from("<II", buf, 12)
+    bus = struct.unpack_from("<I", buf, 28)[0]
+
+    def text(off: int) -> str:
+        if not off or off >= len(buf):
+            return ""
+        end = buf.find(b"\x00", off)
+        return buf[off:end if end != -1 else len(buf)].decode("ascii", "replace").strip()
+
+    model = " ".join(x for x in (text(vendor_off), text(product_off)) if x) or "Unknown"
+    return model, BUS_TYPES.get(bus, "Unknown")
+
+
+def _query_storage_property(handle, property_id: int, size: int = 1024) -> Optional[bytes]:
+    from ctypes import wintypes
+
+    class Query(ctypes.Structure):
+        _fields_ = [("PropertyId", ctypes.c_uint32), ("QueryType", ctypes.c_uint32), ("Extra", ctypes.c_ubyte * 1)]
+
+    k = ctypes.windll.kernel32  # type: ignore[attr-defined]
+    k.DeviceIoControl.argtypes = [wintypes.HANDLE, wintypes.DWORD, ctypes.c_void_p, wintypes.DWORD, ctypes.c_void_p,
+                                  wintypes.DWORD, ctypes.POINTER(wintypes.DWORD), ctypes.c_void_p]
+    k.DeviceIoControl.restype = wintypes.BOOL
+    query = Query(property_id, 0)          # PropertyStandardQuery
+    out = ctypes.create_string_buffer(size)
+    returned = wintypes.DWORD(0)
+    ok = k.DeviceIoControl(handle, IOCTL_STORAGE_QUERY_PROPERTY, ctypes.byref(query), ctypes.sizeof(query), out, size,
+                           ctypes.byref(returned), None)
+    return out.raw[:returned.value] if ok else None
 
 
 def detect_drive(drive: Optional[str] = None) -> tuple[str, str, str]:
-    """(model, media type, bus type) from Windows' Storage cmdlets. 'Unknown' where Windows does not say."""
+    """(model, media type, bus type) for the system drive. 'Unknown' where Windows does not say."""
     if not is_windows():
         return "Unknown", "Unknown", "Unknown"
     drive = drive or system_drive()
     if not _DRIVE_RX.match(drive):
         return "Unknown", "Unknown", "Unknown"
-    letter = drive[0].upper()
-    script = (
-        "$ErrorActionPreference='SilentlyContinue';"
-        f"$d=Get-Partition -DriveLetter '{letter}' | Get-Disk;"
-        "$p=$null; if($d){$p=Get-PhysicalDisk | Where-Object {$_.DeviceId -eq [string]$d.Number} | Select-Object -First 1};"
-        "[PSCustomObject]@{FriendlyName=$(if($d){[string]$d.FriendlyName}else{'Unknown'});"
-        "BusType=$(if($d){[string]$d.BusType}else{'Unknown'});"
-        "MediaType=$(if($p){[string]$p.MediaType}else{'Unknown'})} | ConvertTo-Json -Compress"
-    )
-    ps = system32_exe(r"WindowsPowerShell\v1.0\powershell.exe")
     try:
-        proc = run_hidden([ps, "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", script], timeout=20)
-        data = json.loads(proc.stdout.strip()) if proc.returncode == 0 and proc.stdout.strip() else {}
+        from ctypes import wintypes
+        k = ctypes.windll.kernel32  # type: ignore[attr-defined]
+        k.CreateFileW.restype = wintypes.HANDLE
+        k.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, ctypes.c_void_p, wintypes.DWORD,
+                                  wintypes.DWORD, wintypes.HANDLE]
+        k.CloseHandle.argtypes = [wintypes.HANDLE]
+        handle = k.CreateFileW("\\\\.\\" + drive, 0, 3, None, 3, 0, None)   # query-only access, share read/write, OPEN_EXISTING
+        if handle in (None, wintypes.HANDLE(-1).value):
+            return "Unknown", "Unknown", "Unknown"
+        try:
+            device = _query_storage_property(handle, STORAGE_DEVICE_PROPERTY)
+            penalty = _query_storage_property(handle, STORAGE_DEVICE_SEEK_PENALTY_PROPERTY)
+        finally:
+            k.CloseHandle(handle)
+        model, bus = parse_device_descriptor(device) if device else ("Unknown", "Unknown")
+        seek = parse_seek_penalty(penalty) if penalty else None
+        media = "Unknown" if seek is None else ("HDD" if seek else "SSD")
+        return model, media, bus
     except Exception:
-        data = {}
-    if not isinstance(data, dict):
-        data = {}
-    return (str(data.get("FriendlyName") or "Unknown"), str(data.get("MediaType") or "Unknown"),
-            str(data.get("BusType") or "Unknown"))
+        return "Unknown", "Unknown", "Unknown"
 
 
 def tool_availability() -> dict[str, bool]:

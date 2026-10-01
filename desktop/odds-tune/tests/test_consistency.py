@@ -62,7 +62,7 @@ class NoAggressiveOperations(unittest.TestCase):
         forbidden = ("shell=True", "os.system(", "eval(", "exec(", "Stop-Service", "Set-Service", "sc.exe", "sc config", "netsh",
                      "schtasks", "taskkill", "Stop-Process", "Remove-Item", "rmtree", "Disable-", "Uninstall", "msiexec",
                      "wmic", "bcdedit", "powercfg", "vssadmin", "cleanmgr", "PendingFileRenameOperations\" ,",
-                     "SetProcessWorkingSetSize", "EmptyWorkingSet", "pnputil", "winget")
+                     "SetProcessWorkingSetSize", "EmptyWorkingSet", "pnputil", "winget", "powershell", "PowerShell")
         for src in SOURCES:
             text = src.read_text(encoding="utf-8")
             for needle in forbidden:

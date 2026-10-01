@@ -14,8 +14,8 @@ found and fixed rather than preserved.
 | 7 | Medium | Optimize/repair ran in a console that closed immediately; results were never captured | Worker window with live output, exit codes, interpreted results, log + report |
 | 8 | Medium | `SHQUERYRBINFO` struct lacked 1-byte packing, so Recycle Bin size always read as 0 | `_pack_ = 1`, fixed-width `DWORD` types, size test |
 | 9 | Medium | Tk variables were read from worker threads; drive detection ran on the UI thread (UI freeze) | Queue-based hand-off, values captured before threads start |
-| 10 | Low | `SystemDrive` env value was interpolated into a PowerShell script; bare `powershell.exe`, needless `-ExecutionPolicy Bypass`, console flash | Validated drive letter, absolute System32 path, no policy flag, `CREATE_NO_WINDOW` |
-| 11 | Low | Physical disk matched by `FriendlyName` (wrong with two identical drives) | Matched by disk number |
+| 10 | Medium | Drive detection launched PowerShell (bare `powershell.exe`, needless `-ExecutionPolicy Bypass`, console flash) with the `SystemDrive` env value interpolated into the script. Found by the Windows CI run: PowerShell itself writes cache files under the user profile, so a "scan" was not strictly read-only | No process is launched during a scan. Drive type, bus and model come from a query-only storage IOCTL on the system drive (validated drive letter); PowerShell is no longer used anywhere |
+| 11 | Low | Physical disk was matched by `FriendlyName` (wrong with two identical drives) | The query is made on the system drive's volume itself, so no matching is needed |
 | 12 | Low | The app's own PyInstaller extraction folder (inside `%TEMP%`) was not excluded | Explicitly protected |
 | 13 | Low | Reports/errors could contain `C:\Users\<name>\...` | Redaction of profile paths; no computer/user name recorded |
 | 14 | Low | Only 2 tests existed while the notes claimed broad validation; workflow ran tests only on one OS, hashed nothing after signing | 76 tests, Windows + Linux validation, EXE smoke test, signing hook placed before hashing |
