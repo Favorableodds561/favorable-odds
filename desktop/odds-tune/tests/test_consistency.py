@@ -102,6 +102,35 @@ class VersionAndHygiene(unittest.TestCase):
         for stale in ("v1.0 ", "v1.0\n", "Odd$ Tune v1\n"):
             self.assertNotIn(stale, readme)
 
+    def test_published_download_matches_the_hash_and_status_on_the_page(self):
+        """Never show an old hash: if an EXE is published, the page must show exactly that file's SHA-256, size and signing status."""
+        import hashlib
+        import json
+        folder = REPO / "tools" / "odds-tune" / "download" / f"v{core.APP_VERSION}"
+        page_text = (REPO / "tools" / "odds-tune" / "index.html").read_text(encoding="utf-8")
+        exe = folder / "OddsTune.exe"
+        if not exe.exists():
+            self.assertIn("Download not available yet", page_text, "page offers a download that does not exist")
+            self.assertNotIn(f"download/v{core.APP_VERSION}/OddsTune.exe", page_text)
+            return
+        data = exe.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        info = json.loads((folder / "build-info.json").read_text(encoding="utf-8-sig"))
+        self.assertEqual(data[:2], b"MZ")
+        self.assertEqual((folder / "OddsTune.exe.sha256").read_text().split()[0].lower(), digest)
+        self.assertEqual(info["sha256"].lower(), digest)
+        self.assertEqual(info["size_bytes"], len(data))
+        self.assertEqual(info["version"], core.APP_VERSION)
+        self.assertIn(digest, page_text, "the page shows a different SHA-256 than the published file")
+        self.assertIn(f"{len(data):,} bytes", page_text)
+        self.assertIn(f"/tools/odds-tune/download/v{core.APP_VERSION}/OddsTune.exe", page_text)
+        self.assertEqual(page_text.count("Unsigned") > 0, not info["signed"], "page signing statement disagrees with the build")
+        if not info["signed"]:
+            self.assertNotIn("is code-signed", page_text.replace("not code-signed", "").replace("Not code-signed", ""))
+        # no other 64-hex string (e.g. a stale hash from an earlier build or prototype) may appear on the page
+        import re
+        self.assertEqual(set(re.findall(r"\b[0-9a-f]{64}\b", page_text)), {digest})
+
     def test_no_secrets_or_private_material_in_the_app_folder(self):
         pattern = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}")
         for p in APP_DIR.rglob("*"):
