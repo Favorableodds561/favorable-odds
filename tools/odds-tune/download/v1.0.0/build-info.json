@@ -1,0 +1,13 @@
+{
+  "product": "Odd$ Tune",
+  "version": "1.0.0",
+  "file": "OddsTune.exe",
+  "size_bytes": 11732506,
+  "sha256": "608d290c2d00f31339c14a39bc4bc3330a3b3fab57bbc1758c879281293d58eb",
+  "signed": false,
+  "signature_status": "NotSigned",
+  "architecture": "x64",
+  "built_utc": "2026-10-01T17:15:31Z",
+  "commit": "41074a66ad1a502a2e071629f839c943e50c24c1",
+  "workflow_run": "36897866569/1"
+}
