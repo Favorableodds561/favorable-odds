@@ -2,8 +2,9 @@ name: Odd$ Tune - validate and build (Windows x64)
 
 # 1. validate : compile + unit tests on Windows AND Linux. Nothing is built if this fails.
 # 2. build    : PyInstaller on a Windows x64 runner, smoke-test the real EXE, (optionally) sign, THEN hash, then upload.
-# 3. publish  : (feature branch / manual only) commit the exact built EXE + hash into tools/odds-tune/download/ so the
-#               website can serve it. The website hash is taken from that committed file.
+# 3. publish  : (opt-in: push to feature/odds-tune-v1 whose head commit message contains "[publish]", or manual dispatch with
+#               publish_to_repo) commit the exact built EXE + hash into tools/odds-tune/download/ so the website can serve it.
+#               The website hash is taken from that committed file.
 # 4. release  : (tags odds-tune-v*) create a DRAFT GitHub Release with the build attached.
 #
 # Code signing is NOT configured yet. When the three secrets listed in desktop/odds-tune/docs/SIGNING.md exist,
@@ -160,7 +161,8 @@ jobs:
   publish:
     name: Publish build into the repo (feature branch / manual only)
     needs: build
-    if: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/feature/odds-tune-v1' || (github.event_name == 'workflow_dispatch' && inputs.publish_to_repo)) }}
+    # Opt-in, so iterating on the code does not add a ~10 MB binary to git history on every push.
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/feature/odds-tune-v1' && contains(github.event.head_commit.message, '[publish]')) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_repo) }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
