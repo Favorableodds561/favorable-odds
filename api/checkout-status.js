@@ -64,6 +64,18 @@ async function handler(req, res, deps) {
     }
   }
 
+  // Not needed to take payments, but needed for order emails and self-service cancellations.
+  out.extras = {
+    orderEmails: /^whsec_/.test(env.STRIPE_WEBHOOK_SECRET || '') && !!env.EMAILJS_PRIVATE_KEY,
+    webhookSecret: /^whsec_/.test(env.STRIPE_WEBHOOK_SECRET || ''),
+    emailjsPrivateKey: !!env.EMAILJS_PRIVATE_KEY,
+    customerPortal: /^https:\/\/billing\.stripe\.com\//.test(env.STRIPE_PORTAL_LOGIN_URL || '')
+  };
+  out.recommended = [];
+  if (!out.extras.webhookSecret) out.recommended.push('Add a Stripe webhook and put its signing secret (whsec_...) in STRIPE_WEBHOOK_SECRET, so every paid order is emailed to you.');
+  if (!out.extras.emailjsPrivateKey) out.recommended.push('Put your EmailJS private key in EMAILJS_PRIVATE_KEY and allow API access for non-browser applications in EmailJS, so the webhook can send order emails.');
+  if (!out.extras.customerPortal) out.recommended.push('Turn on the Stripe customer portal and put its login link in STRIPE_PORTAL_LOGIN_URL, so plan customers can cancel or update their card themselves.');
+
   if (out.thisAddressAllowed === false) out.hints.push('Checkout requests from ' + host + ' are refused. Set SITE_URL to your production address, or open the site from a Vercel-provided address.');
   if (!out.hints.length) out.hints.push('Everything this check can see looks fine.');
   out.ready = out.hints.length === 1 && out.hints[0].startsWith('Everything');

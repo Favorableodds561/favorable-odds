@@ -96,3 +96,15 @@ test('Vercel project, branch and deployment addresses are accepted origins', () 
   for (const h of ['a-123.vercel.app', 'a-git-x.vercel.app', 'a.vercel.app', 'favorableodds.io', 'www.favorableodds.io']) assert.ok(set.has('https://' + h), h);
   assert.ok(!set.has('https://evil.vercel.app'));
 });
+
+test('order-email, webhook and customer-portal setup is reported separately from payment readiness', async () => {
+  const bare = (await call({ env: { STRIPE_SECRET_KEY: KEY }, fetch: stripe() })).json();
+  assert.strictEqual(bare.ready, true, 'payments still work without the extras');
+  assert.deepStrictEqual(bare.extras, { orderEmails: false, webhookSecret: false, emailjsPrivateKey: false, customerPortal: false });
+  assert.strictEqual(bare.recommended.length, 3);
+  const full = (await call({ env: { STRIPE_SECRET_KEY: KEY, STRIPE_WEBHOOK_SECRET: 'whsec_abc', EMAILJS_PRIVATE_KEY: 'p', STRIPE_PORTAL_LOGIN_URL: 'https://billing.stripe.com/p/login/x' }, fetch: stripe() })).json();
+  assert.deepStrictEqual(full.extras, { orderEmails: true, webhookSecret: true, emailjsPrivateKey: true, customerPortal: true });
+  assert.deepStrictEqual(full.recommended, []);
+  const raw = JSON.stringify(full);
+  assert.ok(!raw.includes('whsec_abc') && !raw.includes('"p"'), 'secrets are never echoed');
+});

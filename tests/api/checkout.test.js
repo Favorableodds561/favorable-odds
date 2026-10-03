@@ -59,7 +59,7 @@ test('one-time service creates a payment-mode session with the catalog price', a
   assert.strictEqual(p.get('line_items[0][quantity]'), '1');
   assert.strictEqual(p.get('line_items[0][price_data][recurring][interval]'), null);
   assert.strictEqual(p.get('customer_email'), 'pat@example.com');
-  assert.strictEqual(p.get('success_url'), 'https://favorableodds.io/services/thanks?session_id={CHECKOUT_SESSION_ID}');
+  assert.strictEqual(p.get('success_url'), 'https://favorableodds.io/services/thanks?session_id={CHECKOUT_SESSION_ID}&from=services');
   assert.strictEqual(p.get('cancel_url'), 'https://favorableodds.io/services?checkout=cancelled');
   assert.strictEqual(p.get('metadata[service_key]'), 'data-rescue');
   assert.strictEqual(p.get('payment_intent_data[metadata][service_key]'), 'data-rescue');
@@ -191,6 +191,7 @@ test('bookkeeping plans check out and return to the bookkeeping page', async () 
   assert.strictEqual(p.get('mode'), 'subscription');
   assert.strictEqual(p.get('line_items[0][price_data][unit_amount]'), '34900');
   assert.strictEqual(p.get('cancel_url'), 'https://favorableodds.io/bookkeeping?checkout=cancelled');
+  assert.ok(p.get('success_url').endsWith('&from=bookkeeping'));
   assert.strictEqual(p.get('metadata[source]'), 'favorableodds.io/bookkeeping');
   const once = stripeOk();
   await call({ body: { ...GOOD, service: 'books-newllc' } }, { env: ENV, fetch: once });

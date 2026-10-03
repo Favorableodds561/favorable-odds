@@ -38,6 +38,7 @@ test('server amounts, titles and billing type match the page', () => {
     assert.strictEqual(item.title, p.title, key + ' title');
     assert.strictEqual(item.recurring, /\/mo$/.test(p.price), key + ' billing type');
     assert.strictEqual(item.group, p.group, key + ' page');
+    assert.strictEqual(item.annual, !!p.annual, key + ' annual option');
     assert.strictEqual(p.price, '$' + (item.cents / 100) + (item.recurring ? '/mo' : ''), key + ' price label');
   }
 });

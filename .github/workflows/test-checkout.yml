@@ -2,10 +2,10 @@ name: Test checkout API
 
 on:
   pull_request:
-    paths: ['api/**', 'tests/api/**', 'services.html', 'services-thanks.html', 'bookkeeping.html', 'shop.html', 'shop-thanks.html', 'vercel.json', '.github/workflows/test-checkout.yml']
+    paths: ['api/**', 'tests/api/**', 'services.html', 'services-thanks.html', 'bookkeeping.html', 'shop.html', 'shop-thanks.html', 'manage-plan.html', 'vercel.json', '.github/workflows/test-checkout.yml']
   push:
     branches: [main]
-    paths: ['api/**', 'tests/api/**', 'services.html', 'services-thanks.html', 'bookkeeping.html', 'shop.html', 'shop-thanks.html', 'vercel.json', '.github/workflows/test-checkout.yml']
+    paths: ['api/**', 'tests/api/**', 'services.html', 'services-thanks.html', 'bookkeeping.html', 'shop.html', 'shop-thanks.html', 'manage-plan.html', 'vercel.json', '.github/workflows/test-checkout.yml']
 
 permissions:
   contents: read

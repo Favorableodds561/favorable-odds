@@ -443,7 +443,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     </div>
 
   </div>
-  <p class="care-note">Not sure which plan fits? Text us for the free 15-minute fit call before you start a plan.</p>
+  <p class="care-note">Not sure which plan fits? Text us for the free 15-minute fit call before you start a plan. Already a client? <a href="/billing" style="color:var(--accent)">Manage or cancel your plan here</a>.</p>
 </section>
 
 <!-- HOW IT WORKS -->
@@ -810,7 +810,7 @@ function submitRequest() {
   fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ service: key, name: name, email: email, business: business, details: details, notes: notes })
+    body: JSON.stringify({ service: key, billing: 'month', name: name, email: email, business: business, details: details, notes: notes })
   }).then(function(r) {
     if (!r.ok) throw new Error('checkout ' + r.status);
     return r.json();

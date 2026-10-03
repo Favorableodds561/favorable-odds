@@ -4,6 +4,10 @@
 | --- | --- | --- |
 | `POST /api/create-checkout-session` | `services.html`, `bookkeeping.html` | Instant Services, Care Plans (monthly), Bookkeeping Starter/Standard (monthly), New LLC Starter |
 | `POST /api/create-shop-checkout` | `shop.html` | Tees (US only, flat shipping, "any 2 for $60" deal, Stripe Tax) |
+| `POST /api/stripe-webhook` | Stripe | Emails every paid, processing or failed order to the business inbox |
+| `GET /api/checkout-session?id=` | thank-you pages | Says whether a checkout was paid (no customer data) |
+| `GET /billing` → `/api/billing-portal` | plan pages, thank-you page | Sends plan customers to the Stripe customer portal (or `/manage-plan`) |
+| `GET /api/checkout-status` | you | Setup self-check |
 
 Each creates a Stripe-hosted Checkout page and returns `{ "url": "https://checkout.stripe.com/..." }`.
 The browser then redirects to it. Card details go to Stripe only; this site never sees them.
@@ -26,6 +30,9 @@ Set these in **Vercel → Project → Settings → Environment Variables** (neve
 | `STRIPE_SECRET_KEY` | yes | Stripe secret key `sk_test_...` (Preview) and `sk_live_...` (Production). A restricted key `rk_...` with **Checkout Sessions: write** is better. |
 | `SITE_URL` | no | Defaults to `https://favorableodds.io` |
 | `SHOP_AUTOMATIC_TAX` | no | Shop only. Stripe Tax is **on** unless this is exactly `off`. |
+| `STRIPE_WEBHOOK_SECRET` | for order emails | The webhook endpoint's signing secret (`whsec_...`). Test and live endpoints have different secrets. |
+| `EMAILJS_PRIVATE_KEY` | for order emails | EmailJS → Account → API keys → Private key. Also turn on "Allow EmailJS API for non-browser applications" (Account → Security). |
+| `STRIPE_PORTAL_LOGIN_URL` | for self-service cancel | Stripe → Settings → Billing → Customer portal → login link (`https://billing.stripe.com/p/login/...`). Test and live links differ. |
 
 The publishable key (`pk_...`) is **not used**: hosted Checkout does not need it.
 Never paste a secret key into chat, issues or code. If one is exposed, roll it in the Stripe dashboard immediately.
@@ -67,6 +74,29 @@ Note: this repo is connected to more than one Vercel project. Environment variab
 - **Settings → Billing → Customer portal**: lets Care Plan customers update their card or cancel. Share the portal link in your welcome email.
 - Notifications: turn on email alerts for new payments (Stripe emails only, no webhook in this phase).
 
+## Order emails (Stripe webhook)
+
+Every completed checkout is emailed to the inbox on the EmailJS template (`template_lbtqhem`, currently `hello@favorableodds.io`), sent from the server, so it does not depend on the customer's browser.
+
+- **PAID**: start work or ship. Services and bookkeeping include the full intake form; shop orders include items, totals and the shipping address.
+- **PAYMENT PROCESSING**: a bank payment that has not cleared. Wait for the PAID email.
+- **PAYMENT FAILED**: do not start or ship.
+- Sandbox orders are prefixed `[TEST]`.
+
+Setup, once per mode (sandbox first, then live):
+1. Stripe → Developers → Webhooks → **Add endpoint**: `https://<your address>/api/stripe-webhook`. Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`.
+2. Copy the endpoint's **signing secret** into `STRIPE_WEBHOOK_SECRET` (Vercel; Preview for the sandbox endpoint, Production for the live one) and redeploy.
+3. Add `EMAILJS_PRIVATE_KEY` and allow non-browser API access in EmailJS.
+4. In Stripe, open the endpoint and click **Send test event** (or place a test order). The endpoint should show `200`.
+
+If EmailJS is down, the webhook returns an error and Stripe retries for up to 3 days. A retry after a slow success can occasionally send the same email twice; the Stripe event id in the notes tells duplicates apart.
+The browser still sends a "PAYMENT PENDING" email when checkout starts (useful for following up abandoned checkouts). Treat only **PAID** as an order.
+
+## Plans: annual billing and self-service
+
+- Care Plans can be bought **monthly or annually** (annual = 10 months, "2 months free"). The page sends only `billing: "year"`; the server computes the price. Bookkeeping plans are monthly only.
+- `/billing` sends customers to the Stripe customer portal to update their card or cancel. Turn the portal on in Stripe (Settings → Billing → Customer portal: allow cancellation and payment-method updates), copy its login link into `STRIPE_PORTAL_LOGIN_URL`. Without it, `/billing` shows `/manage-plan`, which tells customers to email or text you.
+
 ## Shop checkout
 
 - Customers enter name, email, **US-only** shipping address and phone on Stripe's page. Shipping is a flat **$5.00 per order** (`SHIPPING_CENTS` in `api/_shop.js` and `shippingFlat` in `shop.html`; a test fails if they differ, so change both).
@@ -83,8 +113,8 @@ Note: this repo is connected to more than one Vercel project. Environment variab
 
 ## Limits of this phase
 
-- No webhook: nothing on the site confirms a payment automatically. Stripe's emails and dashboard are the source of truth.
-- Care Plans: Stripe handles recurring billing; there is no on-site account area.
+- Order emails depend on the webhook and EmailJS being configured (see above). Stripe's dashboard remains the source of truth.
+- Plans: Stripe handles recurring billing and the customer portal; there is no on-site account area.
 - Sales tax is not collected on services, care plans or bookkeeping. Confirm with your accountant. Shop orders use Stripe Tax.
 - Add a refund/terms page before taking live payments, and link it from the page.
 
