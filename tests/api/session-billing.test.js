@@ -16,9 +16,10 @@ function stripeReturning(status, body) {
   fn.calls = calls;
   return fn;
 }
-async function lookup(fetch, id = ID, env = KEY) {
+async function lookup(fetch, id = ID, env = KEY, now) {
+  if (!now) session._reset();   // each case starts cold unless it is testing the cache
   const res = fakeRes();
-  await session.handler({ method: 'GET', url: '/api/checkout-session?id=' + id, query: { id } }, res, { env, fetch });
+  await session.handler({ method: 'GET', url: '/api/checkout-session?id=' + id, query: { id } }, res, { env, fetch, now });
   return res;
 }
 
@@ -50,6 +51,39 @@ test('malformed ids never reach Stripe; Stripe errors are reported as unknown or
   assert.strictEqual((await lookup(stripeReturning(404, {}))).json().state, 'not_found');
   assert.strictEqual((await lookup(stripeReturning(500, {}))).json().state, 'unknown');
   assert.strictEqual((await lookup(stripeReturning(200, {}), ID, {})).statusCode, 503);
+});
+
+test('repeat lookups of one session are cached, and Stripe lookups are capped per minute', async () => {
+  session._reset();
+  let t = 1000000;
+  const now = () => t;
+  const f = stripeReturning(200, { status: 'complete', payment_status: 'paid', metadata: {} });
+  for (let i = 0; i < 5; i++) assert.strictEqual((await lookup(f, ID, KEY, now)).json().state, 'paid');
+  assert.strictEqual(f.calls.length, 1, 'one Stripe call for five page loads');
+  t += 31000;
+  await lookup(f, ID, KEY, now);
+  assert.strictEqual(f.calls.length, 2, 'cache expires after 30 s');
+
+  session._reset();
+  const g = stripeReturning(404, {});
+  let limited = 0;
+  for (let i = 0; i < 70; i++) {
+    const res = await lookup(g, 'cs_test_' + String(i).padStart(12, 'x'), KEY, now);
+    if (res.statusCode === 429) { limited++; assert.strictEqual(res.json().state, 'unknown'); }
+  }
+  assert.strictEqual(g.calls.length, 60, 'at most 60 Stripe lookups per minute per instance');
+  assert.strictEqual(limited, 10);
+  t += 60000;
+  assert.notStrictEqual((await lookup(g, 'cs_test_newwindow0000', KEY, now)).statusCode, 429, 'the limit resets each minute');
+});
+
+test('transient Stripe errors are not cached', async () => {
+  session._reset();
+  const now = () => 5000000;
+  const bad = stripeReturning(500, {});
+  await lookup(bad, ID, KEY, now);
+  const good = stripeReturning(200, { status: 'complete', payment_status: 'paid', metadata: {} });
+  assert.strictEqual((await lookup(good, ID, KEY, now)).json().state, 'paid');
 });
 
 test('/billing goes to the Stripe portal when configured, otherwise to /manage-plan', () => {

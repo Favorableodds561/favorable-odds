@@ -5,7 +5,23 @@
 // whether Stripe answers and can take charges, whether Stripe Tax is ready for the shop, and whether this address is allowed to start checkouts.
 // It never returns the key, account details or customer data. It creates nothing in Stripe.
 
+const crypto = require('crypto');
 const { send, allowedOrigins, stripeGet } = require('./_stripe');
+const { createCache } = require('./_limit');
+
+// The Stripe probes below are cached for a minute, so hitting this public page repeatedly costs at most
+// two Stripe API calls per minute per function instance instead of two per request.
+const PROBE_TTL_MS = 60 * 1000;
+const probes = createCache(PROBE_TTL_MS, 20);
+
+async function probe(doFetch, key, endpoint, now) {
+  const cacheKey = crypto.createHash('sha256').update(key).digest('hex').slice(0, 16) + ':' + endpoint;
+  const hit = probes.get(cacheKey, now);
+  if (hit) return hit;
+  const result = await stripeGet(doFetch, key, endpoint);
+  probes.set(cacheKey, result, now);
+  return result;
+}
 
 function keyState(key) {
   if (!key) return 'missing';
@@ -18,6 +34,7 @@ function keyState(key) {
 async function handler(req, res, deps) {
   const env = (deps && deps.env) || process.env;
   const doFetch = (deps && deps.fetch) || fetch;
+  const now = (deps && deps.now) || Date.now;
 
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -42,7 +59,7 @@ async function handler(req, res, deps) {
   else if (state === 'invalid_format') out.hints.push('STRIPE_SECRET_KEY does not look like a Stripe secret key (expected sk_test_, sk_live_, rk_test_ or rk_live_).');
 
   if (state === 'test' || state === 'live') {
-    const account = await stripeGet(doFetch, key, 'account');
+    const account = await probe(doFetch, key, 'account', now());
     out.stripeReachable = account.ok;
     if (account.ok) {
       out.chargesEnabled = account.data.charges_enabled === true;
@@ -52,7 +69,7 @@ async function handler(req, res, deps) {
     }
 
     if (out.shopTax.setting === 'on') {
-      const tax = await stripeGet(doFetch, key, 'tax/settings');
+      const tax = await probe(doFetch, key, 'tax/settings', now());
       if (tax.ok) {
         out.shopTax.stripeTaxStatus = tax.data.status || null;
         const pending = tax.data.status_details && tax.data.status_details.pending;
@@ -85,3 +102,4 @@ async function handler(req, res, deps) {
 module.exports = function (req, res) { return handler(req, res); };
 module.exports.handler = handler;
 module.exports.keyState = keyState;
+module.exports._resetCache = function () { probes.clear(); };

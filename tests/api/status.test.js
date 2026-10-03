@@ -1,7 +1,8 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert');
-const { handler, keyState } = require('../../api/checkout-status');
+const status = require('../../api/checkout-status');
+const { handler, keyState } = status;
 const { allowedOrigins } = require('../../api/_stripe');
 
 function fakeRes() {
@@ -20,6 +21,7 @@ function stripe({ account = { ok: true, status: 200, body: { charges_enabled: tr
   return fn;
 }
 async function call(deps, req = {}) {
+  if (!deps.now) status._resetCache();   // each case starts cold unless it is testing the cache
   const res = fakeRes();
   await handler(Object.assign({ method: 'GET', headers: { host: 'favorableodds.io' } }, req), res, deps);
   return res;
@@ -107,4 +109,21 @@ test('order-email, webhook and customer-portal setup is reported separately from
   assert.deepStrictEqual(full.recommended, []);
   const raw = JSON.stringify(full);
   assert.ok(!raw.includes('whsec_abc') && !raw.includes('"p"'), 'secrets are never echoed');
+});
+
+test('Stripe probes are cached for a minute, so repeated visits do not spend the Stripe rate limit', async () => {
+  status._resetCache();
+  let t = 1000000;
+  const f = stripe();
+  for (let i = 0; i < 10; i++) {
+    const body = (await call({ env: { STRIPE_SECRET_KEY: KEY }, fetch: f, now: () => t })).json();
+    assert.strictEqual(body.ready, true);
+  }
+  assert.strictEqual(f.calls.length, 2, 'one account and one tax call for ten visits');
+  t += 61000;
+  await call({ env: { STRIPE_SECRET_KEY: KEY }, fetch: f, now: () => t });
+  assert.strictEqual(f.calls.length, 4, 'refreshed after a minute');
+  const other = stripe();
+  await call({ env: { STRIPE_SECRET_KEY: 'sk_live_' + 'y'.repeat(24) }, fetch: other, now: () => t });
+  assert.strictEqual(other.calls.length, 2, 'a different key is never answered from another key\'s cache');
 });

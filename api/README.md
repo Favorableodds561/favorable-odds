@@ -49,6 +49,7 @@ Open **`/api/checkout-status`** on the address you are testing (for example `htt
 - whether that address is allowed to start checkouts.
 
 It reads only. It creates nothing in Stripe and never shows the key. `"ready": true` means everything it can see is fine.
+Stripe answers are cached for about a minute (so the public page can't be used to burn the Stripe rate limit); after changing a Stripe setting, wait a minute before re-checking. Changing the key itself takes effect at once.
 
 If a customer sees "Online checkout isn't available" on the shop (the page shows an `Error:` code), the usual causes are:
 
