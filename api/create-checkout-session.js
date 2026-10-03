@@ -5,7 +5,7 @@
 // Needs only STRIPE_SECRET_KEY (Vercel environment variable). No npm dependencies: it calls Stripe's REST API directly.
 // The publishable key is not needed because the browser is redirected to Stripe's hosted page.
 
-const { CATALOG } = require('./_catalog');
+const { CATALOG, ANNUAL_MONTHS_CHARGED } = require('./_catalog');
 const { send, gate, str, parseBody, stripePost, isCheckoutUrl } = require('./_stripe');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,8 +22,10 @@ function validate(input) {
     email: str(input.email),
     business: str(input.business),
     details: str(input.details),
-    notes: str(input.notes)
+    notes: str(input.notes),
+    billing: input.billing === 'year' ? 'year' : 'month'
   };
+  if (clean.billing === 'year' && !CATALOG[service].annual) return { error: 'annual_not_available' };
   if (!clean.name || clean.name.length > MAX.name) return { error: 'invalid_name' };
   if (!EMAIL_RE.test(clean.email) || clean.email.length > MAX.email) return { error: 'invalid_email' };
   if (!clean.business || clean.business.length > MAX.business) return { error: 'invalid_business' };
@@ -40,6 +42,7 @@ function metadataFor(order, item) {
     business: order.business.slice(0, CHUNK),
     source: 'favorableodds.io/' + item.group
   };
+  if (item.recurring) meta.billing = order.billing === 'year' ? 'annual' : 'monthly';
   if (order.notes) meta.notes = order.notes.slice(0, CHUNK);
   for (let i = 0; i * CHUNK < order.details.length && i < MAX_CHUNKS; i++) {
     meta['details_' + (i + 1)] = order.details.slice(i * CHUNK, (i + 1) * CHUNK);
@@ -51,15 +54,16 @@ function metadataFor(order, item) {
 function buildParams(order, item, origin) {
   const p = new URLSearchParams();
   p.set('mode', item.recurring ? 'subscription' : 'payment');
-  p.set('success_url', origin + '/services/thanks?session_id={CHECKOUT_SESSION_ID}');
+  p.set('success_url', origin + '/services/thanks?session_id={CHECKOUT_SESSION_ID}&from=' + item.group);
   p.set('cancel_url', origin + '/' + item.group + '?checkout=cancelled');
   p.set('customer_email', order.email);
   p.set('line_items[0][quantity]', '1');
   p.set('line_items[0][price_data][currency]', 'usd');
-  p.set('line_items[0][price_data][unit_amount]', String(item.cents));
-  p.set('line_items[0][price_data][product_data][name]', item.title);
+  const yearly = item.recurring && order.billing === 'year';
+  p.set('line_items[0][price_data][unit_amount]', String(yearly ? item.cents * ANNUAL_MONTHS_CHARGED : item.cents));
+  p.set('line_items[0][price_data][product_data][name]', item.title + (yearly ? ' (annual)' : ''));
   p.set('line_items[0][price_data][product_data][description]', item.blurb);
-  if (item.recurring) p.set('line_items[0][price_data][recurring][interval]', 'month');
+  if (item.recurring) p.set('line_items[0][price_data][recurring][interval]', yearly ? 'year' : 'month');
 
   const meta = metadataFor(order, item);
   for (const [k, v] of Object.entries(meta)) {

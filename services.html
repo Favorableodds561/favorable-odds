@@ -227,6 +227,10 @@ nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-i
 }
 .is-pay-btn.ready:hover { background:#005ea6; transform:translateY(-2px); }
 .pay-lock-msg { text-align:center; font-size:12px; color:var(--ink-muted); margin-top:10px; }
+.billing-toggle { display:flex; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.billing-toggle label { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--ink-soft); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-pill); padding:7px 14px; cursor:pointer; }
+.billing-toggle label:has(input:checked) { border-color:var(--accent); color:var(--ink); background:var(--accent-soft); }
+.billing-toggle em { font-style:normal; font-weight:500; color:var(--green); font-size:12px; }
 .pay-secure-note { text-align:center; font-size:11px; color:var(--ink-muted); margin-top:8px; display:flex; align-items:center; justify-content:center; gap:5px; }
 
 /* Ask btn */
@@ -495,7 +499,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     </div>
 
   </div>
-  <p class="care-note">Unused hours don't roll over. New pages and features are quoted separately. Pay annually and get 2 months free.</p>
+  <p class="care-note">Unused hours don't roll over. New pages and features are quoted separately. Pay annually and get 2 months free (choose Annual at checkout). Already on a plan? <a href="/billing" style="color:var(--accent)">Manage or cancel it here</a>.</p>
 </section>
 
 <!-- ═══════════════════════════════
@@ -518,6 +522,10 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
         <span class="is-modal-meta-pill" id="isModalDelivery">⚡ 24 hr delivery</span>
         <span class="is-modal-meta-pill" id="isModalScope">📦 One fixed deliverable</span>
         <span class="is-modal-meta-pill">🔒 Secure checkout by Stripe</span>
+      </div>
+      <div class="billing-toggle" id="billingToggle" role="radiogroup" aria-label="Billing" hidden>
+        <label><input type="radio" name="billing" value="month" checked onchange="setBilling(this.value)"> Monthly</label>
+        <label><input type="radio" name="billing" value="year" onchange="setBilling(this.value)"> Annual <em>2 months free</em></label>
       </div>
     </div>
 
@@ -618,13 +626,14 @@ emailjs.init('YVFMPQh2ifuDyFMUq'); // your public key
 
 var _currentServiceKey = null;
 var _redirectingToCheckout = false;
+var _billing = 'month';   // 'year' only for plans that offer annual billing
 var _modalSession = 0;   // bumps on every open so a late email result can't touch a newer modal
 
 // ── Service definitions ──
 var IS_SERVICES = {
   'care-essentials': {
     title: 'Care Plan: Essentials',
-    price: '$49/mo', amount: '49.00',
+    price: '$49/mo', amount: '49.00', annual: true,
     delivery: '🔁 Billed monthly',
     scope: '📅 Cancel anytime',
     tagline: 'Hosting, monitoring, backups and small edits every month, so your site stays secure and up to date.',
@@ -638,7 +647,7 @@ var IS_SERVICES = {
   },
   'care-growth': {
     title: 'Care Plan: Growth',
-    price: '$99/mo', amount: '99.00',
+    price: '$99/mo', amount: '99.00', annual: true,
     delivery: '🔁 Billed monthly',
     scope: '📅 Cancel anytime',
     tagline: 'Everything in Essentials, plus more edit time and a monthly report on your traffic and leads.',
@@ -652,7 +661,7 @@ var IS_SERVICES = {
   },
   'care-pro': {
     title: 'Care Plan: Pro',
-    price: '$179/mo', amount: '179.00',
+    price: '$179/mo', amount: '179.00', annual: true,
     delivery: '🔁 Billed monthly',
     scope: '📅 Cancel anytime',
     tagline: 'Everything in Growth, plus a monthly automation, quarterly strategy calls and priority response.',
@@ -747,6 +756,20 @@ var IS_SERVICES = {
   }
 };
 
+// Annual billing = 10 months' price (2 months free). The server computes the same amount from its own price list.
+function currentPrice(s) {
+  if (s.annual && _billing === 'year') return '$' + (parseFloat(s.amount) * 10).toLocaleString('en-US') + '/yr';
+  return s.price;
+}
+function setBilling(v) {
+  var s = IS_SERVICES[_currentServiceKey];
+  _billing = (s && s.annual && v === 'year') ? 'year' : 'month';
+  if (!s) return;
+  document.getElementById('isModalPrice').textContent = currentPrice(s);
+  document.getElementById('isModalDelivery').textContent = _billing === 'year' ? '🔁 Billed yearly' : s.delivery;
+  checkIntakeReady();
+}
+
 function openISModal(key) {
   var s = IS_SERVICES[key];
   if (!s) return;
@@ -755,7 +778,11 @@ function openISModal(key) {
 
   // Populate header
   document.getElementById('isModalIcon').innerHTML = s.icon;
+  _billing = 'month';
   document.getElementById('isModalPrice').textContent = s.price;
+  document.getElementById('billingToggle').hidden = !s.annual;
+  var monthly = document.querySelector('#billingToggle input[value="month"]');
+  if (monthly) monthly.checked = true;
   document.getElementById('isModalTitle').textContent = s.title;
   document.getElementById('isModalTagline').textContent = s.tagline;
   document.getElementById('isModalDelivery').textContent = s.delivery;
@@ -839,7 +866,7 @@ function checkIntakeReady() {
   if (ready) {
     btn.disabled = false;
     btn.classList.add('ready');
-    btn.textContent = (/\/mo$/.test(s.price) ? '🔒 Start plan — ' : '🔒 Pay securely — ') + s.price;
+    btn.textContent = (/\/(mo|yr)$/.test(currentPrice(s)) ? '🔒 Start plan — ' : '🔒 Pay securely — ') + currentPrice(s);
     msg.style.display = 'none';
     s2pill.classList.add('active');
     s2num.style.background = 'var(--accent)';
@@ -891,7 +918,7 @@ function submitRequest() {
   fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ service: key, name: name, email: email, business: business, details: details, notes: notes })
+    body: JSON.stringify({ service: key, billing: _billing, name: name, email: email, business: business, details: details, notes: notes })
   }).then(function(r) {
     if (!r.ok) throw new Error('checkout ' + r.status);
     return r.json();
@@ -902,7 +929,7 @@ function submitRequest() {
     // Keep a full copy of the intake form by email, marked unpaid. Never hold up the redirect for more than a moment.
     var copy = emailjs.send('service_blx7dqd', 'template_lbtqhem', {
       from_name: name, email: email, reply_to: email, business: business, service: s.title,
-      price: s.price + ' — PAYMENT PENDING at Stripe Checkout (confirm payment in Stripe before starting)',
+      price: currentPrice(s) + ' — PAYMENT PENDING at Stripe Checkout (confirm payment in Stripe before starting)',
       details: details, notes: (notes || 'None') + '\n\nStripe checkout session: ' + (data.id || 'n/a')
     }).catch(function(err) { console.warn('EmailJS error:', err); });
     var wait = new Promise(function(resolve) { setTimeout(resolve, 2500); });
@@ -921,7 +948,7 @@ function sendEmailRequest(s, name, email, business, details, notes, session) {
     reply_to:   email,
     business:   business,
     service:    s.title,
-    price:      s.price + ' — checkout unavailable, no payment taken. Send the customer a payment link.',
+    price:      currentPrice(s) + ' — checkout unavailable, no payment taken. Send the customer a payment link.',
     details:    details,
     notes:      notes || 'None'
   }).then(function() {

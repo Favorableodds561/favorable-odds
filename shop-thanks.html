@@ -31,10 +31,10 @@ li { margin-bottom:8px; }
 <header><a href="/">Favorable Odds</a></header>
 <main>
   <div class="card">
-    <div class="tick" aria-hidden="true">✓</div>
-    <h1>Thank you!</h1>
-    <p>If your payment went through, Stripe is emailing you a receipt.</p>
-    <ul>
+    <div class="tick" aria-hidden="true" id="tick">✓</div>
+    <h1 id="title">Thank you!</h1>
+    <p id="lead">If your payment went through, Stripe is emailing you a receipt.</p>
+    <ul id="steps">
       <li>This is a pre-order. Items ship within 2–3 weeks of purchase.</li>
       <li>We ship to the US address you entered at checkout.</li>
       <li>Need to change something? Reply to your receipt or contact us as soon as possible.</li>
@@ -44,8 +44,30 @@ li { margin-bottom:8px; }
   </div>
 </main>
 <script>
-// Landing here means Stripe sent the customer back, so the saved cart is no longer needed.
-try { localStorage.removeItem('fo_cart_v1'); } catch (e) {}
+// Confirm the payment with the server, then clear the saved cart. An unfinished checkout keeps the cart.
+(function () {
+  var id = new URLSearchParams(location.search).get('session_id') || '';
+  function clearCart() { try { localStorage.removeItem('fo_cart_v1'); } catch (e) {} }
+  if (!/^cs_(test|live)_[A-Za-z0-9]+$/.test(id)) { clearCart(); return; }
+  fetch('/api/checkout-session?id=' + encodeURIComponent(id)).then(function (r) { return r.json(); }).then(function (d) {
+    var title = document.getElementById('title'), lead = document.getElementById('lead'), tick = document.getElementById('tick');
+    if (d && d.state === 'not_completed') {
+      title.textContent = 'Payment not completed';
+      lead.textContent = 'This checkout was not completed, so you have not been charged. Your cart is still saved.';
+      document.getElementById('steps').hidden = true;
+      tick.textContent = '!'; tick.style.borderColor = tick.style.color = '#c9a24b';
+      return;
+    }
+    clearCart();
+    if (d && d.state === 'paid') {
+      title.textContent = 'Order confirmed';
+      lead.textContent = 'Thank you! Your payment went through. Stripe emails your receipt.';
+    } else if (d && d.state === 'processing') {
+      title.textContent = 'Order received';
+      lead.textContent = 'Your bank payment is still processing, which can take a few business days. We ship once it clears.';
+    }
+  }).catch(clearCart);
+})();
 </script>
 </body>
 </html>

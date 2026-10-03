@@ -22,7 +22,8 @@ function allowedOrigins(env) {
   const set = new Set([originOf(env.SITE_URL || DEFAULT_SITE)]);
   const base = set.values().next().value;
   if (base && base.startsWith('https://') && !base.startsWith('https://www.')) set.add(base.replace('https://', 'https://www.'));
-  for (const host of [env.VERCEL_URL, env.VERCEL_BRANCH_URL]) if (host) set.add('https://' + host);
+  // Vercel's own addresses for this deployment (previews), its git-branch alias, and the project's default production alias.
+  for (const host of [env.VERCEL_URL, env.VERCEL_BRANCH_URL, env.VERCEL_PROJECT_PRODUCTION_URL]) if (host) set.add('https://' + host);
   set.delete(null);
   return set;
 }
@@ -69,8 +70,10 @@ async function stripePost(doFetch, key, endpoint, params) {
     });
     const data = await response.json().catch(function () { return {}; });
     if (!response.ok) {
-      // Log the error class only. Never log request bodies, customer details or keys.
-      console.error('stripe_failed', endpoint, response.status, data && data.error && (data.error.type + '/' + (data.error.code || '')));
+      // Log what Stripe rejected, never the request body, keys or customer details. Stripe's message can echo a bad value, so strip anything email-like.
+      const e = (data && data.error) || {};
+      const msg = String(e.message || '').replace(/\S+@\S+/g, '[email]').slice(0, 200);
+      console.error('stripe_failed', endpoint, response.status, [e.type, e.code, e.param].filter(Boolean).join('/'), msg);
     }
     return { ok: response.ok, status: response.status, data: data || {} };
   } catch (e) {
@@ -81,8 +84,27 @@ async function stripePost(doFetch, key, endpoint, params) {
   }
 }
 
+// GET a Stripe endpoint. Returns { ok, status, data }. Used only by the status endpoint.
+async function stripeGet(doFetch, key, endpoint) {
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, 8000);
+  try {
+    const response = await doFetch(STRIPE_API + endpoint, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + key, 'Stripe-Version': STRIPE_VERSION },
+      signal: controller.signal
+    });
+    const data = await response.json().catch(function () { return {}; });
+    return { ok: response.ok, status: response.status, data: data || {} };
+  } catch (e) {
+    return { ok: false, status: 0, data: {} };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 function isCheckoutUrl(url) {
   return typeof url === 'string' && url.startsWith('https://checkout.stripe.com/');
 }
 
-module.exports = { send, originOf, allowedOrigins, gate, str, parseBody, stripePost, isCheckoutUrl, DEFAULT_SITE };
+module.exports = { send, originOf, allowedOrigins, gate, str, parseBody, stripePost, stripeGet, isCheckoutUrl, DEFAULT_SITE };
