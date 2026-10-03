@@ -2,6 +2,9 @@
   "rewrites": [
     {"source": "/services", "destination": "/services.html"},
     {"source": "/services/thanks", "destination": "/services-thanks.html"},
+    {"source": "/shop/thanks", "destination": "/shop-thanks.html"},
+    {"source": "/billing", "destination": "/api/billing-portal"},
+    {"source": "/manage-plan", "destination": "/manage-plan.html"},
     {"source": "/bookkeeping", "destination": "/bookkeeping.html"},
     {"source": "/work", "destination": "/work/index.html"},
     {"source": "/tools", "destination": "/tools/index.html"},

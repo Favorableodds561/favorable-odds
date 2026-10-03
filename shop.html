@@ -403,7 +403,7 @@
       <button class="close" id="closeReserved" aria-label="Close">✕</button>
       <div class="check">✓</div>
       <h3 id="reservedTitle">Almost done</h3>
-      <p class="desc">Your email app should open with your order filled in. Add your name and shipping address, then hit send. We'll reply to confirm your order and how to pay. No email app? Send your order to <a href="mailto:hello@favorableodds.io" style="color:var(--gold)">hello@favorableodds.io</a>.</p>
+      <p class="desc">Online checkout wasn't available, so your email app should open with your order filled in. Add your name and US shipping address, then hit send. We'll reply to confirm your order and send a payment link. Nothing has been charged. No email app? Send your order to <a href="mailto:hello@favorableodds.io" style="color:var(--gold)">hello@favorableodds.io</a>.</p>
       <button class="btn ghost" id="reservedClose2">Keep shopping</button>
     </div>
   </div>
@@ -420,8 +420,8 @@ const CONFIG = {
   // '' = same folder as shop.html.  Use 'images/' if you put them in a subfolder.
   imgBase: '',
 
-  // Free shipping rolled into the price (true) or charged separately (handle later).
-  freeShipping: true,
+  // Flat shipping per order, US addresses only. Must equal SHIPPING_CENTS / 100 in api/_shop.js (a test checks this).
+  shippingFlat: 5,
 
   // Pricing: every tee costs teePrice; every pair of tees costs bundlePrice.
   // (3 tees = one pair + one single.)  Change these two numbers to reprice the whole shop.
@@ -430,8 +430,9 @@ const CONFIG = {
 
   preorderNote: 'This is a pre-order. Items ship within 2–3 weeks of purchase.',
 
-  // Online payment is OFF for now. Orders are reserved by email and confirmed manually.
-  // When a payment provider is chosen, swap reserveOrder() for its checkout.
+  // Checkout is Stripe (POST /api/create-checkout-session style function: /api/create-shop-checkout).
+  // Prices are recomputed on the server from the product ids, sizes and quantities, never from this page.
+  // If checkout is unavailable, customers can still reserve by email.
   reserve: {
     email: 'hello@favorableodds.io',
     subject: 'Order reservation — Favorable Odds Shop'
@@ -537,7 +538,8 @@ function pricing(){
   const qualifies = bundles > 0;
   const perBundleSavings = CONFIG.promo.bundleQty * CONFIG.teePrice - CONFIG.promo.bundlePrice;
   const discount = Math.max(0, Math.min(subtotal, bundles * perBundleSavings));
-  return { subtotal, discount, qualifies, total: subtotal - discount };
+  const shipping = cart.length ? CONFIG.shippingFlat : 0;
+  return { subtotal, discount, qualifies, shipping, total: subtotal - discount + shipping };
 }
 
 /* ---------------- Render product grid ---------------- */
@@ -631,10 +633,13 @@ function renderCart(){
     ${nudge}
     <div class="sline"><span>Subtotal</span><span>${money(p.subtotal)}</span></div>
     ${p.discount>0?`<div class="sline disc"><span>${deal} deal</span><span>– ${money(p.discount)}</span></div>`:''}
-    <div class="sline"><span>Shipping</span><span>${CONFIG.freeShipping?'Free':'Calculated next'}</span></div>
+    <div class="sline"><span>Shipping (US only)</span><span>${money(p.shipping)} flat</span></div>
     <div class="sline total"><span>Total</span><span>${money(p.total)}</span></div>
-    <button class="btn block" id="reserveOrder" style="margin-top:14px">Reserve by email</button>
-    <div class="ship-note">${CONFIG.preorderNote} Online checkout is coming soon. Reserve now and we'll confirm by email.</div>`;
+    <div class="ship-note" style="margin:0 0 4px">Sales tax, if any, is calculated at checkout.</div>
+    ${checkoutFailed?`<div class="nudge" style="margin-top:12px" role="alert">Online checkout isn't available right now. Nothing was charged. You can reserve this order by email instead.<div style="opacity:.6;font-size:.72rem;margin-top:4px">Error: ${checkoutErrorCode}</div></div>`:''}
+    <button class="btn block" id="checkoutBtn" style="margin-top:14px"${checkingOut?' disabled':''}>${checkingOut?'Taking you to secure checkout…':'Checkout securely'}</button>
+    ${checkoutFailed?`<button class="btn ghost block" id="reserveOrder" style="margin-top:10px">Reserve by email</button>`:''}
+    <div class="ship-note">${CONFIG.preorderNote} Secure payment by Stripe. We never see your card details.</div>`;
 }
 
 function addToCart(){
@@ -657,7 +662,32 @@ function addToCart(){
   openOverlay('#drawer');
 }
 
-/* ---------------- Reserve by email (no online payment) ---------------- */
+/* ---------------- Stripe Checkout ---------------- */
+let checkingOut = false, checkoutFailed = false, redirectingToCheckout = false, checkoutErrorCode = '';
+async function checkoutOrder(){
+  if(cart.length===0 || checkingOut) return;
+  checkingOut = true; checkoutFailed = false; checkoutErrorCode = '';
+  renderCart();
+  try{
+    // Only ids, sizes and quantities are sent. The server owns every price.
+    const r = await fetch('/api/create-shop-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({items:cart.map(i=>({id:i.id,size:i.size,qty:i.qty}))})
+    });
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok || !d || !d.url){ checkoutErrorCode = (d && d.error) || ('http_'+r.status); throw new Error('checkout '+r.status+' '+checkoutErrorCode); }
+    redirectingToCheckout = true;
+    window.location.href = d.url;
+  }catch(err){
+    console.warn('Checkout unavailable:', err);
+    if(!checkoutErrorCode) checkoutErrorCode = 'network';
+    checkingOut = false; checkoutFailed = true;
+    renderCart();
+  }
+}
+
+/* ---------------- Reserve by email (fallback when checkout is unavailable) ---------------- */
 function reserveOrder(){
   if(cart.length===0) return;
   const cfg = CONFIG.reserve;
@@ -670,7 +700,7 @@ function reserveOrder(){
     '',
     `Subtotal: ${money(p.subtotal)}`,
     ...(p.discount>0 ? [`${CONFIG.promo.bundleQty} for ${money(CONFIG.promo.bundlePrice)} deal: -${money(p.discount)}`] : []),
-    `Shipping: ${CONFIG.freeShipping ? 'Free' : 'TBD'}`,
+    `Shipping (US flat rate): ${money(p.shipping)}`,
     `Total: ${money(p.total)}`,
     '',
     'Name:',
@@ -783,6 +813,7 @@ function bind(){
   });
   $('#cartSummary').addEventListener('click', e=>{
     if(e.target.id==='reserveOrder') reserveOrder();
+    if(e.target.id==='checkoutBtn') checkoutOrder();
   });
 
   // open/close
@@ -807,6 +838,26 @@ function init(){
   stars();
 }
 document.addEventListener('DOMContentLoaded', init);
+
+// Back button from Stripe can restore the page frozen mid-redirect. Reset the cart button.
+window.addEventListener('pageshow', e=>{
+  if(e.persisted && redirectingToCheckout){ redirectingToCheckout = false; checkingOut = false; renderCart(); }
+});
+
+// Stripe sends people back here with ?checkout=cancelled. The cart is still saved.
+document.addEventListener('DOMContentLoaded', ()=>{
+  if(!/[?&]checkout=cancelled\b/.test(location.search)) return;
+  const t = document.createElement('div');
+  t.setAttribute('role','status');
+  t.style.cssText = 'position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:90;max-width:92vw;background:#14110a;color:#f3ead2;border:1px solid #c9a24b;font-size:.88rem;padding:11px 38px 11px 16px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.45)';
+  t.textContent = 'Checkout cancelled. You have not been charged and your cart is still here.';
+  const x = document.createElement('button');
+  x.setAttribute('aria-label','Dismiss'); x.textContent = '✕';
+  x.style.cssText = 'position:absolute;top:7px;right:10px;background:none;border:0;color:inherit;font-size:1rem;cursor:pointer';
+  x.onclick = ()=>t.remove();
+  t.appendChild(x); document.body.appendChild(t);
+  if(history.replaceState) history.replaceState(null,'',location.pathname);
+});
 </script>
 </body>
 </html>

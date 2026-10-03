@@ -443,7 +443,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     </div>
 
   </div>
-  <p class="care-note">Not sure which plan fits? Pick the closest one and we'll confirm the right fit before anything is billed.</p>
+  <p class="care-note">Not sure which plan fits? Text us for the free 15-minute fit call before you start a plan. Already a client? <a href="/billing" style="color:var(--accent)">Manage or cancel your plan here</a>.</p>
 </section>
 
 <!-- HOW IT WORKS -->
@@ -476,7 +476,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
 
 <!-- ═══════════════════════════════
      ORDER MODAL
-     Flow: Details → Intake Form → Submit unlocks → Email fires → confirmation (no online payment)
+     Flow: Details → Intake Form → Submit unlocks → Stripe Checkout (/api/create-checkout-session). Quote-only plans and checkout failures use the EmailJS request flow (no charge).
 ═══════════════════════════════ -->
 <div class="is-modal-overlay" id="isModalOverlay" onclick="closeISModal(event)">
   <div class="is-modal" id="isModal">
@@ -493,7 +493,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
       <div class="is-modal-meta">
         <span class="is-modal-meta-pill" id="isModalDelivery">⚡ 24 hr delivery</span>
         <span class="is-modal-meta-pill" id="isModalScope">📦 One fixed deliverable</span>
-        <span class="is-modal-meta-pill">✅ Confirmed by email</span>
+        <span class="is-modal-meta-pill" id="isModalSecure">🔒 Secure checkout by Stripe</span>
       </div>
     </div>
 
@@ -516,12 +516,12 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
         <div class="step-connector"></div>
         <div class="step-pill" id="step2pill">
           <div class="step-num" id="step2num">2</div>
-          We confirm your order
+          <span id="step2label">Secure checkout</span>
         </div>
       </div>
 
       <div class="intake-heading">Project Details</div>
-      <p class="intake-subhead">Fill this out so we can start as soon as your order is confirmed. All fields marked * are required.</p>
+      <p class="intake-subhead">Fill this out so we can start as soon as you're set up. All fields marked * are required.</p>
 
       <div class="intake-row">
         <div class="intake-field">
@@ -551,7 +551,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
     <!-- 4. Sending state (hidden until submit) -->
     <div class="is-sending" id="isSending">
       <div class="is-sending-icon" id="isSendingIcon">⚙️</div>
-      <h4 id="isSendingTitle">Sending your details...</h4>
+      <h4 id="isSendingTitle">Taking you to secure checkout...</h4>
       <p id="isSendingText">This only takes a moment.</p>
     </div>
 
@@ -560,8 +560,8 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
       <button class="is-pay-btn" id="isPayBtn" onclick="submitRequest()" disabled>
         🔒 Fill out the form above to continue
       </button>
-      <p class="pay-lock-msg" id="payLockMsg">Complete all required fields to submit your request.</p>
-      <p class="pay-secure-note" id="paySecureNote">Nothing is charged online · We confirm every order by email</p>
+      <p class="pay-lock-msg" id="payLockMsg">Complete all required fields to continue.</p>
+      <p class="pay-secure-note" id="paySecureNote">Secure checkout by Stripe · We never see or store your card details</p>
       <a class="is-ask-btn" id="isAskBtn" href="sms:+16892439704">💬 Have a question first? Text us</a>
     </div>
 
@@ -593,6 +593,7 @@ footer { background:#080809; padding:44px 48px; display:flex; justify-content:sp
 emailjs.init('YVFMPQh2ifuDyFMUq'); // your public key
 
 var _currentServiceKey = null;
+var _redirectingToCheckout = false;
 var _modalSession = 0;   // bumps on every open so a late email result can't touch a newer modal
 
 // ── Service definitions ──
@@ -629,7 +630,7 @@ var IS_SERVICES = {
   },
   'books-cleanup': {
     title: 'Catch-Up Cleanup',
-    price: 'From $150', amount: '150.00',
+    price: 'From $150', amount: '150.00', quote: true,
     delivery: '🔍 Quoted after a free review',
     scope: '📦 One-time project',
     tagline: 'Behind on your books? We bring every month current, reconciled and ready for your CPA.',
@@ -704,7 +705,10 @@ function openISModal(key) {
   document.getElementById('isPayBtn').style.display = '';
   document.getElementById('paySecureNote').style.display = '';
   document.getElementById('isSendingIcon').textContent = '⚙️';
-  document.getElementById('isSendingTitle').textContent = 'Sending your details...';
+  document.getElementById('isSendingTitle').textContent = s.quote ? 'Sending your details...' : 'Taking you to secure checkout...';
+  document.getElementById('isModalSecure').textContent = s.quote ? '✅ Confirmed by email' : '🔒 Secure checkout by Stripe';
+  document.getElementById('step2label').textContent = s.quote ? 'We send your quote' : 'Secure checkout';
+  document.getElementById('paySecureNote').textContent = s.quote ? 'No payment now · We email you a flat quote first' : 'Secure checkout by Stripe · We never see or store your card details';
   document.getElementById('isSendingText').textContent = 'This only takes a moment.';
   checkIntakeReady();
 
@@ -749,7 +753,7 @@ function checkIntakeReady() {
   if (ready) {
     btn.disabled = false;
     btn.classList.add('ready');
-    btn.textContent = '✅ Submit request — ' + IS_SERVICES[_currentServiceKey].price;
+    btn.textContent = s.quote ? '✅ Request a quote' : (/\/mo$/.test(s.price) ? '🔒 Start plan — ' : '🔒 Pay securely — ') + s.price;
     msg.style.display = 'none';
     s2pill.classList.add('active');
     s2num.style.background = 'var(--accent)';
@@ -770,6 +774,7 @@ function checkIntakeReady() {
 function submitRequest() {
   var s = IS_SERVICES[_currentServiceKey];
   if (!s) return;
+  var key = _currentServiceKey;
   var btn = document.getElementById('isPayBtn');
   if (btn.disabled) return;          // guard against double-submit
   btn.disabled = true;
@@ -796,23 +801,77 @@ function submitRequest() {
   document.getElementById('isSending').style.display = 'block';
   document.getElementById('isModalIcon').parentElement.style.display = '';
 
-  // Fire EmailJS
+  if (s.quote) {                       // quoted work is never charged online
+    sendEmailRequest(s, name, email, business, details, notes, session);
+    return;
+  }
+
+  // Only the service key is sent for pricing. The server holds the price list, so the amount can't be edited in the browser.
+  fetch('/api/create-checkout-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ service: key, billing: 'month', name: name, email: email, business: business, details: details, notes: notes })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('checkout ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    if (!data || !data.url) throw new Error('no checkout url');
+    if (session !== _modalSession) return;
+    _redirectingToCheckout = true;
+    // Keep a full copy of the intake form by email, marked unpaid. Never hold up the redirect for more than a moment.
+    var copy = emailjs.send('service_blx7dqd', 'template_lbtqhem', {
+      from_name: name, email: email, reply_to: email, business: business, service: s.title,
+      price: s.price + ' — PAYMENT PENDING at Stripe Checkout (confirm payment in Stripe before starting)',
+      details: details, notes: (notes || 'None') + '\n\nStripe checkout session: ' + (data.id || 'n/a')
+    }).catch(function(err) { console.warn('EmailJS error:', err); });
+    var wait = new Promise(function(resolve) { setTimeout(resolve, 2500); });
+    return Promise.race([copy, wait]).then(function() { window.location.href = data.url; });
+  }).catch(function(err) {
+    console.warn('Checkout unavailable, using email request:', err);
+    if (session === _modalSession) sendEmailRequest(s, name, email, business, details, notes, session);
+  });
+}
+
+// Fallback when online checkout can't start: same email request as before, and nothing is charged.
+function sendEmailRequest(s, name, email, business, details, notes, session) {
   emailjs.send('service_blx7dqd', 'template_lbtqhem', {
     from_name:  name,
     email:      email,
     reply_to:   email,
     business:   business,
     service:    s.title,
-    price:      s.price,
+    price:      s.price + (s.quote ? ' (quote request, nothing charged)' : ' — checkout unavailable, no payment taken. Send the customer a payment link.'),
     details:    details,
     notes:      notes || 'None'
   }).then(function() {
-    if (session === _modalSession) showRequestResult(true);
+    if (session === _modalSession) showRequestResult(true, s);
   }).catch(function(err) {
     console.warn('EmailJS error:', err);
     if (session === _modalSession) showRequestResult(false, s, name, email, business, details, notes);
   });
 }
+
+// Back button from Stripe can restore this page frozen in the "sending" state. Start clean instead.
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted && _redirectingToCheckout) window.location.reload();
+});
+
+// Stripe sends people back here with ?checkout=cancelled
+(function() {
+  if (!/[?&]checkout=cancelled\b/.test(window.location.search)) return;
+  var bar = document.createElement('div');
+  bar.setAttribute('role', 'status');
+  bar.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:150;max-width:92vw;background:#0d0d0f;color:#fff;font-size:14px;padding:12px 40px 12px 18px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25)';
+  bar.textContent = 'Checkout cancelled. You have not been charged.';
+  var x = document.createElement('button');
+  x.setAttribute('aria-label', 'Dismiss');
+  x.textContent = '✕';
+  x.style.cssText = 'position:absolute;top:8px;right:12px;background:none;border:none;color:#fff;font-size:16px;cursor:pointer';
+  x.onclick = function() { bar.remove(); };
+  bar.appendChild(x);
+  document.body.appendChild(bar);
+  if (window.history && history.replaceState) history.replaceState(null, '', window.location.pathname);
+})();
 
 function showRequestResult(ok, s, name, email, business, details, notes) {
   document.getElementById('isPayBtn').style.display = 'none';
@@ -824,7 +883,7 @@ function showRequestResult(ok, s, name, email, business, details, notes) {
   if (ok) {
     icon.textContent  = '✅';
     title.textContent = 'Request received!';
-    text.textContent  = "We'll email you within 1 business day to confirm your order and next steps.";
+    text.textContent  = s && s.quote ? "We'll email you within 1 business day with a flat quote. Nothing has been charged." : "Online checkout isn't available right now, so we received your request instead. We'll email you within 1 business day with a payment link and next steps. Nothing has been charged.";
   } else {
     var body = 'Service: ' + s.title + ' (' + s.price + ')\n' +
       'Name: ' + name + '\nEmail: ' + email + '\nBusiness: ' + business + '\n\n' +

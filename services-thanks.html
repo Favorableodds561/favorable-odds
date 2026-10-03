@@ -25,24 +25,59 @@ ol li { margin-bottom:8px; }
 .btn { display:inline-block; background:var(--ink); color:var(--white); text-decoration:none; font-weight:500; padding:12px 24px; border-radius:100px; }
 .btn:hover { background:var(--accent); }
 .small { font-size:13px; color:var(--ink-muted); margin-top:18px; margin-bottom:0; }
-.small a { color:var(--accent); }
+.small a, #plan a { color:var(--accent); }
+.tick.warn { background:#fef3c7; color:#b45309; }
 </style>
 </head>
 <body>
 <header><a href="/">Favorable Odds</a></header>
 <main>
   <div class="card">
-    <div class="tick" aria-hidden="true">✓</div>
-    <h1>Thank you!</h1>
-    <p>If your payment went through, Stripe is emailing you a receipt, and we have the details you filled out.</p>
-    <ol>
+    <div class="tick" aria-hidden="true" id="tick">✓</div>
+    <h1 id="title">Thank you!</h1>
+    <p id="lead">If your payment went through, Stripe is emailing you a receipt, and we have the details you filled out.</p>
+    <ol id="steps">
       <li>We review your details and confirm by email, usually within 1 business day.</li>
       <li>Your delivery clock starts once we've confirmed everything we need.</li>
       <li>Missing anything? We'll reach out before we begin.</li>
     </ol>
-    <a class="btn" href="/services">Back to Instant Services</a>
+    <p id="plan" hidden>Billed monthly. You can <a href="/billing">update your card or cancel your plan</a> at any time.</p>
+    <a class="btn" id="back" href="/services">Back to Instant Services</a>
     <p class="small">No receipt in a few minutes? Check spam, then text 689-243-9704 or email <a href="mailto:hello@favorableodds.io">hello@favorableodds.io</a>.</p>
   </div>
 </main>
+<script>
+// Ask the server whether this checkout was actually paid, so the page never claims more than Stripe says.
+(function () {
+  var q = new URLSearchParams(location.search);
+  var id = q.get('session_id') || '';
+  var from = q.get('from');
+  function setBack(kind) {
+    if (kind === 'bookkeeping') { var b = document.getElementById('back'); b.href = '/bookkeeping'; b.textContent = 'Back to Bookkeeping'; }
+  }
+  setBack(from);
+  if (!/^cs_(test|live)_[A-Za-z0-9]+$/.test(id)) return;
+  fetch('/api/checkout-session?id=' + encodeURIComponent(id)).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d) return;
+    setBack(d.kind || from);
+    var title = document.getElementById('title'), lead = document.getElementById('lead'), tick = document.getElementById('tick');
+    if (d.state === 'paid') {
+      title.textContent = 'Payment confirmed';
+      lead.textContent = 'Thank you! Your payment went through and we have the details you filled out. Stripe emails your receipt.';
+    } else if (d.state === 'processing') {
+      title.textContent = 'Order received';
+      lead.textContent = 'Your bank payment is still processing, which can take a few business days. We start as soon as it clears.';
+      tick.textContent = '…'; tick.classList.add('warn');
+    } else if (d.state === 'not_completed') {
+      title.textContent = 'Payment not completed';
+      lead.textContent = 'This checkout was not completed, so you have not been charged.';
+      document.getElementById('steps').hidden = true;
+      tick.textContent = '!'; tick.classList.add('warn');
+      return;
+    }
+    if (d.subscription && (d.state === 'paid' || d.state === 'processing')) document.getElementById('plan').hidden = false;
+  }).catch(function () { /* keep the generic message */ });
+})();
+</script>
 </body>
 </html>
